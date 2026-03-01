@@ -1,0 +1,263 @@
+/* Video Call Containers */
+#incomingVideoCallPopup,
+#videoCallPopup {
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.95);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#incomingVideoCallPopup.show,
+#videoCallPopup.show {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+
+#incomingVideoCallPopup.hidden,
+#videoCallPopup.hidden {
+    display: none !important;
+}
+
+/* Call Control Buttons */
+.call-control-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+}
+
+.call-control-btn:hover {
+    transform: translateY(-2px);
+}
+
+.video-control-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    color: white;
+    background: rgba(75, 85, 99, 0.8);
+    backdrop-filter: blur(4px);
+}
+
+.video-control-btn:hover {
+    transform: scale(1.1);
+    background: rgba(75, 85, 99, 0.9);
+}
+
+.video-control-btn:active {
+    transform: scale(0.95);
+}
+
+/* Pulse Animation */
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 0.25; }
+    100% { transform: scale(1); opacity: 0.5; }
+}
+
+.pulse-animation {
+    animation: pulse 2s infinite;
+    border: 2px solid #3B82F6;
+    border-radius: 50%;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+}
+
+/* Video Elements */
+#remoteVideo, #localVideo {
+    background-color: #1F2937;
+    transition: all 0.3s ease;
+    border-radius: 0.5rem;
+}
+
+#localVideo {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Status Indicator */
+#videoCallStatus {
+    display: flex;
+    align-items: center;
+}
+
+#videoCallStatus .animate-pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+    animation: status-pulse 1.5s infinite;
+    box-shadow: 0 0 10px currentColor;
+}
+
+@keyframes status-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.7; }
+}
+
+/* Minimized Call */
+#minimizedVideoCall {
+    transition: transform 0.3s ease;
+}
+
+#minimizedVideoCall:hover {
+    transform: scale(1.1) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+    #videoCallPopup {
+        width: 90vw !important;
+    }
+    
+    .video-control-btn {
+        width: 40px;
+        height: 40px;
+    }
+    
+    #localVideo {
+        width: 80px !important;
+    }
+
+    .call-control-btn {
+        padding: 0.75rem;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    #videoCallPopup,
+    #incomingVideoCallPopup {
+        background-color: rgba(17, 24, 39, 0.95);
+    }
+    
+    .video-control-btn {
+        background-color: rgba(55, 65, 81, 0.8);
+    }
+    
+    .video-control-btn:hover {
+        background-color: rgba(55, 65, 81, 0.9);
+    }
+}
+
+/* Liquid Effect */
+.blob {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    mix-blend-mode: color-dodge;
+    filter: blur(30px);
+    border-radius: 50%;
+    animation: blob-bounce 8s infinite ease;
+    opacity: 0.5;
+}
+
+.blob-1 {
+    top: 10%;
+    left: -100px;
+    animation-delay: 0s;
+    background: linear-gradient(180deg, rgba(59, 130, 246, 0.4) 0%, rgba(37, 99, 235, 0.8) 100%);
+}
+
+.blob-2 {
+    bottom: 10%;
+    right: -100px;
+    animation-delay: -2s;
+    background: linear-gradient(180deg, rgba(139, 92, 246, 0.4) 0%, rgba(124, 58, 237, 0.8) 100%);
+}
+
+.blob-3 {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation-delay: -4s;
+    background: linear-gradient(180deg, rgba(45, 212, 191, 0.4) 0%, rgba(20, 184, 166, 0.8) 100%);
+}
+
+@keyframes blob-bounce {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(20px, 20px) scale(1.1); }
+    50% { transform: translate(-20px, 20px) scale(0.9); }
+    75% { transform: translate(20px, -20px) scale(1.05); }
+}
+
+/* Chat Sidebar Animation */
+#chatSidebar {
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+}
+
+#chatSidebar:not(.hidden) {
+    transform: translateX(0);
+}
+
+/* Connection Quality Indicator */
+#connectionQuality div {
+    height: 16px;
+    width: 4px;
+    margin: 0 2px;
+    border-radius: 2px;
+    animation: quality-pulse 1.5s infinite;
+}
+
+#connectionQuality div:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+#connectionQuality div:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes quality-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Call Controls Animation */
+.video-control-btn i {
+    transition: transform 0.2s ease;
+}
+
+.video-control-btn:active i {
+    transform: scale(0.9);
+}
+
+/* Video Call Popup Animation */
+#videoCallPopup {
+    animation: fade-in 0.3s ease-out;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Message Animation */
+.chat-message {
+    animation: message-pop 0.3s ease-out;
+}
+
+@keyframes message-pop {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+} 
