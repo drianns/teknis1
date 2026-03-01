@@ -20,6 +20,7 @@ use App\Http\Controllers\ExportUserApplicationController;
 use App\Http\Controllers\BantuDagangController;
 use App\Http\Controllers\MenuApplicationController;
 use App\Http\Controllers\SubMenuApplicationController;
+use App\Http\Controllers\SetupChannelEmailController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +41,19 @@ Route::post('/dashboard-email/data', [DashboardEmailController::class, 'getData'
 
 Route::get('/monitoring-email-response', [MonitoringEmailResponseController::class, 'index'])->name('monitoring.email.response');
 Route::post('/monitoring-email-response/data', [MonitoringEmailResponseController::class, 'getData'])->name('monitoring.email.response.data');
+
+// Setup Channel Email Routes (9 Items)
+Route::prefix('setup-channel-email')->name('setup-channel-email.')->group(function () {
+    Route::get('/account-corporate', [SetupChannelEmailController::class, 'accountCorporate'])->name('account-corporate');
+    Route::get('/data-signature', [SetupChannelEmailController::class, 'dataSignature'])->name('data-signature');
+    Route::get('/filter-jumlah-hari', [SetupChannelEmailController::class, 'filterJumlahHari'])->name('filter-jumlah-hari');
+    Route::get('/incoming-email', [SetupChannelEmailController::class, 'incomingEmail'])->name('incoming-email');
+    Route::get('/jam-operasional', [SetupChannelEmailController::class, 'jamOperasional'])->name('jam-operasional');
+    Route::get('/setting-agent', [SetupChannelEmailController::class, 'settingAgent'])->name('setting-agent');
+    Route::get('/setting-auto-reply', [SetupChannelEmailController::class, 'settingAutoReply'])->name('setting-auto-reply');
+    Route::get('/template-auto-reply', [SetupChannelEmailController::class, 'templateAutoReply'])->name('template-auto-reply');
+    Route::get('/template-response', [SetupChannelEmailController::class, 'templateResponse'])->name('template-response');
+});
 
 Route::prefix('apps')->name('apps.')->group(function () {
     Route::get('/ticketing-department', [TicketingDepartmentController::class, 'index'])->name('ticketing-department');

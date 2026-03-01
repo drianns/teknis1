@@ -8,12 +8,12 @@ document.addEventListener('alpine:init', () => {
             channelEmail: false,
             setupChannelEmail: false
         },
-        
+
         init() {
             this.autoExpandActiveMenu();
-            
+
             this.$watch('expanded', (value) => {
-                if(value) this.autoExpandActiveMenu();
+                if (value) this.autoExpandActiveMenu();
             });
 
             // Attempt 3: Manual Navigation Bypass (Capture Phase)
@@ -30,10 +30,10 @@ document.addEventListener('alpine:init', () => {
                 }
             }, true);
         },
-        
+
         autoExpandActiveMenu() {
             const path = window.location.pathname;
-            
+
             if (path.includes('/apps/')) {
                 this.openMenus.apps = true;
             }
@@ -46,11 +46,11 @@ document.addEventListener('alpine:init', () => {
             if (path.includes('/channel/email/')) {
                 this.openMenus.channelEmail = true;
             }
-            if (path.includes('/dashboard-email')) {
+            if (path.includes('/dashboard-email') || path.includes('/setup-channel-email/')) {
                 this.openMenus.setupChannelEmail = true;
             }
         },
-        
+
         toggle(menu) {
             this.openMenus[menu] = !this.openMenus[menu];
         }

@@ -167,7 +167,7 @@
             <!-- Setup Channel Email Dropdown -->
             <div class="space-y-1">
                 <button @click.stop="toggle('setupChannelEmail')"
-                    class="menu-item w-full group {{ request()->routeIs('dashboard.email') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
+                    class="menu-item w-full group {{ request()->routeIs('dashboard.email') || request()->is('setup-channel-email/*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
                     <i class="bx bx-cog text-lg"></i>
                     <span :class="expanded ? 'opacity-100' : 'opacity-0'">Setup Channel Email</span>
                     <i x-show="expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200"
@@ -186,6 +186,24 @@
                             <span>Monitoring Email Response</span>
                         </a>
                     </li>
+                    @foreach([
+                        ['route' => 'setup-channel-email.setting-auto-reply',  'label' => 'Setting Auto Reply Email'],
+                        ['route' => 'setup-channel-email.template-auto-reply', 'label' => 'Template Auto Reply Email'],
+                        ['route' => 'setup-channel-email.template-response',   'label' => 'Template Response Email'],
+                        ['route' => 'setup-channel-email.filter-jumlah-hari',  'label' => 'Filter Jumlah Hari'],
+                        ['route' => 'setup-channel-email.jam-operasional',     'label' => 'Jam Operasional Email'],
+                        ['route' => 'setup-channel-email.incoming-email',      'label' => 'Incoming Email'],
+                        ['route' => 'setup-channel-email.setting-agent',       'label' => 'Setting Agent Email'],
+                        ['route' => 'setup-channel-email.data-signature',      'label' => 'Data Signature'],
+                        ['route' => 'setup-channel-email.account-corporate',   'label' => 'Account Email Corporate'],
+                    ] as $item)
+                    <li>
+                        <a href="{{ route($item['route']) }}" class="submenu-item {{ $isActive($item['route']) ? 'submenu-active' : 'submenu-default' }}">
+                            <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
+                            <span>{{ $item['label'] }}</span>
+                        </a>
+                    </li>
+                    @endforeach
                 </ul>
             </div>
                         <div class="space-y-1">
