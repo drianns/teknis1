@@ -206,6 +206,36 @@
                     @endforeach
                 </ul>
             </div>
+
+            <!-- Setting Email System Dropdown -->
+            <div class="space-y-1">
+                <button @click.stop="toggle('settingEmailSystem')"
+                    class="menu-item w-full group {{ request()->is('setting-email-system/*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
+                    <i class="bx bx-envelope-open text-lg"></i>
+                    <span :class="expanded ? 'opacity-100' : 'opacity-0'">Setting Email System</span>
+                    <i x-show="expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200"
+                        :class="openMenus.settingEmailSystem ? 'rotate-180' : ''"></i>
+                </button>
+                <ul x-show="openMenus.settingEmailSystem && expanded" x-collapse class="pl-8 space-y-1">
+                    @foreach([
+                        ['route' => 'setting-email-system.accounts',         'label' => 'Data Email Account'],
+                        ['route' => 'setting-email-system.signature',         'label' => 'Data Email Signature'],
+                        ['route' => 'setting-email-system.service',           'label' => 'Data Email Service'],
+                        ['route' => 'setting-email-system.service-method',    'label' => 'Data Email Service Method'],
+                        ['route' => 'setting-email-system.server-profile',    'label' => 'Data Email Server Profile'],
+                        ['route' => 'setting-email-system.server-protocol',   'label' => 'Data Email Service Protocol'],
+                        ['route' => 'setting-email-system.server-protocol-out','label' => 'Data Email Server Protocol Out'],
+                    ] as $item)
+                    <li>
+                        <a href="{{ route($item['route']) }}" class="submenu-item {{ $isActive($item['route']) ? 'submenu-active' : 'submenu-default' }}">
+                            <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
+                            <span>{{ $item['label'] }}</span>
+                        </a>
+                    </li>
+                    @endforeach
+                </ul>
+            </div>
+
                         <div class="space-y-1">
                 <button @click.stop="toggle('setupManagementUser')"
                     class="menu-item w-full group {{ request()->routeIs('management-user.*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">

@@ -18,7 +18,7 @@
                 <div class="table-controls px-4 py-3 border-b border-gray-700/50 bg-gray-800/30 flex flex-wrap justify-between items-center gap-4">
                     <div class="flex items-center gap-3 text-sm text-gray-400">
                         <span>Show</span>
-                        <select class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 focus:border-blue-500 focus:outline-none text-gray-300 appearance-none"><option>10</option><option>25</option><option>50</option></select>
+                        <select class="entries-select"><option>10</option><option>25</option><option>50</option></select>
                         <span>entries</span>
                     </div>
                     <div class="relative">

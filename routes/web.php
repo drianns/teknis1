@@ -55,6 +55,17 @@ Route::prefix('setup-channel-email')->name('setup-channel-email.')->group(functi
     Route::get('/template-response', [SetupChannelEmailController::class, 'templateResponse'])->name('template-response');
 });
 
+// Setting Email System Routes (7 Items)
+Route::prefix('setting-email-system')->name('setting-email-system.')->group(function () {
+    Route::get('/accounts', [SetupChannelEmailController::class, 'emailAccounts'])->name('accounts');
+    Route::get('/signature', [SetupChannelEmailController::class, 'emailSignature'])->name('signature');
+    Route::get('/service', [SetupChannelEmailController::class, 'emailService'])->name('service');
+    Route::get('/service-method', [SetupChannelEmailController::class, 'emailServiceMethod'])->name('service-method');
+    Route::get('/server-profile', [SetupChannelEmailController::class, 'serverProfile'])->name('server-profile');
+    Route::get('/server-protocol', [SetupChannelEmailController::class, 'serverProtocol'])->name('server-protocol');
+    Route::get('/server-protocol-out', [SetupChannelEmailController::class, 'serverProtocolOut'])->name('server-protocol-out');
+});
+
 Route::prefix('apps')->name('apps.')->group(function () {
     Route::get('/ticketing-department', [TicketingDepartmentController::class, 'index'])->name('ticketing-department');
     Route::get('/taskboard', [TaskboardController::class, 'index'])->name('taskboard');

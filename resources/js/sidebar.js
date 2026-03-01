@@ -6,7 +6,8 @@ document.addEventListener('alpine:init', () => {
             masterCustomer: false,
             channel: false,
             channelEmail: false,
-            setupChannelEmail: false
+            setupChannelEmail: false,
+            settingEmailSystem: false
         },
 
         init() {
@@ -48,6 +49,9 @@ document.addEventListener('alpine:init', () => {
             }
             if (path.includes('/dashboard-email') || path.includes('/setup-channel-email/')) {
                 this.openMenus.setupChannelEmail = true;
+            }
+            if (path.includes('/setting-email-system/')) {
+                this.openMenus.settingEmailSystem = true;
             }
         },
 

@@ -50,4 +50,40 @@ class SetupChannelEmailController extends Controller
     {
         return view('pages.template-response.index');
     }
+
+    // Setting Email System
+    public function emailAccounts()
+    {
+        return view('pages.setting-email-accounts.index');
+    }
+
+    public function emailSignature()
+    {
+        return view('pages.setting-email-signature.index');
+    }
+
+    public function emailService()
+    {
+        return view('pages.setting-email-service.index');
+    }
+
+    public function emailServiceMethod()
+    {
+        return view('pages.setting-email-service-method.index');
+    }
+
+    public function serverProfile()
+    {
+        return view('pages.setting-server-profile.index');
+    }
+
+    public function serverProtocol()
+    {
+        return view('pages.setting-server-protocol.index');
+    }
+
+    public function serverProtocolOut()
+    {
+        return view('pages.setting-server-protocol-out.index');
+    }
 }
