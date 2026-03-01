@@ -7,7 +7,8 @@ document.addEventListener('alpine:init', () => {
             channel: false,
             channelEmail: false,
             setupChannelEmail: false,
-            settingEmailSystem: false
+            settingEmailSystem: false,
+            settingEpicSystem: false
         },
 
         init() {
@@ -52,6 +53,9 @@ document.addEventListener('alpine:init', () => {
             }
             if (path.includes('/setting-email-system/')) {
                 this.openMenus.settingEmailSystem = true;
+            }
+            if (path.includes('/setting-epic-system/')) {
+                this.openMenus.settingEpicSystem = true;
             }
         },
 

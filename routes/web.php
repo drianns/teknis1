@@ -66,6 +66,11 @@ Route::prefix('setting-email-system')->name('setting-email-system.')->group(func
     Route::get('/server-protocol-out', [SetupChannelEmailController::class, 'serverProtocolOut'])->name('server-protocol-out');
 });
 
+// Setting EPIC System Routes
+Route::prefix('setting-epic-system')->name('setting-epic-system.')->group(function () {
+    Route::get('/configuration', [SetupChannelEmailController::class, 'epicConfiguration'])->name('configuration');
+});
+
 Route::prefix('apps')->name('apps.')->group(function () {
     Route::get('/ticketing-department', [TicketingDepartmentController::class, 'index'])->name('ticketing-department');
     Route::get('/taskboard', [TaskboardController::class, 'index'])->name('taskboard');

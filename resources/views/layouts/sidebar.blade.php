@@ -236,6 +236,25 @@
                 </ul>
             </div>
 
+            <!-- Setting EPIC System Dropdown -->
+            <div class="space-y-1">
+                <button @click.stop="toggle('settingEpicSystem')"
+                    class="menu-item w-full group {{ request()->is('setting-epic-system/*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
+                    <i class="bx bx-chip text-lg"></i>
+                    <span :class="expanded ? 'opacity-100' : 'opacity-0'">Setting EPIC System</span>
+                    <i x-show="expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200"
+                        :class="openMenus.settingEpicSystem ? 'rotate-180' : ''"></i>
+                </button>
+                <ul x-show="openMenus.settingEpicSystem && expanded" x-collapse class="pl-8 space-y-1">
+                    <li>
+                        <a href="{{ route('setting-epic-system.configuration') }}" class="submenu-item {{ $isActive('setting-epic-system.configuration') ? 'submenu-active' : 'submenu-default' }}">
+                            <i class="bx {{ $isActive('setting-epic-system.configuration') ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
+                            <span>Data Configurasi EPIC System</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
                         <div class="space-y-1">
                 <button @click.stop="toggle('setupManagementUser')"
                     class="menu-item w-full group {{ request()->routeIs('management-user.*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">

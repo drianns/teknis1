@@ -86,4 +86,10 @@ class SetupChannelEmailController extends Controller
     {
         return view('pages.setting-server-protocol-out.index');
     }
+
+    // Setting EPIC System
+    public function epicConfiguration()
+    {
+        return view('pages.setting-epic-system.setting-configuration-epic');
+    }
 }
