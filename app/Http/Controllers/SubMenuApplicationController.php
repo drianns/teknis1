@@ -28,7 +28,7 @@ class SubMenuApplicationController extends Controller
         $perPage = $request->get('per_page', 10);
         $subMenus = $query->orderBy('id', 'desc')->paginate($perPage);
 
-        return view('pages.sub-menu-application.index', compact('subMenus'));
+        return view('pages.setting-application.sub-menu-application.index', compact('subMenus'));
     }
 
     /**

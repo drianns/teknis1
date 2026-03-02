@@ -17,6 +17,6 @@ class SettingAgentCallController extends Controller
         // but given the screenshot, the cards show user details and call type assignments).
         // Since we don't have a SettingAgentCall model defined yet, we'll map $users directly to simulate the cards.
 
-        return view('pages.setting-agent-call.index', compact('users'));
+        return view('pages.setup-channel-call.setting-agent-call.index', compact('users'));
     }
 }

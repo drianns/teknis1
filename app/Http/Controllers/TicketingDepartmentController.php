@@ -122,6 +122,6 @@ class TicketingDepartmentController extends Controller
             ],
         ]);
 
-        return view('pages.ticketing-department.index', compact('tickets'));
+        return view('pages.apps.ticketing-department.index', compact('tickets'));
     }
 }

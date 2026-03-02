@@ -66,6 +66,6 @@ class ThreadTransactionController extends Controller
             $transactions = $allTransactions->where('channel', $request->channel);
         }
 
-        return view('pages.thread-transaction.index', compact('transactions', 'stats'));
+        return view('pages.apps.thread-transaction.index', compact('transactions', 'stats'));
     }
 }

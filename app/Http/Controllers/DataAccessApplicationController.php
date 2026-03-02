@@ -8,6 +8,6 @@ class DataAccessApplicationController extends Controller
 {
     public function index()
     {
-        return view('pages.data-access-application.index');
+        return view('pages.management-user.data-access-application.index');
     }
 }

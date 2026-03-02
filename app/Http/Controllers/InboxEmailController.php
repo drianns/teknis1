@@ -8,7 +8,7 @@ class InboxEmailController extends Controller
 {
     public function index()
     {
-        return view('pages.inbox-email.index');
+        return view('pages.channel.email.inbox.index');
     }
 
     public function markAsRead($id)

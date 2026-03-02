@@ -78,6 +78,6 @@ class HistoryTicketingController extends Controller
             ],
         ]);
 
-        return view('pages.history-ticketing.index', compact('histories'));
+        return view('pages.apps.history-ticketing.index', compact('histories'));
     }
 }

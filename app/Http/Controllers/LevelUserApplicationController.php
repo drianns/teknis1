@@ -17,7 +17,7 @@ class LevelUserApplicationController extends Controller
             'administrator' => 2,
         ];
 
-        return view('pages.level-user-application.index', compact('counts'));
+        return view('pages.management-user.level-user-application.index', compact('counts'));
     }
 
     public function getCounts()

@@ -88,7 +88,7 @@ class TicketingSystemController extends Controller
             ->paginate($perPageCustomer, ['*'], 'customer_page')
             ->withQueryString();
 
-        return view('pages.ticketing-system.index', compact(
+        return view('pages.apps.ticketing-system.index', compact(
             'company',
             'channels',
             'channel_pages',

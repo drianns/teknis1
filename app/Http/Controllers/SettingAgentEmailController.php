@@ -26,6 +26,6 @@ class SettingAgentEmailController extends Controller
         $entries = $request->get('entries', 10);
         $modalUsers = $query->paginate($entries)->withQueryString();
 
-        return view('pages.setting-agent-email.index', compact('users', 'modalUsers'));
+        return view('pages.setup-channel-email.setting-agent-email.index', compact('users', 'modalUsers'));
     }
 }

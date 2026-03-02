@@ -26,7 +26,7 @@ class SettingChannelAgentController extends Controller
         $settingChannelAgents = $query->paginate($perPage);
         $users = User::all();
 
-        return view('pages.setting-channel-agent.index', compact('settingChannelAgents', 'users'));
+        return view('pages.setting-application.setting-channel-agent.index', compact('settingChannelAgents', 'users'));
     }
 
     public function store(Request $request)

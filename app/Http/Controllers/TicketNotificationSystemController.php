@@ -34,7 +34,7 @@ class TicketNotificationSystemController extends Controller
                 ];
             });
 
-        return view('pages.ticket-notification-system.index', compact('settings', 'notificationUsers', 'masterUsers'));
+        return view('pages.setting-application.ticket-notification-system.index', compact('settings', 'notificationUsers', 'masterUsers'));
     }
 
     public function storeUser(Request $request)

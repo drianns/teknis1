@@ -9,7 +9,7 @@ class DashboardEmailController extends Controller
 {
     public function index()
     {
-        return view('pages.dashboard-email.index');
+        return view('pages.setup-channel-email.dashboard-email.index');
     }
 
     public function getData(Request $request)

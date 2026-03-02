@@ -119,6 +119,6 @@ class HistoryEmailController extends Controller
             ],
         ]);
 
-        return view('pages.history-email.index', compact('emails'));
+        return view('pages.channel.email.history.index', compact('emails'));
     }
 }

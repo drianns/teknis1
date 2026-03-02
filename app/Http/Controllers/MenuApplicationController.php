@@ -28,7 +28,7 @@ class MenuApplicationController extends Controller
         $perPage = $request->get('per_page', 10);
         $menus = $query->orderBy('number', 'asc')->paginate($perPage);
 
-        return view('pages.menu-application.index', compact('menus'));
+        return view('pages.setting-application.menu-application.index', compact('menus'));
     }
 
     /**

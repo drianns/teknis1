@@ -93,6 +93,6 @@ class DataCustomerController extends Controller
             ],
         ]);
 
-        return view('pages.data-customer.index', compact('customers'));
+        return view('pages.master-customer.data-customer.index', compact('customers'));
     }
 }

@@ -31,6 +31,6 @@ class MonitoringLoginController extends Controller
             'aux' => 0,
         ];
 
-        return view('pages.monitoring-login.index', compact('users', 'cardStats'));
+        return view('pages.data-login.monitoring-login.index', compact('users', 'cardStats'));
     }
 }

@@ -111,7 +111,7 @@ class TaskboardController extends Controller
             return $ticket;
         });
 
-        return view('pages.taskboard.index', compact(
+        return view('pages.apps.taskboard.index', compact(
             'company',
             'cardStats',
             'resultTickets'

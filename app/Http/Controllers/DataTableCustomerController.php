@@ -62,7 +62,7 @@ class DataTableCustomerController extends Controller
             ],
         ]);
 
-        return view('pages.data-table-customer.index', compact('customers'));
+        return view('pages.master-customer.data-table-customer.index', compact('customers'));
     }
 
     public function export()

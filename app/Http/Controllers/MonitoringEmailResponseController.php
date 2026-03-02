@@ -12,7 +12,7 @@ class MonitoringEmailResponseController extends Controller
      */
     public function index()
     {
-        return view('pages.monitoring-email-response.index');
+        return view('pages.setup-channel-email.monitoring-email-response.index');
     }
 
     /**

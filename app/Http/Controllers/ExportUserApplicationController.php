@@ -20,7 +20,7 @@ class ExportUserApplicationController extends Controller
         $perPage = $request->get('per_page', 10);
         $users = $query->paginate($perPage);
 
-        return view('pages.export-user-application.index', compact('users'));
+        return view('pages.management-user.export-user-application.index', compact('users'));
     }
 
     public function export(Request $request)

@@ -29,7 +29,7 @@ class DetailMenuApplicationController extends Controller
         $perPage = $request->get('per_page', 10);
         $detailMenus = $query->orderBy('id', 'desc')->paginate($perPage);
 
-        return view('pages.detail-menu-application.index', compact('detailMenus'));
+        return view('pages.setting-application.detail-menu-application.index', compact('detailMenus'));
     }
 
     /**

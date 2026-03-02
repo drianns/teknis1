@@ -13,7 +13,7 @@ class JourneyController extends Controller
      */
     public function index(Request $request)
     {
-        return view('pages.journey.index', [
+        return view('pages.apps.journey.index', [
             'ticketData' => $request->all()
         ]);
     }
