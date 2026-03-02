@@ -8,7 +8,8 @@ document.addEventListener('alpine:init', () => {
             channelEmail: false,
             setupChannelEmail: false,
             settingEmailSystem: false,
-            settingEpicSystem: false
+            settingEpicSystem: false,
+            masterData: false
         },
 
         init() {
@@ -56,6 +57,9 @@ document.addEventListener('alpine:init', () => {
             }
             if (path.includes('/setting-epic-system/')) {
                 this.openMenus.settingEpicSystem = true;
+            }
+            if (path.includes('/data-') || path.includes('/channel-ticket') || path.includes('/department-escalation-unit')) {
+                this.openMenus.masterData = true;
             }
         },
 

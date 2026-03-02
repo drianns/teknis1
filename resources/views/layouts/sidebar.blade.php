@@ -255,6 +255,47 @@
                 </ul>
             </div>
 
+            <!-- Master Data Dropdown -->
+            <div class="space-y-1">
+                <button @click.stop="toggle('masterData')"
+                    class="menu-item w-full group {{ request()->is('data-*') || request()->is('channel-ticket*') || request()->is('department-escalation*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
+                    <i class="bx bx-data text-lg"></i>
+                    <span :class="expanded ? 'opacity-100' : 'opacity-0'">Master Data</span>
+                    <i x-show="expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200"
+                        :class="openMenus.masterData ? 'rotate-180' : ''"></i>
+                </button>
+                <ul x-show="openMenus.masterData && expanded" x-collapse class="pl-8 space-y-1 overflow-y-auto max-h-[300px] custom-scrollbar">
+                    @foreach([
+                        ['route' => 'data-group-name.index', 'label' => 'Data Group Name'],
+                        ['route' => 'data-fulfillment-location.index', 'label' => 'Data Fulfillment Location'],
+                        ['route' => 'data-type.index', 'label' => 'Data Type'],
+                        ['route' => 'data-category.index', 'label' => 'Data Category'],
+                        ['route' => 'data-meta.index', 'label' => 'Data Meta'],
+                        ['route' => 'data-sub-category.index', 'label' => 'Data Sub Category'],
+                        ['route' => 'channel-ticket.index', 'label' => 'Channel Ticket'],
+                        ['route' => 'department-escalation-unit.index', 'label' => 'Department Unit'],
+                        ['route' => 'data-source.index', 'label' => 'Data Source'],
+                        ['route' => 'data-activity.index', 'label' => 'Data Activity'],
+                        ['route' => 'data-aux-reason.index', 'label' => 'Data Aux Reason'],
+                        ['route' => 'data-status-ticket.index', 'label' => 'Data Status Ticket'],
+                        ['route' => 'data-group-agent.index', 'label' => 'Data Group Agent'],
+                        ['route' => 'data-brand-category.index', 'label' => 'Data Brand Category'],
+                        ['route' => 'data-fulfillment.index', 'label' => 'Data Fulfillment'],
+                        ['route' => 'data-holiday.index', 'label' => 'Data Holidays'],
+                        ['route' => 'data-brand-name.index', 'label' => 'Data Brand Name'],
+                        ['route' => 'data-max-handle.index', 'label' => 'Data Max Handle'],
+                        ['route' => 'data-site.index', 'label' => 'Data Site'],
+                    ] as $item)
+                    <li>
+                        <a href="{{ route($item['route']) }}" class="submenu-item {{ $isActive($item['route']) ? 'submenu-active' : 'submenu-default' }}">
+                            <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
+                            <span>{{ $item['label'] }}</span>
+                        </a>
+                    </li>
+                    @endforeach
+                </ul>
+            </div>
+
                         <div class="space-y-1">
                 <button @click.stop="toggle('setupManagementUser')"
                     class="menu-item w-full group {{ request()->routeIs('management-user.*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">

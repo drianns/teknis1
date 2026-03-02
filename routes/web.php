@@ -137,3 +137,24 @@ Route::get('/setting-channel-agent', [\App\Http\Controllers\SettingChannelAgentC
 Route::post('/setting-channel-agent/store', [\App\Http\Controllers\SettingChannelAgentController::class, 'store'])->name('setting.channel.agent.store');
 Route::put('/setting-channel-agent/{id}', [\App\Http\Controllers\SettingChannelAgentController::class, 'update'])->name('setting.channel.agent.update');
 Route::delete('/setting-channel-agent/{id}', [\App\Http\Controllers\SettingChannelAgentController::class, 'destroy'])->name('setting.channel.agent.destroy');
+
+// Master Data Routes
+Route::resource('data-group-name', \App\Http\Controllers\DataGroupNameController::class);
+Route::resource('data-fulfillment-location', \App\Http\Controllers\DataFulfillmentLocationController::class);
+Route::resource('data-type', \App\Http\Controllers\DataTypeController::class);
+Route::resource('data-category', \App\Http\Controllers\DataCategoryController::class);
+Route::resource('data-meta', \App\Http\Controllers\DataMetaController::class);
+Route::resource('data-sub-category', \App\Http\Controllers\DataSubCategoryController::class);
+Route::resource('channel-ticket', \App\Http\Controllers\ChannelTicketController::class);
+Route::resource('department-escalation-unit', \App\Http\Controllers\DepartmentEscalationUnitController::class);
+Route::resource('data-source', \App\Http\Controllers\DataSourceController::class);
+Route::resource('data-activity', \App\Http\Controllers\DataActivityController::class);
+Route::resource('data-aux-reason', \App\Http\Controllers\DataAuxReasonController::class);
+Route::resource('data-status-ticket', \App\Http\Controllers\DataStatusTicketController::class);
+Route::resource('data-group-agent', \App\Http\Controllers\DataGroupAgentController::class);
+Route::resource('data-brand-category', \App\Http\Controllers\DataBrandCategoryController::class);
+Route::resource('data-fulfillment', \App\Http\Controllers\DataFulfillmentController::class);
+Route::resource('data-holiday', \App\Http\Controllers\DataHolidayController::class);
+Route::resource('data-brand-name', \App\Http\Controllers\DataBrandNameController::class);
+Route::resource('data-max-handle', \App\Http\Controllers\DataMaxHandleController::class);
+Route::resource('data-site', \App\Http\Controllers\DataSiteController::class);
