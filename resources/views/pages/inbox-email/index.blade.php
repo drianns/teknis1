@@ -297,12 +297,15 @@
     </script>
     
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <div x-data="{ activeView: 'inbox', showSpamModal: false, selectedEmailId: null }">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-2 p-2 h-[calc(100vh-3rem)] overflow-hidden">
+    <div x-data="{ activeView: 'inbox', showSpamModal: false, selectedEmailId: null, selectedEmail: null }">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-2 p-2 overflow-hidden" style="height: calc(100vh - 3rem);">
             <!-- Sidebar Section -->
-            <div class="lg:col-span-3 h-full flex flex-col gap-4">
+            <div class="lg:col-span-3 h-full overflow-hidden">
                 <!-- Compose Button & Folders -->
-                <div class="bg-gray-800 rounded-xl shadow-lg h-full p-4 flex flex-col">
+                <div class="bg-gray-800 flex flex-col rounded-xl shadow-lg h-full p-4 overflow-hidden">
+                    
+                    <!-- Fixed Top Section (Compose & Folders) -->
+                    <div class="flex-shrink-0 flex flex-col gap-4 mb-4">
                     <!-- Compose Button -->
                     <button onclick="toggleComposeModal()"
                         class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-full shadow-lg shadow-blue-600/20 transition-all mb-6 flex items-center justify-center gap-2">
@@ -315,7 +318,7 @@
                         <h6 class="text-white font-semibold m-0 text-base">Folders</h6>
                     </div>
                     <!-- Folder List -->
-                    <nav class="space-y-1 flex-grow overflow-y-auto custom-scrollbar">
+                    <nav class="space-y-1">
                         <a href="#" @click.prevent="activeView = 'inbox'"
                             :class="activeView === 'inbox' ? 'bg-blue-500/10 text-blue-400' : 'text-gray-400 hover:bg-gray-700 hover:text-white'"
                             class="flex items-center justify-between px-3 py-2.5 rounded-lg group transition-colors">
@@ -361,8 +364,33 @@
                             <span class="bg-blue-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">55</span>
                         </a>
                     </nav>
-                    <!-- Online Agents Section -->
-                    <div class="mt-auto border-t border-gray-700 pt-4 flex flex-col gap-3 min-h-[150px]">
+                    </div> <!-- End Fixed Top Section -->
+
+                    <!-- Scrollable Bottom Section (Profiles & Agents) -->
+                    <div class="flex-1 overflow-y-auto space-y-4 pr-1 custom-scrollbar min-h-0 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-600 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-gray-500">
+                        
+                    <!-- Selected Email Profile Card -->
+                    <div class="pt-2 border-t border-gray-700 flex flex-col gap-3">
+                        <div class="flex items-center justify-between p-2 bg-gray-700/50 rounded-lg border border-gray-600/50 transition-all" :class="selectedEmail ? 'border-blue-500/50 shadow-[0_0_10px_rgba(59,130,246,0.1)]' : ''">
+                            <div class="flex items-center gap-3 w-full overflow-hidden">
+                                <div class="relative flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white ring-2 ring-gray-600 transition-colors" :class="!selectedEmail ? 'bg-gray-600' : ''">
+                                        <i class="bx bx-user text-xl"></i>
+                                    </div>
+                                    <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-gray-800 rounded-full" x-show="selectedEmail" style="display:none;"></span>
+                                    <span class="absolute bottom-0 right-0 w-3 h-3 bg-gray-500 border-2 border-gray-800 rounded-full" x-show="!selectedEmail"></span>
+                                </div>
+                                <div class="overflow-hidden flex-1">
+                                    <h6 class="text-white text-sm font-semibold truncate transition-colors" :class="!selectedEmail ? 'text-gray-400' : ''" x-text="selectedEmail ? selectedEmail.from : 'No Target Selected'"></h6>
+                                    <p class="text-[10px] text-gray-400 truncate uppercase tracking-wider" x-text="selectedEmail ? 'Selected Target' : 'Waiting...'"></p>
+                                </div>
+                            </div>
+                            <button class="text-gray-400 transition-colors flex-shrink-0 cursor-default" title="Target Status">
+                                <i class="bx bx-target-lock text-xl text-blue-500" x-show="selectedEmail" style="display:none;"></i>
+                                <i class="bx bx-target-lock text-xl text-gray-600" x-show="!selectedEmail"></i>
+                            </button>
+                        </div>
+
                         <!-- Current User Profile -->
                         <div class="flex items-center justify-between p-2 bg-gray-700/50 rounded-lg">
                             <div class="flex items-center gap-3">
@@ -388,9 +416,11 @@
                                 <i class="bx bx-sync text-2xl text-blue-500"></i>
                             </button>
                         </div>
+                    </div>
+
+                    <!-- Online Agents Section -->
+                    <div class="mt-2 space-y-2 pr-1">
                         <!-- Other Agents List -->
-                        <div
-                            class="flex-1 overflow-y-auto space-y-2 pr-1 max-h-[200px] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-600 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-gray-500">
                             @php $currentAgentId = optional(current_agent())->id;
                                 $companyId = optional(current_agent())->company_id;
                                 $otherAgents = collect();
@@ -441,12 +471,12 @@
                                         </div>
                             </div> @endfor @endif
                         </div>
-                    </div>
+                    </div> <!-- End Scrollable Bottom Section -->
                 </div>
             </div>
             <!-- Main Content -->
             <div class="lg:col-span-9 h-full">
-                <div class="bg-gray-800 rounded-xl shadow-lg flex flex-col h-[calc(100vh-5rem)]">
+                <div class="bg-gray-800 rounded-xl shadow-lg flex flex-col h-full">
                     <!-- Header -->
                     <div
                         class="p-6 border-b border-gray-700 flex justify-between items-center bg-gray-800/50 backdrop-blur-sm">
@@ -483,7 +513,7 @@
                     </div>
                     <!-- Table Content -->
                     <div
-                        class="overflow-y-auto max-h-[calc(100vh-280px)] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-gray-800 [&::-webkit-scrollbar-thumb]:bg-gray-600 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-gray-500">
+                        class="flex-1 min-h-0 overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-gray-800 [&::-webkit-scrollbar-thumb]:bg-gray-600 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-gray-500">
                         <div class="px-6">
                             <!-- INBOX TABLE -->
                             <div x-show="activeView === 'inbox'">
@@ -513,8 +543,8 @@
                                         @php $mockEmails = [['id' => 40628, 'service' => 'support@kanmogroup.com', 'from' => 'Filiaratna@dummy.com', 'subject' => '[TicketNumber:2026020601490028Z] Product inquiry and support', 'status' => 'Unread', 'is_read' => false, 'date' => '2/6/2026 1:49:01 PM'], ['id' => 40627, 'service' => 'sales@techcorp.com', 'from' => 'john.doe@client.com', 'subject' => '[TicketNumber:2026020601230015A] Quotation request for enterprise plan', 'status' => 'Read', 'is_read' => true, 'date' => '2/6/2026 12:30:15 PM'], ['id' => 40626, 'service' => 'noreply@notification.io', 'from' => 'admin@platform.net', 'subject' => '[TicketNumber:2026020509450042B] Account verification completed', 'status' => 'Unread', 'is_read' => false, 'date' => '2/5/2026 9:45:42 AM'], ['id' => 40625, 'service' => 'hr@company.biz', 'from' => 'recruiter@talent.com', 'subject' => '[TicketNumber:2026020416320018C] Job application follow-up', 'status' => 'Read', 'is_read' => true, 'date' => '2/4/2026 4:32:18 PM'], ['id' => 40624, 'service' => 'billing@services.com', 'from' => 'finance@client.org', 'subject' => '[TicketNumber:2026020311150033D] Invoice #INV-2026-001 payment received', 'status' => 'Unread', 'is_read' => false, 'date' => '2/3/2026 11:15:33 AM'], ['id' => 40623, 'service' => 'marketing@agency.com', 'from' => 'campaign@media.io', 'subject' => '[TicketNumber:2026020214280051E] Campaign performance report Q1 2026', 'status' => 'Read', 'is_read' => true, 'date' => '2/2/2026 2:28:51 PM'], ['id' => 40622, 'service' => 'info@newsletter.net', 'from' => 'editor@tech.news', 'subject' => '[TicketNumber:2026020108450027F] Weekly technology digest - February 2026', 'status' => 'Unread', 'is_read' => false, 'date' => '2/1/2026 8:45:27 AM'], ['id' => 40621, 'service' => 'security@alert.com', 'from' => 'system@monitor.io', 'subject' => '[TicketNumber:2026013120150039G] Security alert: New login detected', 'status' => 'Read', 'is_read' => true, 'date' => '1/31/2026 8:15:39 PM'],];                                        @endphp
                                         @forelse($mockEmails as $email)
                                             <tr class="email-row group/row {{ !$email['is_read'] ? 'unread font-semibold' : 'read font-normal' }} {{ $loop->even ? 'bg-gray-700/50' : '' }} hover:bg-gray-700/30 transition-colors cursor-pointer"
-                                                data-email-id="{{ $email['id'] }}"
-                                                @click="markAsRead($el, {{ $email['id'] }})">
+                                                data-email-id="{{ $email['id'] }}" data-email-name="{{ $email['from'] }}"
+                                                @click="markAsRead($el, {{ $email['id'] }}); selectedEmail = { from: $el.dataset.emailName }">
                                                 <td class="py-3 px-4">
                                                     <span
                                                         class="{{ !$email['is_read'] ? 'text-blue-300 font-bold' : 'text-blue-400/60 font-medium' }}">
@@ -632,8 +662,8 @@
                                         @php $mockDrafts = [['id' => 50145, 'service' => 'draft@kanmogroup.com', 'to' => 'prospect@newclient.com', 'subject' => '[Draft] RE: [TicketNumber:2026020610250044H] Proposal for digital transformation', 'is_read' => false, 'date' => '2/6/2026 10:25:44 AM'], ['id' => 50144, 'service' => 'compose@techcorp.com', 'to' => 'board@company.com', 'subject' => '[Draft] FW: [TicketNumber:2026020515400062I] Q4 financial results presentation', 'is_read' => true, 'date' => '2/5/2026 3:40:62 PM'], ['id' => 50143, 'service' => 'draft@services.io', 'to' => 'legal@partner.biz', 'subject' => '[Draft] [TicketNumber:2026020412180035J] Contract amendment discussion', 'is_read' => false, 'date' => '2/4/2026 12:18:35 PM'], ['id' => 50142, 'service' => 'compose@agency.com', 'to' => 'client@customer.net', 'subject' => '[Draft] RE: [TicketNumber:2026020308550021K] Marketing campaign approval', 'is_read' => true, 'date' => '2/3/2026 8:55:21 AM'], ['id' => 50141, 'service' => 'draft@business.com', 'to' => 'vendor@supplier.org', 'subject' => '[Draft] [TicketNumber:2026020217320048L] Purchase order #PO-2026-0145', 'is_read' => false, 'date' => '2/2/2026 5:32:48 PM'],];                                        @endphp
                                         @forelse($mockDrafts as $draft)
                                             <tr class="email-row group/row {{ !$draft['is_read'] ? 'unread font-semibold' : 'read font-normal' }} {{ $loop->even ? 'bg-gray-700/50' : '' }} hover:bg-gray-700/30 transition-colors cursor-pointer"
-                                                data-email-id="{{ $draft['id'] }}"
-                                                @click="markAsRead($el, {{ $draft['id'] }})">
+                                                data-email-id="{{ $draft['id'] }}" data-email-name="{{ $draft['to'] }}"
+                                                @click="markAsRead($el, {{ $draft['id'] }}); selectedEmail = { from: $el.dataset.emailName }">
                                                 <td class="py-3 px-4">
                                                     <span
                                                         class="{{ !$draft['is_read'] ? 'text-blue-300 font-bold' : 'text-blue-400/60 font-medium' }}">
@@ -746,8 +776,8 @@
                                         @php $mockSpam = [['id' => 60234, 'service' => 'lottery@scam.net', 'from' => 'winner@fake-lottery.com', 'subject' => '[SPAM] Congratulations! You won $5,000,000 - Claim now!', 'status' => 'Spam', 'is_read' => false, 'date' => '2/9/2026 3:25:18 AM'], ['id' => 60233, 'service' => 'prince@nigeria.fake', 'from' => 'urgent@business-proposal.net', 'subject' => '[SPAM] Urgent: Transfer 10 million USD - Need your help', 'status' => 'Spam', 'is_read' => true, 'date' => '2/8/2026 10:15:42 PM'], ['id' => 60232, 'service' => 'deals@phishing.com', 'from' => 'offer@free-iphone.biz', 'subject' => '[SPAM] Click NOW! Free iPhone 15 Pro Max waiting for you', 'status' => 'Spam', 'is_read' => false, 'date' => '2/8/2026 6:45:33 PM'], ['id' => 60231, 'service' => 'alert@fake-bank.net', 'from' => 'security@phishing-site.com', 'subject' => '[SPAM] URGENT: Your account will be suspended in 24 hours', 'status' => 'Spam', 'is_read' => true, 'date' => '2/7/2026 8:30:55 PM'], ['id' => 60230, 'service' => 'pharmacy@cheap.biz', 'from' => 'meds@discount-pills.org', 'subject' => '[SPAM] 90% OFF medications - Limited time offer!!!', 'status' => 'Spam', 'is_read' => false, 'date' => '2/7/2026 3:10:27 PM'], ['id' => 60229, 'service' => 'verify@suspicious.com', 'from' => 'paypal-fake@scam.net', 'subject' => '[SPAM] Verify your PayPal account immediately or lose access', 'status' => 'Spam', 'is_read' => true, 'date' => '2/6/2026 12:40:15 PM'],];                                        @endphp
                                         @forelse($mockSpam as $spam)
                                             <tr class="email-row group/row {{ !$spam['is_read'] ? 'unread font-semibold' : 'read font-normal' }} {{ $loop->even ? 'bg-gray-700/50' : '' }} hover:bg-gray-700/30 transition-colors cursor-pointer"
-                                                data-email-id="{{ $spam['id'] }}"
-                                                @click="markAsRead($el, {{ $spam['id'] }})">
+                                                data-email-id="{{ $spam['id'] }}" data-email-name="{{ $spam['from'] }}"
+                                                @click="markAsRead($el, {{ $spam['id'] }}); selectedEmail = { from: $el.dataset.emailName }">
                                                 <td class="py-3 px-4">
                                                     <span
                                                         class="{{ !$spam['is_read'] ? 'text-blue-300 font-bold' : 'text-blue-400/60 font-medium' }}">
@@ -845,8 +875,8 @@
                                         @php $mockDepartment = [['id' => 70856, 'service' => 'hr@kanmogroup.com', 'from' => 'recruitment@talent-dept.com', 'subject' => '[Dept:HR] [TicketNumber:2026020609150055M] New hire orientation - Week of Feb 10', 'status' => 'Unread', 'is_read' => false, 'date' => '2/6/2026 9:15:55 AM'], ['id' => 70855, 'service' => 'finance@kanmogroup.com', 'from' => 'accounting@finance-dept.com', 'subject' => '[Dept:Finance] [TicketNumber:2026020508300042N] Q1 2026 budget allocation review', 'status' => 'Read', 'is_read' => true, 'date' => '2/5/2026 8:30:42 AM'], ['id' => 70854, 'service' => 'it@kanmogroup.com', 'from' => 'sysadmin@it-dept.com', 'subject' => '[Dept:IT] [TicketNumber:2026020417450028O] Server maintenance window - Feb 8-9, 2026', 'status' => 'Unread', 'is_read' => false, 'date' => '2/4/2026 5:45:28 PM'], ['id' => 70853, 'service' => 'marketing@kanmogroup.com', 'from' => 'campaigns@marketing-dept.com', 'subject' => '[Dept:Marketing] [TicketNumber:2026020314200019P] January campaign analytics report', 'status' => 'Read', 'is_read' => true, 'date' => '2/3/2026 2:20:19 PM'], ['id' => 70852, 'service' => 'sales@kanmogroup.com', 'from' => 'manager@sales-dept.com', 'subject' => '[Dept:Sales] [TicketNumber:2026020211000036Q] Monthly sales performance review', 'status' => 'Unread', 'is_read' => false, 'date' => '2/2/2026 11:00:36 AM'], ['id' => 70851, 'service' => 'legal@kanmogroup.com', 'from' => 'counsel@legal-dept.com', 'subject' => '[Dept:Legal] [TicketNumber:2026020116300052R] Contract approval request #CA-2026-089', 'status' => 'Read', 'is_read' => true, 'date' => '2/1/2026 4:30:52 PM'], ['id' => 70850, 'service' => 'operations@kanmogroup.com', 'from' => 'logistics@ops-dept.com', 'subject' => '[Dept:Operations] [TicketNumber:2026013110150044S] Warehouse inventory audit results', 'status' => 'Unread', 'is_read' => false, 'date' => '1/31/2026 10:15:44 AM'],];                                        @endphp
                                         @forelse($mockDepartment as $dept)
                                             <tr class="email-row group/row {{ !$dept['is_read'] ? 'unread font-semibold' : 'read font-normal' }} {{ $loop->even ? 'bg-gray-700/50' : '' }} hover:bg-gray-700/30 transition-colors cursor-pointer"
-                                                data-email-id="{{ $dept['id'] }}"
-                                                @click="markAsRead($el, {{ $dept['id'] }})">
+                                                data-email-id="{{ $dept['id'] }}" data-email-name="{{ $dept['from'] }}"
+                                                @click="markAsRead($el, {{ $dept['id'] }}); selectedEmail = { from: $el.dataset.emailName }">
                                                 <td class="py-3 px-4">
                                                     <span
                                                         class="{{ !$dept['is_read'] ? 'text-blue-300 font-bold' : 'text-blue-400/60 font-medium' }}">
@@ -954,8 +984,8 @@
                                         @php $mockSent = [['id' => 80512, 'service' => 'sent@kanmogroup.com', 'to' => 'newclient@prospect.com', 'subject' => 'RE: [TicketNumber:2026020608300066T] Project proposal with pricing details', 'status' => 'Sent', 'is_read' => false, 'date' => '2/6/2026 8:30:66 AM'], ['id' => 80511, 'service' => 'outbox@techcorp.com', 'to' => 'team@internal.com', 'subject' => 'FW: [TicketNumber:2026020516450053U] Weekly team sync - Action items', 'status' => 'Delivered', 'is_read' => true, 'date' => '2/5/2026 4:45:53 PM'], ['id' => 80510, 'service' => 'sent@services.io', 'to' => 'billing@vendor.biz', 'subject' => 'RE: [TicketNumber:2026020414200041V] Payment confirmation #PAY-2026-1145', 'status' => 'Sent', 'is_read' => false, 'date' => '2/4/2026 2:20:41 PM'], ['id' => 80509, 'service' => 'outbox@agency.com', 'to' => 'partnership@business.net', 'subject' => '[TicketNumber:2026020311000028W] Partnership proposal discussion request', 'status' => 'Delivered', 'is_read' => true, 'date' => '2/3/2026 11:00:28 AM'], ['id' => 80508, 'service' => 'sent@company.biz', 'to' => 'manager@leadership.org', 'subject' => 'RE: [TicketNumber:2026020218300037X] Monthly progress report - January 2026', 'status' => 'Sent', 'is_read' => false, 'date' => '2/2/2026 6:30:37 PM'], ['id' => 80507, 'service' => 'outbox@business.com', 'to' => 'hr@corporate.com', 'subject' => '[TicketNumber:2026020109150045Y] Annual leave request - Feb 15-20, 2026', 'status' => 'Delivered', 'is_read' => true, 'date' => '2/1/2026 9:15:45 AM'], ['id' => 80506, 'service' => 'sent@sales.io', 'to' => 'contact@customer.net', 'subject' => 'FW: [TicketNumber:2026013115400059Z] Product demo follow-up and next steps', 'status' => 'Sent', 'is_read' => false, 'date' => '1/31/2026 3:40:59 PM'],];                                        @endphp
                                         @forelse($mockSent as $sent)
                                             <tr class="email-row group/row {{ !$sent['is_read'] ? 'unread font-semibold' : 'read font-normal' }} {{ $loop->even ? 'bg-gray-700/50' : '' }} hover:bg-gray-700/30 transition-colors cursor-pointer"
-                                                data-email-id="{{ $sent['id'] }}"
-                                                @click="markAsRead($el, {{ $sent['id'] }})">
+                                                data-email-id="{{ $sent['id'] }}" data-email-name="{{ $sent['to'] }}"
+                                                @click="markAsRead($el, {{ $sent['id'] }}); selectedEmail = { from: $el.dataset.emailName }">
                                                 <td class="py-3 px-4">
                                                     <span
                                                         class="{{ !$sent['is_read'] ? 'text-blue-300 font-bold' : 'text-blue-400/60 font-medium' }}">

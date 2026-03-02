@@ -89,12 +89,12 @@
                             ['route' => 'apps.ticketing', 'label' => 'Ticketing'],
                             ['route' => 'apps.history-ticketing', 'label' => 'History Ticketing']
                         ] as $item)
-                        <li>
-                            <a href="{{ route($item['route']) }}" class="submenu-item {{ $isActive($item['route']) ? 'submenu-active' : 'submenu-default' }}">
-                                <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                                <span class="truncate">{{ $item['label'] }}</span>
-                            </a>
-                        </li>
+                                <li>
+                                    <a href="{{ route($item['route']) }}" class="submenu-item {{ $isActive($item['route']) ? 'submenu-active' : 'submenu-default' }}">
+                                        <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
+                                        <span class="truncate">{{ $item['label'] }}</span>
+                                    </a>
+                                </li>
                     @endforeach
             </ul>
             </div>
@@ -115,12 +115,12 @@
                             ['route' => 'master-customer.data-table', 'label' => 'Data Table Customer'],
                             ['route' => 'master-customer.data-customer', 'label' => 'Data Customer']
                         ] as $item)
-                        <li>
-                            <a href="{{ route($item['route']) }}" @click.stop="" class="submenu-item {{ $isActive($item['route']) ? 'submenu-active' : 'submenu-default' }}">
-                                <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                                <span>{{ $item['label'] }}</span>
-                            </a>
-                        </li>
+                                <li>
+                                    <a href="{{ route($item['route']) }}" @click.stop="" class="submenu-item {{ $isActive($item['route']) ? 'submenu-active' : 'submenu-default' }}">
+                                        <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
+                                        <span>{{ $item['label'] }}</span>
+                                    </a>
+                                </li>
                     @endforeach
                 </ul>
 
@@ -150,13 +150,13 @@
                                     ['route' => 'channel.email.inbox', 'label' => 'Inbox Email'],
                                     ['route' => 'channel.email.history', 'label' => 'History Email']
                                 ] as $item)
-                                <li>
-                                    <a href="{{ route($item['route']) }}" @click.stop="" class="submenu-item text-[12px] {{ $isActive($item['route']) ? 'submenu-active pl-3 border-l-2 border-blue-400' : 'submenu-default' }}">
-                                        <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-sm"></i>
-                                        <span>{{ $item['label'] }}</span>
-                                    </a>
+                                        <li>
+                                            <a href="{{ route($item['route']) }}" @click.stop="" class="submenu-item text-[12px] {{ $isActive($item['route']) ? 'submenu-active pl-3 border-l-2 border-blue-400' : 'submenu-default' }}">
+                                                <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-sm"></i>
+                                                <span>{{ $item['label'] }}</span>
+                                            </a>
 
-                                </li>
+                                        </li>
                             @endforeach
 
                                             </ul>
@@ -167,7 +167,7 @@
             <!-- Setup Channel Email Dropdown -->
             <div class="space-y-1">
                 <button @click.stop="toggle('setupChannelEmail')"
-                    class="menu-item w-full group {{ request()->routeIs('dashboard.email') || request()->is('setup-channel-email/*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
+                    class="menu-item w-full group {{ request()->routeIs('dashboard.email', 'monitoring.email.response', 'setting.agent.email') || request()->is('setup-channel-email/*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
                     <i class="bx bx-cog text-lg"></i>
                     <span :class="expanded ? 'opacity-100' : 'opacity-0'">Setup Channel Email</span>
                     <i x-show="expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200"
@@ -186,23 +186,29 @@
                             <span>Monitoring Email Response</span>
                         </a>
                     </li>
-                    @foreach([
-                        ['route' => 'setup-channel-email.setting-auto-reply',  'label' => 'Setting Auto Reply Email'],
-                        ['route' => 'setup-channel-email.template-auto-reply', 'label' => 'Template Auto Reply Email'],
-                        ['route' => 'setup-channel-email.template-response',   'label' => 'Template Response Email'],
-                        ['route' => 'setup-channel-email.filter-jumlah-hari',  'label' => 'Filter Jumlah Hari'],
-                        ['route' => 'setup-channel-email.jam-operasional',     'label' => 'Jam Operasional Email'],
-                        ['route' => 'setup-channel-email.incoming-email',      'label' => 'Incoming Email'],
-                        ['route' => 'setup-channel-email.setting-agent',       'label' => 'Setting Agent Email'],
-                        ['route' => 'setup-channel-email.data-signature',      'label' => 'Data Signature'],
-                        ['route' => 'setup-channel-email.account-corporate',   'label' => 'Account Email Corporate'],
-                    ] as $item)
                     <li>
-                        <a href="{{ route($item['route']) }}" class="submenu-item {{ $isActive($item['route']) ? 'submenu-active' : 'submenu-default' }}">
-                            <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                            <span>{{ $item['label'] }}</span>
+                        <a href="{{ route('setting.agent.email') }}" class="submenu-item {{ $isActive('setting.agent.email') ? 'submenu-active' : 'submenu-default' }}">
+                            <i class="bx {{ $isActive('setting.agent.email') ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
+                            <span>Setting Agent Email</span>
                         </a>
                     </li>
+                    @foreach([
+                            ['route' => 'setup-channel-email.setting-auto-reply', 'label' => 'Setting Auto Reply Email'],
+                            ['route' => 'setup-channel-email.template-auto-reply', 'label' => 'Template Auto Reply Email'],
+                            ['route' => 'setup-channel-email.template-response', 'label' => 'Template Response Email'],
+                            ['route' => 'setup-channel-email.filter-jumlah-hari', 'label' => 'Filter Jumlah Hari'],
+                            ['route' => 'setup-channel-email.jam-operasional', 'label' => 'Jam Operasional Email'],
+                            ['route' => 'setup-channel-email.incoming-email', 'label' => 'Incoming Email'],
+                            ['route' => 'setup-channel-email.setting-agent', 'label' => 'Setting Agent Email'],
+                            ['route' => 'setup-channel-email.data-signature', 'label' => 'Data Signature'],
+                            ['route' => 'setup-channel-email.account-corporate', 'label' => 'Account Email Corporate'],
+                        ] as $item)
+                        <li>
+                            <a href="{{ route($item['route']) }}" class="submenu-item {{ $isActive($item['route']) ? 'submenu-active' : 'submenu-default' }}">
+                                <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
+                                <span>{{ $item['label'] }}</span>
+                            </a>
+                        </li>
                     @endforeach
                 </ul>
             </div>
@@ -218,20 +224,20 @@
                 </button>
                 <ul x-show="openMenus.settingEmailSystem && expanded" x-collapse class="pl-8 space-y-1">
                     @foreach([
-                        ['route' => 'setting-email-system.accounts',         'label' => 'Data Email Account'],
-                        ['route' => 'setting-email-system.signature',         'label' => 'Data Email Signature'],
-                        ['route' => 'setting-email-system.service',           'label' => 'Data Email Service'],
-                        ['route' => 'setting-email-system.service-method',    'label' => 'Data Email Service Method'],
-                        ['route' => 'setting-email-system.server-profile',    'label' => 'Data Email Server Profile'],
-                        ['route' => 'setting-email-system.server-protocol',   'label' => 'Data Email Service Protocol'],
-                        ['route' => 'setting-email-system.server-protocol-out','label' => 'Data Email Server Protocol Out'],
-                    ] as $item)
-                    <li>
-                        <a href="{{ route($item['route']) }}" class="submenu-item {{ $isActive($item['route']) ? 'submenu-active' : 'submenu-default' }}">
-                            <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                            <span>{{ $item['label'] }}</span>
-                        </a>
-                    </li>
+                            ['route' => 'setting-email-system.accounts', 'label' => 'Data Email Account'],
+                            ['route' => 'setting-email-system.signature', 'label' => 'Data Email Signature'],
+                            ['route' => 'setting-email-system.service', 'label' => 'Data Email Service'],
+                            ['route' => 'setting-email-system.service-method', 'label' => 'Data Email Service Method'],
+                            ['route' => 'setting-email-system.server-profile', 'label' => 'Data Email Server Profile'],
+                            ['route' => 'setting-email-system.server-protocol', 'label' => 'Data Email Service Protocol'],
+                            ['route' => 'setting-email-system.server-protocol-out', 'label' => 'Data Email Server Protocol Out'],
+                        ] as $item)
+                        <li>
+                            <a href="{{ route($item['route']) }}" class="submenu-item {{ $isActive($item['route']) ? 'submenu-active' : 'submenu-default' }}">
+                                <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
+                                <span>{{ $item['label'] }}</span>
+                            </a>
+                        </li>
                     @endforeach
                 </ul>
             </div>
@@ -266,37 +272,75 @@
                 </button>
                 <ul x-show="openMenus.masterData && expanded" x-collapse class="pl-8 space-y-1 overflow-y-auto max-h-[300px] custom-scrollbar">
                     @foreach([
-                        ['route' => 'data-group-name.index', 'label' => 'Data Group Name'],
-                        ['route' => 'data-fulfillment-location.index', 'label' => 'Data Fulfillment Location'],
-                        ['route' => 'data-type.index', 'label' => 'Data Type'],
-                        ['route' => 'data-category.index', 'label' => 'Data Category'],
-                        ['route' => 'data-meta.index', 'label' => 'Data Meta'],
-                        ['route' => 'data-sub-category.index', 'label' => 'Data Sub Category'],
-                        ['route' => 'channel-ticket.index', 'label' => 'Channel Ticket'],
-                        ['route' => 'department-escalation-unit.index', 'label' => 'Department Unit'],
-                        ['route' => 'data-source.index', 'label' => 'Data Source'],
-                        ['route' => 'data-activity.index', 'label' => 'Data Activity'],
-                        ['route' => 'data-aux-reason.index', 'label' => 'Data Aux Reason'],
-                        ['route' => 'data-status-ticket.index', 'label' => 'Data Status Ticket'],
-                        ['route' => 'data-group-agent.index', 'label' => 'Data Group Agent'],
-                        ['route' => 'data-brand-category.index', 'label' => 'Data Brand Category'],
-                        ['route' => 'data-fulfillment.index', 'label' => 'Data Fulfillment'],
-                        ['route' => 'data-holiday.index', 'label' => 'Data Holidays'],
-                        ['route' => 'data-brand-name.index', 'label' => 'Data Brand Name'],
-                        ['route' => 'data-max-handle.index', 'label' => 'Data Max Handle'],
-                        ['route' => 'data-site.index', 'label' => 'Data Site'],
-                    ] as $item)
-                    <li>
-                        <a href="{{ route($item['route']) }}" class="submenu-item {{ $isActive($item['route']) ? 'submenu-active' : 'submenu-default' }}">
-                            <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                            <span>{{ $item['label'] }}</span>
-                        </a>
-                    </li>
+                            ['route' => 'data-group-name.index', 'label' => 'Data Group Name'],
+                            ['route' => 'data-fulfillment-location.index', 'label' => 'Data Fulfillment Location'],
+                            ['route' => 'data-type.index', 'label' => 'Data Type'],
+                            ['route' => 'data-category.index', 'label' => 'Data Category'],
+                            ['route' => 'data-meta.index', 'label' => 'Data Meta'],
+                            ['route' => 'data-sub-category.index', 'label' => 'Data Sub Category'],
+                            ['route' => 'channel-ticket.index', 'label' => 'Channel Ticket'],
+                            ['route' => 'department-escalation-unit.index', 'label' => 'Department Unit'],
+                            ['route' => 'data-source.index', 'label' => 'Data Source'],
+                            ['route' => 'data-activity.index', 'label' => 'Data Activity'],
+                            ['route' => 'data-aux-reason.index', 'label' => 'Data Aux Reason'],
+                            ['route' => 'data-status-ticket.index', 'label' => 'Data Status Ticket'],
+                            ['route' => 'data-group-agent.index', 'label' => 'Data Group Agent'],
+                            ['route' => 'data-brand-category.index', 'label' => 'Data Brand Category'],
+                            ['route' => 'data-fulfillment.index', 'label' => 'Data Fulfillment'],
+                            ['route' => 'data-holiday.index', 'label' => 'Data Holidays'],
+                            ['route' => 'data-brand-name.index', 'label' => 'Data Brand Name'],
+                            ['route' => 'data-max-handle.index', 'label' => 'Data Max Handle'],
+                            ['route' => 'data-site.index', 'label' => 'Data Site'],
+                        ] as $item)
+                        <li>
+                            <a href="{{ route($item['route']) }}" class="submenu-item {{ $isActive($item['route']) ? 'submenu-active' : 'submenu-default' }}">
+                                <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
+                                <span>{{ $item['label'] }}</span>
+                            </a>
+                        </li>
                     @endforeach
                 </ul>
             </div>
 
-                        <div class="space-y-1">
+            <!-- Setup Channel Call Dropdown -->
+            <div class="space-y-1">
+                <button @click.stop="toggle('setupChannelCall')"
+                    class="menu-item w-full group {{ request()->routeIs('setting.agent.call') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
+                    <i class="bx bx-phone-call text-lg"></i>
+                    <span :class="expanded ? 'opacity-100' : 'opacity-0'">Setup Channel Call</span>
+                    <i x-show="expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200"
+                        :class="openMenus.setupChannelCall ? 'rotate-180' : ''"></i>
+                </button>
+                <ul x-show="openMenus.setupChannelCall && expanded" x-collapse class="pl-8 space-y-1">
+                    <li>
+                        <a href="{{ route('setting.agent.call') }}" class="submenu-item {{ $isActive('setting.agent.call') ? 'submenu-active' : 'submenu-default' }}">
+                            <i class="bx {{ $isActive('setting.agent.call') ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
+                            <span>Setting Agent Call</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Data Login Dropdown -->
+            <div class="space-y-1">
+                <button @click.stop="toggle('dataLogin')"
+                    class="menu-item w-full group {{ request()->routeIs('monitoring.login.*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
+                    <i class="bx bx-data text-lg"></i>
+                    <span :class="expanded ? 'opacity-100' : 'opacity-0'">Data Login</span>
+                    <i x-show="expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200"
+                        :class="openMenus.dataLogin ? 'rotate-180' : ''"></i>
+                </button>
+                <ul x-show="openMenus.dataLogin && expanded" x-collapse class="pl-8 space-y-1">
+                    <li>
+                        <a href="{{ route('monitoring.login.index') }}" class="submenu-item {{ $isActive('monitoring.login.index') ? 'submenu-active' : 'submenu-default' }}">
+                            <i class="bx {{ $isActive('monitoring.login.index') ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
+                            <span>Monitoring Login</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="space-y-1">
                 <button @click.stop="toggle('setupManagementUser')"
                     class="menu-item w-full group {{ request()->routeIs('management-user.*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
                     <i class="bx bx-user-pin text-lg"></i>

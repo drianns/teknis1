@@ -9,7 +9,9 @@ document.addEventListener('alpine:init', () => {
             setupChannelEmail: false,
             settingEmailSystem: false,
             settingEpicSystem: false,
-            masterData: false
+            masterData: false,
+            setupChannelCall: false,
+            dataLogin: false
         },
 
         init() {
@@ -49,7 +51,7 @@ document.addEventListener('alpine:init', () => {
             if (path.includes('/channel/email/')) {
                 this.openMenus.channelEmail = true;
             }
-            if (path.includes('/dashboard-email') || path.includes('/setup-channel-email/')) {
+            if (path.includes('/dashboard-email') || path.includes('/setup-channel-email/') || path.includes('/setting-agent-email')) {
                 this.openMenus.setupChannelEmail = true;
             }
             if (path.includes('/setting-email-system/')) {
@@ -60,6 +62,12 @@ document.addEventListener('alpine:init', () => {
             }
             if (path.includes('/data-') || path.includes('/channel-ticket') || path.includes('/department-escalation-unit')) {
                 this.openMenus.masterData = true;
+            }
+            if (path.includes('/setting-agent-call')) {
+                this.openMenus.setupChannelCall = true;
+            }
+            if (path.includes('/monitoring-login')) {
+                this.openMenus.dataLogin = true;
             }
         },
 

@@ -21,6 +21,10 @@ use App\Http\Controllers\BantuDagangController;
 use App\Http\Controllers\MenuApplicationController;
 use App\Http\Controllers\SubMenuApplicationController;
 use App\Http\Controllers\SetupChannelEmailController;
+use App\Http\Controllers\SettingChannelAgentController;
+use App\Http\Controllers\SettingAgentCallController;
+use App\Http\Controllers\SettingAgentEmailController;
+use App\Http\Controllers\MonitoringLoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,11 +40,12 @@ Route::get('/home', function () {
     return redirect()->route('apps.taskboard');
 })->name('home');
 
-Route::get('/dashboard-email', [DashboardEmailController::class, 'index'])->name('dashboard.email');
+// Setting Channel Email
+Route::get('/dashboard-email', [\App\Http\Controllers\DashboardEmailController::class, 'index'])->name('dashboard.email');
 Route::post('/dashboard-email/data', [DashboardEmailController::class, 'getData'])->name('dashboard.email.data');
-
-Route::get('/monitoring-email-response', [MonitoringEmailResponseController::class, 'index'])->name('monitoring.email.response');
+Route::get('/monitoring-email-response', [\App\Http\Controllers\MonitoringEmailResponseController::class, 'index'])->name('monitoring.email.response');
 Route::post('/monitoring-email-response/data', [MonitoringEmailResponseController::class, 'getData'])->name('monitoring.email.response.data');
+Route::get('/setting-agent-email', [SettingAgentEmailController::class, 'index'])->name('setting.agent.email');
 
 // Setup Channel Email Routes (9 Items)
 Route::prefix('setup-channel-email')->name('setup-channel-email.')->group(function () {
@@ -132,8 +137,14 @@ Route::get('/ticket-notification-system', [\App\Http\Controllers\TicketNotificat
 Route::post('/ticket-notification-system/user', [\App\Http\Controllers\TicketNotificationSystemController::class, 'storeUser'])->name('ticket.notification.system.user.store');
 Route::post('/ticket-notification-system/setting', [\App\Http\Controllers\TicketNotificationSystemController::class, 'updateSetting'])->name('ticket.notification.system.setting.update');
 
-// Setting Channel Agent Feature
+// Setting Channel Agent
 Route::get('/setting-channel-agent', [\App\Http\Controllers\SettingChannelAgentController::class, 'index'])->name('setting.channel.agent.index');
+
+// Setting Agent Call
+Route::get('/setting-agent-call', [SettingAgentCallController::class, 'index'])->name('setting.agent.call');
+
+// Monitoring Login
+Route::get('/monitoring-login', [MonitoringLoginController::class, 'index'])->name('monitoring.login.index');
 Route::post('/setting-channel-agent/store', [\App\Http\Controllers\SettingChannelAgentController::class, 'store'])->name('setting.channel.agent.store');
 Route::put('/setting-channel-agent/{id}', [\App\Http\Controllers\SettingChannelAgentController::class, 'update'])->name('setting.channel.agent.update');
 Route::delete('/setting-channel-agent/{id}', [\App\Http\Controllers\SettingChannelAgentController::class, 'destroy'])->name('setting.channel.agent.destroy');

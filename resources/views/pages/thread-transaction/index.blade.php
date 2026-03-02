@@ -231,18 +231,28 @@
                                     <td class="px-6 py-4">{{ $trx->subject }}</td>
                                     <td class="px-6 py-4">{{ $trx->agent }}</td>
                                     <td class="px-6 py-4 text-gray-500">{{ $trx->created_at->format('d M Y H:i') }}</td>
-                                    <td class="px-6 py-4 text-center">
-                                        <div class="flex items-center justify-center gap-2">
-                                            <button
-                                                class="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 p-2 rounded-lg transition-colors"
-                                                title="View">
-                                                <i class="bx bx-show"></i>
-                                            </button>
-                                            <button
-                                                class="bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-500 p-2 rounded-lg transition-colors"
-                                                title="Edit">
-                                                <i class="bx bx-edit"></i>
-                                            </button>
+                                    <td class="px-6 py-4 text-center whitespace-nowrap">
+                                        <div class="flex items-center justify-center gap-2" x-data="{ open: false }">
+                                            <div class="relative">
+                                                <button @click="open = !open" @click.outside="open = false"
+                                                    class="p-1.5 bg-gray-900 border border-gray-700/50 rounded-lg text-gray-400 hover:text-white hover:border-gray-500/50 transition-all">
+                                                    <i class="bx bx-dots-vertical-rounded text-base"></i>
+                                                </button>
+                                                <div x-show="open" x-transition:enter="transition ease-out duration-100"
+                                                    x-transition:enter-start="opacity-0 scale-95"
+                                                    x-transition:enter-end="opacity-100 scale-100"
+                                                    class="absolute right-0 mt-2 w-32 bg-gray-800 border border-gray-700 rounded-xl shadow-2xl z-50 p-1.5 overflow-hidden"
+                                                    style="display: none;">
+                                                    <button
+                                                        class="w-full text-left flex items-center gap-3 px-3 py-2 text-xs font-semibold text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors">
+                                                        <i class="bx bx-show text-sm"></i> View
+                                                    </button>
+                                                    <button
+                                                        class="w-full text-left flex items-center gap-3 px-3 py-2 text-xs font-semibold text-yellow-500 hover:bg-yellow-500/10 rounded-lg transition-colors">
+                                                        <i class="bx bx-edit text-sm"></i> Edit
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
