@@ -30,6 +30,16 @@
             data-tooltip="Threads">
             <i class="bx bx-clipboard text-2xl"></i>
         </a>
+        <a href="{{ route('recording.index') }}"
+            class="icon-nav-item {{ request()->is('recording/*') ? 'text-blue-500' : 'text-gray-400' }}"
+            data-tooltip="Recording">
+            <i class="bx bx-microphone text-2xl"></i>
+        </a>
+        <a href="{{ route('report.statistic-call') }}"
+            class="icon-nav-item {{ request()->is('report/*') ? 'text-blue-500' : 'text-gray-400' }}"
+            data-tooltip="Report">
+            <i class="bx bx-bar-chart-alt-2 text-2xl"></i>
+        </a>
         <a href="{{ route('master-customer.data-customer') }}"
             class="icon-nav-item {{ request()->is('master-customer/*') ? 'text-blue-500' : 'text-gray-400' }}"
             data-tooltip="Master Customer">
@@ -97,6 +107,62 @@
                                 </li>
                     @endforeach
             </ul>
+            </div>
+
+            <!-- Recording Dropdown -->
+            <div class="space-y-1">
+                <button @click.stop="toggle('recording')"
+                    class="menu-item w-full group {{ request()->is('recording/*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
+                    <i class="bx bx-microphone text-lg"></i>
+                    <span :class="expanded ? 'opacity-100' : 'opacity-0'">Recording</span>
+                    <i x-show="expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200"
+                        :class="openMenus.recording ? 'rotate-180' : ''"></i>
+                </button>
+                <ul x-show="openMenus.recording && expanded" x-collapse class="pl-8 space-y-1">
+                    @foreach([
+                            ['route' => 'recording.index', 'label' => 'Voice Recording'],
+                        ] as $item)
+                        <li>
+                            <a href="{{ route($item['route']) }}" class="submenu-item {{ $isActive($item['route']) ? 'submenu-active' : 'submenu-default' }}">
+                                <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
+                                <span class="truncate">{{ $item['label'] }}</span>
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+
+            <!-- Report Dropdown -->
+            <div class="space-y-1">
+                <button @click.stop="toggle('report')"
+                    class="menu-item w-full group {{ request()->is('report/*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
+                    <i class="bx bx-bar-chart-alt-2 text-lg"></i>
+                    <span :class="expanded ? 'opacity-100' : 'opacity-0'">Report</span>
+                    <i x-show="expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200"
+                        :class="openMenus.report ? 'rotate-180' : ''"></i>
+                </button>
+                <ul x-show="openMenus.report && expanded" x-collapse class="pl-8 space-y-1">
+                    @foreach([
+                            ['route' => 'report.statistic-call', 'label' => 'Report Statistic Call'],
+                            ['route' => 'report.assign-email', 'label' => 'Report Assign Email'],
+                            ['route' => 'report.sl-nespresso', 'label' => 'Report SL Nespresso'],
+                            ['route' => 'report.sl-kanmo', 'label' => 'Report SL Kanmo'],
+                            ['route' => 'report.base-on-sla', 'label' => 'Report base on SLA'],
+                            ['route' => 'report.base-on-transaction', 'label' => 'Report base on Transaction'],
+                            ['route' => 'report.base-on-staff', 'label' => 'Report base on Staff'],
+                            ['route' => 'report.thread-transaction', 'label' => 'Report Thread Transaction'],
+                            ['route' => 'report.interaction-ticket', 'label' => 'Report Interaction Ticket'],
+                            ['route' => 'report.aux', 'label' => 'Report AUX'],
+                            ['route' => 'report.channel-email', 'label' => 'Report Channel Email'],
+                        ] as $item)
+                        <li>
+                            <a href="{{ route($item['route']) }}" class="submenu-item {{ $isActive($item['route']) ? 'submenu-active' : 'submenu-default' }}">
+                                <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
+                                <span class="truncate">{{ $item['label'] }}</span>
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
             </div>
 
             <!-- Master Customer Dropdown -->

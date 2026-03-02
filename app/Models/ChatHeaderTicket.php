@@ -60,4 +60,9 @@ class ChatHeaderTicket extends Model
     {
         return null;
     }
+
+    public function userAgent(): BelongsTo
+    {
+        return $this->belongsTo(UserAgent::class, 'user_agent_id');
+    }
 }

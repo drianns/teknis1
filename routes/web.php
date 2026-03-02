@@ -21,10 +21,15 @@ use App\Http\Controllers\BantuDagangController;
 use App\Http\Controllers\MenuApplicationController;
 use App\Http\Controllers\SubMenuApplicationController;
 use App\Http\Controllers\SetupChannelEmailController;
+<<<<<<< Updated upstream
 use App\Http\Controllers\SettingChannelAgentController;
 use App\Http\Controllers\SettingAgentCallController;
 use App\Http\Controllers\SettingAgentEmailController;
 use App\Http\Controllers\MonitoringLoginController;
+=======
+use App\Http\Controllers\RecordingController;
+use App\Http\Controllers\ReportController;
+>>>>>>> Stashed changes
 
 /*
 |--------------------------------------------------------------------------
@@ -169,3 +174,21 @@ Route::resource('data-holiday', \App\Http\Controllers\DataHolidayController::cla
 Route::resource('data-brand-name', \App\Http\Controllers\DataBrandNameController::class);
 Route::resource('data-max-handle', \App\Http\Controllers\DataMaxHandleController::class);
 Route::resource('data-site', \App\Http\Controllers\DataSiteController::class);
+
+Route::prefix('recording')->name('recording.')->group(function () {
+    Route::get('/', [RecordingController::class, 'index'])->name('index');
+});
+
+Route::prefix('report')->name('report.')->group(function () {
+    Route::get('/statistic-call', [ReportController::class, 'statisticCall'])->name('statistic-call');
+    Route::get('/assign-email', [ReportController::class, 'assignEmail'])->name('assign-email');
+    Route::get('/sl-nespresso', [ReportController::class, 'slNespresso'])->name('sl-nespresso');
+    Route::get('/sl-kanmo', [ReportController::class, 'slKanmo'])->name('sl-kanmo');
+    Route::get('/base-on-sla', [ReportController::class, 'baseOnSLA'])->name('base-on-sla');
+    Route::get('/base-on-transaction', [ReportController::class, 'baseOnTransaction'])->name('base-on-transaction');
+    Route::get('/base-on-staff', [ReportController::class, 'baseOnStaff'])->name('base-on-staff');
+    Route::get('/thread-transaction', [ReportController::class, 'threadTransaction'])->name('thread-transaction');
+    Route::get('/interaction-ticket', [ReportController::class, 'interactionTicket'])->name('interaction-ticket');
+    Route::get('/aux', [ReportController::class, 'aux'])->name('aux');
+    Route::get('/channel-email', [ReportController::class, 'channelEmail'])->name('channel-email');
+});

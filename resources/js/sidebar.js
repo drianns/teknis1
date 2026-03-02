@@ -10,8 +10,13 @@ document.addEventListener('alpine:init', () => {
             settingEmailSystem: false,
             settingEpicSystem: false,
             masterData: false,
+<<<<<<< Updated upstream
             setupChannelCall: false,
             dataLogin: false
+=======
+            recording: false,
+            report: false
+>>>>>>> Stashed changes
         },
 
         init() {
@@ -63,11 +68,19 @@ document.addEventListener('alpine:init', () => {
             if (path.includes('/data-') || path.includes('/channel-ticket') || path.includes('/department-escalation-unit')) {
                 this.openMenus.masterData = true;
             }
+<<<<<<< Updated upstream
             if (path.includes('/setting-agent-call')) {
                 this.openMenus.setupChannelCall = true;
             }
             if (path.includes('/monitoring-login')) {
                 this.openMenus.dataLogin = true;
+=======
+            if (path.includes('/recording/')) {
+                this.openMenus.recording = true;
+            }
+            if (path.includes('/report/')) {
+                this.openMenus.report = true;
+>>>>>>> Stashed changes
             }
         },
 
