@@ -390,7 +390,7 @@
             <!-- Data Login Dropdown -->
             <div class="space-y-1">
                 <button @click.stop="toggle('dataLogin')"
-                    class="menu-item w-full group {{ request()->routeIs('monitoring.login.*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
+                    class="menu-item w-full group {{ request()->routeIs('monitoring.login.*', 'report.login-activity') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
                     <i class="bx bx-data text-lg"></i>
                     <span :class="expanded ? 'opacity-100' : 'opacity-0'">Data Login</span>
                     <i x-show="expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200"
@@ -401,6 +401,12 @@
                         <a href="{{ route('monitoring.login.index') }}" class="submenu-item {{ $isActive('monitoring.login.index') ? 'submenu-active' : 'submenu-default' }}">
                             <i class="bx {{ $isActive('monitoring.login.index') ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
                             <span>Monitoring Login</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('report.login-activity') }}" class="submenu-item {{ $isActive('report.login-activity') ? 'submenu-active' : 'submenu-default' }}">
+                            <i class="bx {{ $isActive('report.login-activity') ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
+                            <span>Login Activity</span>
                         </a>
                     </li>
                 </ul>
