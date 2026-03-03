@@ -106,50 +106,6 @@
             </div>
         </div>
 
-        {{-- SLA Summary Cards --}}
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 shrink-0">
-            @php $total = $tickets->total(); @endphp
-
-            <div class="bg-gray-800/80 border border-gray-700/50 rounded-2xl p-4 flex items-center gap-4">
-                <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shrink-0">
-                    <i class='bx bx-task text-blue-400 text-lg'></i>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Total Tickets</p>
-                    <p class="text-2xl font-bold text-white">{{ number_format($total) }}</p>
-                </div>
-            </div>
-
-            <div class="bg-gray-800/80 border border-gray-700/50 rounded-2xl p-4 flex items-center gap-4">
-                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
-                    <i class='bx bx-check-shield text-emerald-400 text-lg'></i>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">SLA Met</p>
-                    <p class="text-2xl font-bold text-white">{{ number_format($slaMetTotal) }}</p>
-                </div>
-            </div>
-
-            <div class="bg-gray-800/80 border border-gray-700/50 rounded-2xl p-4 flex items-center gap-4">
-                <div class="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0">
-                    <i class='bx bx-error-circle text-red-400 text-lg'></i>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">SLA Breached</p>
-                    <p class="text-2xl font-bold text-white">{{ number_format($slaBreachedTotal) }}</p>
-                </div>
-            </div>
-
-            <div class="bg-gray-800/80 border border-gray-700/50 rounded-2xl p-4 flex items-center gap-4">
-                <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center shrink-0">
-                    <i class='bx bx-trending-up text-purple-400 text-lg'></i>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">SLA Rate</p>
-                    <p class="text-2xl font-bold text-white">{{ $slaRate }}%</p>
-                </div>
-            </div>
-        </div>
 
         {{-- Data Table Container --}}
         <div class="table-container bg-gray-800/80 backdrop-blur-md rounded-2xl border border-gray-700/50 shadow-2xl ring-1 ring-white/5 flex-1 flex flex-col min-h-0 overflow-hidden">

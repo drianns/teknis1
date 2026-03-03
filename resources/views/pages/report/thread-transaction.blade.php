@@ -1,4 +1,4 @@
-@extends('layouts.app')
+git push origin development@extends('layouts.app')
 
 @section('content')
 <div class="flex-1 flex flex-col h-screen overflow-hidden bg-gray-900 report-thread-transaction-page">
@@ -87,48 +87,6 @@
             </div>
         </div>
 
-        {{-- Summary Cards --}}
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 shrink-0">
-            <div class="bg-gray-800/80 border border-gray-700/50 rounded-2xl p-4 flex items-center gap-4">
-                <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shrink-0">
-                    <i class='bx bx-conversation text-blue-400 text-lg'></i>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Total Threads</p>
-                    <p class="text-2xl font-bold text-white">{{ number_format($threads->total()) }}</p>
-                </div>
-            </div>
-
-            <div class="bg-gray-800/80 border border-gray-700/50 rounded-2xl p-4 flex items-center gap-4">
-                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
-                    <i class='bx bx-check-circle text-emerald-400 text-lg'></i>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Closed Threads</p>
-                    <p class="text-2xl font-bold text-white">{{ number_format($closedCount) }}</p>
-                </div>
-            </div>
-
-            <div class="bg-gray-800/80 border border-gray-700/50 rounded-2xl p-4 flex items-center gap-4">
-                <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
-                    <i class='bx bx-message-dots text-amber-400 text-lg'></i>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Open Threads</p>
-                    <p class="text-2xl font-bold text-white">{{ number_format($openCount) }}</p>
-                </div>
-            </div>
-
-            <div class="bg-gray-800/80 border border-gray-700/50 rounded-2xl p-4 flex items-center gap-4">
-                <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center shrink-0">
-                    <i class='bx bx-task text-purple-400 text-lg'></i>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Total Tickets</p>
-                    <p class="text-2xl font-bold text-white">{{ number_format($totalTickets) }}</p>
-                </div>
-            </div>
-        </div>
 
         {{-- Data Table --}}
         <div class="table-container bg-gray-800/80 backdrop-blur-md rounded-2xl border border-gray-700/50 shadow-2xl ring-1 ring-white/5 flex-1 flex flex-col min-h-0 overflow-hidden">

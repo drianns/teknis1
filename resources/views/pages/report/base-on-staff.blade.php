@@ -88,50 +88,6 @@
             </div>
         </div>
 
-        {{-- Summary Cards --}}
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 shrink-0">
-            @php $totalTickets = $tickets->total(); @endphp
-
-            <div class="bg-gray-800/80 border border-gray-700/50 rounded-2xl p-4 flex items-center gap-4">
-                <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0">
-                    <i class='bx bx-group text-indigo-400 text-lg'></i>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Total Records</p>
-                    <p class="text-2xl font-bold text-white">{{ number_format($totalTickets) }}</p>
-                </div>
-            </div>
-
-            <div class="bg-gray-800/80 border border-gray-700/50 rounded-2xl p-4 flex items-center gap-4">
-                <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shrink-0">
-                    <i class='bx bx-user-check text-blue-400 text-lg'></i>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Active Agents</p>
-                    <p class="text-2xl font-bold text-white">{{ number_format($activeAgents) }}</p>
-                </div>
-            </div>
-
-            <div class="bg-gray-800/80 border border-gray-700/50 rounded-2xl p-4 flex items-center gap-4">
-                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
-                    <i class='bx bx-check-double text-emerald-400 text-lg'></i>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Closed Tickets</p>
-                    <p class="text-2xl font-bold text-white">{{ number_format($closedCount) }}</p>
-                </div>
-            </div>
-
-            <div class="bg-gray-800/80 border border-gray-700/50 rounded-2xl p-4 flex items-center gap-4">
-                <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center shrink-0">
-                    <i class='bx bx-timer text-purple-400 text-lg'></i>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Avg. Handle Time</p>
-                    <p class="text-2xl font-bold text-white">{{ $avgHandleTime }}<span class="text-sm font-normal text-gray-500 ml-1">min</span></p>
-                </div>
-            </div>
-        </div>
 
         {{-- Data Table Container --}}
         <div class="table-container bg-gray-800/80 backdrop-blur-md rounded-2xl border border-gray-700/50 shadow-2xl ring-1 ring-white/5 flex-1 flex flex-col min-h-0 overflow-hidden">

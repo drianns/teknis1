@@ -21,15 +21,12 @@ use App\Http\Controllers\BantuDagangController;
 use App\Http\Controllers\MenuApplicationController;
 use App\Http\Controllers\SubMenuApplicationController;
 use App\Http\Controllers\SetupChannelEmailController;
-<<<<<<< Updated upstream
 use App\Http\Controllers\SettingChannelAgentController;
 use App\Http\Controllers\SettingAgentCallController;
 use App\Http\Controllers\SettingAgentEmailController;
 use App\Http\Controllers\MonitoringLoginController;
-=======
 use App\Http\Controllers\RecordingController;
 use App\Http\Controllers\ReportController;
->>>>>>> Stashed changes
 
 /*
 |--------------------------------------------------------------------------
@@ -191,4 +188,5 @@ Route::prefix('report')->name('report.')->group(function () {
     Route::get('/interaction-ticket', [ReportController::class, 'interactionTicket'])->name('interaction-ticket');
     Route::get('/aux', [ReportController::class, 'aux'])->name('aux');
     Route::get('/channel-email', [ReportController::class, 'channelEmail'])->name('channel-email');
+    Route::get('/login-activity', [ReportController::class, 'loginActivity'])->name('login-activity');
 });

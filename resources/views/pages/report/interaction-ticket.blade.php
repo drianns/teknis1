@@ -86,54 +86,6 @@
             </div>
         </div>
 
-        {{-- Summary Cards (Interaction Type Breakdown) --}}
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 shrink-0">
-            <div class="bg-gray-800/80 border border-gray-700/50 rounded-2xl p-4 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shrink-0">
-                    <i class='bx bx-transfer text-blue-400 text-lg'></i>
-                </div>
-                <div>
-                    <p class="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Total</p>
-                    <p class="text-xl font-bold text-white">{{ number_format($totalCount) }}</p>
-                </div>
-            </div>
-            <div class="bg-gray-800/80 border border-gray-700/50 rounded-2xl p-4 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
-                    <i class='bx bx-phone-incoming text-green-400 text-lg'></i>
-                </div>
-                <div>
-                    <p class="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Inbound</p>
-                    <p class="text-xl font-bold text-white">{{ number_format($inboundCount) }}</p>
-                </div>
-            </div>
-            <div class="bg-gray-800/80 border border-gray-700/50 rounded-2xl p-4 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
-                    <i class='bx bx-phone-outgoing text-amber-400 text-lg'></i>
-                </div>
-                <div>
-                    <p class="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Outbound</p>
-                    <p class="text-xl font-bold text-white">{{ number_format($outboundCount) }}</p>
-                </div>
-            </div>
-            <div class="bg-gray-800/80 border border-gray-700/50 rounded-2xl p-4 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center shrink-0">
-                    <i class='bx bx-chat text-purple-400 text-lg'></i>
-                </div>
-                <div>
-                    <p class="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Chat</p>
-                    <p class="text-xl font-bold text-white">{{ number_format($chatCount) }}</p>
-                </div>
-            </div>
-            <div class="bg-gray-800/80 border border-gray-700/50 rounded-2xl p-4 flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center shrink-0">
-                    <i class='bx bx-envelope text-cyan-400 text-lg'></i>
-                </div>
-                <div>
-                    <p class="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Email</p>
-                    <p class="text-xl font-bold text-white">{{ number_format($emailCount) }}</p>
-                </div>
-            </div>
-        </div>
 
         {{-- Data Table --}}
         <div class="table-container bg-gray-800/80 backdrop-blur-md rounded-2xl border border-gray-700/50 shadow-2xl ring-1 ring-white/5 flex-1 flex flex-col min-h-0 overflow-hidden">

@@ -489,13 +489,217 @@ class ReportController extends Controller
         ]);
     }
 
-    public function aux()
+    public function aux(Request $request)
     {
-        return view('pages.report.placeholder', ['title' => 'Report AUX']);
+        // ── Dummy AUX data ─────────────────────────────────────────────────────
+        $raw = [
+            ['username' => 'Cindy_Kurnia',   'description' => 'Toilet',   'start' => '2025-03-28 01:39:17', 'end' => '2025-03-28 01:55:42'],
+            ['username' => 'Cindy_Kurnia',   'description' => 'Lunch',    'start' => '2025-03-28 03:33:15', 'end' => '2025-03-28 04:39:00'],
+            ['username' => 'Cindy_Kurnia',   'description' => 'Prayer',   'start' => '2025-03-28 06:36:39', 'end' => '2025-03-28 06:50:17'],
+            ['username' => 'Budi_Santoso',   'description' => 'Break',    'start' => '2025-03-28 08:10:00', 'end' => '2025-03-28 08:25:30'],
+            ['username' => 'Budi_Santoso',   'description' => 'Lunch',    'start' => '2025-03-28 12:00:00', 'end' => '2025-03-28 13:05:00'],
+            ['username' => 'Budi_Santoso',   'description' => 'Meeting',  'start' => '2025-03-28 14:30:00', 'end' => '2025-03-28 15:15:45'],
+            ['username' => 'Rina_Wahyuni',   'description' => 'Prayer',   'start' => '2025-03-28 04:00:00', 'end' => '2025-03-28 04:12:20'],
+            ['username' => 'Rina_Wahyuni',   'description' => 'Toilet',   'start' => '2025-03-28 09:45:00', 'end' => '2025-03-28 09:55:10'],
+            ['username' => 'Rina_Wahyuni',   'description' => 'Lunch',    'start' => '2025-03-28 11:30:00', 'end' => '2025-03-28 12:30:00'],
+            ['username' => 'Ahmad_Fauzi',    'description' => 'Training', 'start' => '2025-03-28 07:00:00', 'end' => '2025-03-28 08:30:00'],
+            ['username' => 'Ahmad_Fauzi',    'description' => 'Break',    'start' => '2025-03-28 10:15:00', 'end' => '2025-03-28 10:30:00'],
+            ['username' => 'Ahmad_Fauzi',    'description' => 'Lunch',    'start' => '2025-03-28 12:30:00', 'end' => '2025-03-28 13:30:00'],
+            ['username' => 'Sari_Dewi',      'description' => 'Meeting',  'start' => '2025-03-28 09:00:00', 'end' => '2025-03-28 10:00:00'],
+            ['username' => 'Sari_Dewi',      'description' => 'Prayer',   'start' => '2025-03-28 12:05:00', 'end' => '2025-03-28 12:18:00'],
+            ['username' => 'Sari_Dewi',      'description' => 'Lunch',    'start' => '2025-03-28 13:00:00', 'end' => '2025-03-28 14:00:00'],
+            ['username' => 'Dian_Pratama',   'description' => 'Toilet',   'start' => '2025-03-28 02:20:00', 'end' => '2025-03-28 02:30:00'],
+            ['username' => 'Dian_Pratama',   'description' => 'Break',    'start' => '2025-03-28 05:45:00', 'end' => '2025-03-28 06:00:00'],
+            ['username' => 'Dian_Pratama',   'description' => 'Lunch',    'start' => '2025-03-28 11:00:00', 'end' => '2025-03-28 12:00:00'],
+        ];
+
+        // Apply date filter on dummy data
+        if ($request->filled('start_date') || $request->filled('end_date')) {
+            $raw = array_filter($raw, function ($r) use ($request) {
+                $date = substr($r['start'], 0, 10);
+                if ($request->filled('start_date') && $date < $request->start_date) return false;
+                if ($request->filled('end_date')   && $date > $request->end_date)   return false;
+                return true;
+            });
+            $raw = array_values($raw);
+        }
+
+        // Build formatted rows with interval
+        $auxData = collect($raw)->map(function ($r) {
+            $start = \Carbon\Carbon::parse($r['start']);
+            $end   = \Carbon\Carbon::parse($r['end']);
+            $diff  = $start->diff($end);
+            return [
+                'username'    => $r['username'],
+                'description' => $r['description'],
+                'start_date'  => $start->format('Y-m-d H:i:s'),
+                'end_date'    => $end->format('Y-m-d H:i:s'),
+                'interval'    => sprintf('%02d:%02d:%02d:000', $diff->h, $diff->i, $diff->s),
+            ];
+        })->toArray();
+
+        // Summary stats
+        $totalAux    = count($auxData);
+        $lunchCount  = collect($auxData)->where('description', 'Lunch')->count();
+        $totalAgents = collect($auxData)->pluck('username')->unique()->count();
+
+        // Average duration in mm:ss
+        $totalSeconds = collect($raw)->sum(function ($r) {
+            return \Carbon\Carbon::parse($r['start'])->diffInSeconds(\Carbon\Carbon::parse($r['end']));
+        });
+        $avgSec = $totalAux > 0 ? (int) ($totalSeconds / $totalAux) : 0;
+        $avgDuration = sprintf('%02d:%02d', intdiv($avgSec, 60), $avgSec % 60);
+
+        // Handle export
+        if ($request->filled('export')) {
+            $headers = ['No', 'AUX UserName', 'AUX Description', 'AUX Start Date', 'AUX End Date', 'AUX Interval'];
+            $rows    = collect($auxData)->map(fn($r, $i) => [
+                $i + 1, $r['username'], $r['description'], $r['start_date'], $r['end_date'], $r['interval'],
+            ])->toArray();
+
+            $filename = 'report_aux_' . now()->format('Ymd_His');
+            $csv = implode(',', array_map('json_encode', $headers)) . "\n";
+            foreach ($rows as $row) {
+                $csv .= implode(',', array_map('json_encode', $row)) . "\n";
+            }
+
+            return \Illuminate\Support\Facades\Response::make($csv, 200, [
+                'Content-Type'        => 'text/csv',
+                'Content-Disposition' => "attachment; filename=\"{$filename}.csv\"",
+            ]);
+        }
+
+        return view('pages.report.aux', compact(
+            'auxData', 'totalAux', 'lunchCount', 'totalAgents', 'avgDuration'
+        ));
     }
 
-    public function channelEmail()
+    public function channelEmail(Request $request)
     {
-        return view('pages.report.placeholder', ['title' => 'Report Channel Email']);
+        // ── Dummy Channel Email data ────────────────────────────────────────────
+        $raw = [
+            ['ticket_number' => 'TKT-240301-001', 'subject' => 'Inquiry about order status',          'from' => 'customer1@gmail.com',   'agent' => 'Budi_Santoso',   'status' => 'Closed',  'received' => '2025-03-01 08:10:00', 'response_minutes' => 35],
+            ['ticket_number' => 'TKT-240301-002', 'subject' => 'Return request for damaged item',     'from' => 'rina.wahyuni@yahoo.com', 'agent' => 'Rina_Wahyuni',   'status' => 'Replied', 'received' => '2025-03-01 08:45:00', 'response_minutes' => 20],
+            ['ticket_number' => 'TKT-240301-003', 'subject' => 'Question about warranty policy',     'from' => 'ahmad.f@hotmail.com',   'agent' => 'Ahmad_Fauzi',    'status' => 'Open',    'received' => '2025-03-01 09:05:00', 'response_minutes' => 180],
+            ['ticket_number' => 'TKT-240301-004', 'subject' => 'Complaint about late delivery',      'from' => 'saridewi@gmail.com',    'agent' => 'Sari_Dewi',      'status' => 'Pending', 'received' => '2025-03-01 09:30:00', 'response_minutes' => 300],
+            ['ticket_number' => 'TKT-240301-005', 'subject' => 'Request for invoice copy',           'from' => 'dian.p@outlook.com',    'agent' => 'Dian_Pratama',   'status' => 'Closed',  'received' => '2025-03-01 10:00:00', 'response_minutes' => 15],
+            ['ticket_number' => 'TKT-240301-006', 'subject' => 'Product feedback submission',        'from' => 'cindy.k@gmail.com',     'agent' => 'Cindy_Kurnia',   'status' => 'Closed',  'received' => '2025-03-01 10:20:00', 'response_minutes' => 45],
+            ['ticket_number' => 'TKT-240301-007', 'subject' => 'Shipping address change request',   'from' => 'hendra99@yahoo.com',    'agent' => 'Budi_Santoso',   'status' => 'Replied', 'received' => '2025-03-01 10:55:00', 'response_minutes' => 60],
+            ['ticket_number' => 'TKT-240301-008', 'subject' => 'Missing item in package',           'from' => 'lestari@gmail.com',     'agent' => 'Rina_Wahyuni',   'status' => 'Open',    'received' => '2025-03-01 11:15:00', 'response_minutes' => 240],
+            ['ticket_number' => 'TKT-240301-009', 'subject' => 'Account password reset assistance', 'from' => 'wibowo.j@gmail.com',    'agent' => 'Ahmad_Fauzi',    'status' => 'Closed',  'received' => '2025-03-01 11:40:00', 'response_minutes' => 10],
+            ['ticket_number' => 'TKT-240301-010', 'subject' => 'Bulk order quotation request',      'from' => 'toko.maju@email.com',   'agent' => 'Sari_Dewi',      'status' => 'Pending', 'received' => '2025-03-01 12:00:00', 'response_minutes' => 420],
+            ['ticket_number' => 'TKT-240301-011', 'subject' => 'Promo code not working',            'from' => 'nanda.s@gmail.com',     'agent' => 'Dian_Pratama',   'status' => 'Replied', 'received' => '2025-03-01 13:05:00', 'response_minutes' => 30],
+            ['ticket_number' => 'TKT-240301-012', 'subject' => 'Request product catalogue',         'from' => 'margareth@hotmail.com', 'agent' => 'Cindy_Kurnia',   'status' => 'Closed',  'received' => '2025-03-01 13:30:00', 'response_minutes' => 55],
+            ['ticket_number' => 'TKT-240301-013', 'subject' => 'Refund status follow-up',           'from' => 'felix.tan@gmail.com',   'agent' => 'Budi_Santoso',   'status' => 'Open',    'received' => '2025-03-01 14:10:00', 'response_minutes' => 150],
+            ['ticket_number' => 'TKT-240301-014', 'subject' => 'Loyalty points inquiry',            'from' => 'putri.r@yahoo.com',     'agent' => 'Rina_Wahyuni',   'status' => 'Closed',  'received' => '2025-03-01 14:45:00', 'response_minutes' => 25],
+            ['ticket_number' => 'TKT-240301-015', 'subject' => 'Exchange request different size',   'from' => 'kevin.w@gmail.com',     'agent' => 'Ahmad_Fauzi',    'status' => 'Replied', 'received' => '2025-03-01 15:20:00', 'response_minutes' => 75],
+        ];
+
+        // Apply date filter
+        if ($request->filled('start_date') || $request->filled('end_date')) {
+            $raw = array_values(array_filter($raw, function ($r) use ($request) {
+                $date = substr($r['received'], 0, 10);
+                if ($request->filled('start_date') && $date < $request->start_date) return false;
+                if ($request->filled('end_date')   && $date > $request->end_date)   return false;
+                return true;
+            }));
+        }
+
+        // Format rows
+        $emailData = collect($raw)->map(function ($r) {
+            $mins = $r['response_minutes'];
+            $h = intdiv($mins, 60);
+            $m = $mins % 60;
+            return [
+                'ticket_number'    => $r['ticket_number'],
+                'subject'          => $r['subject'],
+                'from'             => $r['from'],
+                'agent'            => $r['agent'],
+                'status'           => $r['status'],
+                'response_minutes' => $mins,
+                'response_time'    => $h > 0 ? sprintf('%dh %02dm', $h, $m) : sprintf('%dm', $m),
+                'received_at'      => \Carbon\Carbon::parse($r['received'])->format('d M Y H:i'),
+            ];
+        })->toArray();
+
+        // Handle export
+        if ($request->filled('export')) {
+            $headers = ['No', 'Ticket Number', 'Subject', 'From', 'Agent', 'Status', 'Response Time', 'Received At'];
+            $filename = 'report_channel_email_' . now()->format('Ymd_His');
+            $csv = implode(',', array_map('json_encode', $headers)) . "\n";
+            foreach ($emailData as $i => $r) {
+                $csv .= implode(',', array_map('json_encode', [
+                    $i + 1, $r['ticket_number'], $r['subject'], $r['from'],
+                    $r['agent'], $r['status'], $r['response_time'], $r['received_at'],
+                ])) . "\n";
+            }
+            return \Illuminate\Support\Facades\Response::make($csv, 200, [
+                'Content-Type'        => 'text/csv',
+                'Content-Disposition' => "attachment; filename=\"{$filename}.csv\"",
+            ]);
+        }
+
+        return view('pages.report.channel-email', compact('emailData'));
+    }
+
+    public function loginActivity(Request $request)
+    {
+        // ── Dummy Login Activity data ──────────────────────────────────────────
+        $raw = [
+            ['id' => 294, 'agent' => 'Vica Damayanti',         'description' => 'Login', 'date' => '2025-08-01 08:58:00'],
+            ['id' => 293, 'agent' => 'Muhammad Ridho Fadilah', 'description' => 'Login', 'date' => '2025-08-01 09:48:00'],
+            ['id' => 292, 'agent' => 'Lukas Imanuel',          'description' => 'Login', 'date' => '2025-08-01 09:02:00'],
+            ['id' => 291, 'agent' => 'Firman Hadi Sanjaya',    'description' => 'Login', 'date' => '2025-08-01 10:14:00'],
+            ['id' => 290, 'agent' => 'Cindy Kurnia',           'description' => 'Login', 'date' => '2025-08-01 09:06:00'],
+            ['id' => 289, 'agent' => 'Ahmad Maulana',          'description' => 'Login', 'date' => '2025-08-01 09:05:00'],
+            ['id' => 288, 'agent' => 'Ahmad Maulana',          'description' => 'Login', 'date' => '2025-08-01 09:51:00'],
+            ['id' => 287, 'agent' => 'Budi Santoso',           'description' => 'Logout', 'date' => '2025-08-01 17:00:00'],
+            ['id' => 286, 'agent' => 'Rina Wahyuni',           'description' => 'Login',  'date' => '2025-08-01 08:30:00'],
+            ['id' => 285, 'agent' => 'Sari Dewi',              'description' => 'Logout', 'date' => '2025-08-01 16:45:00'],
+            ['id' => 284, 'agent' => 'Dian Pratama',           'description' => 'Login',  'date' => '2025-07-31 08:15:00'],
+            ['id' => 283, 'agent' => 'Hendra Gunawan',         'description' => 'Logout', 'date' => '2025-07-31 17:30:00'],
+            ['id' => 282, 'agent' => 'Nanda Sari',             'description' => 'Login',  'date' => '2025-07-31 09:00:00'],
+            ['id' => 281, 'agent' => 'Felix Tan',              'description' => 'Login',  'date' => '2025-07-31 08:45:00'],
+            ['id' => 280, 'agent' => 'Putri Rahayu',           'description' => 'Logout', 'date' => '2025-07-31 18:00:00'],
+        ];
+
+        // Apply date filter
+        if ($request->filled('start_date') || $request->filled('end_date')) {
+            $raw = array_values(array_filter($raw, function ($r) use ($request) {
+                $date = substr($r['date'], 0, 10);
+                if ($request->filled('start_date') && $date < $request->start_date) return false;
+                if ($request->filled('end_date')   && $date > $request->end_date)   return false;
+                return true;
+            }));
+        }
+
+        // Format rows
+        $loginData = collect($raw)->map(function ($r) {
+            return [
+                'id'          => $r['id'],
+                'agent'       => $r['agent'],
+                'description' => $r['description'],
+                'date'        => \Carbon\Carbon::parse($r['date'])->format('M j Y g:iA'),
+                'date_raw'    => $r['date'],
+            ];
+        })->toArray();
+
+        // Handle export
+        if ($request->filled('export')) {
+            $headers  = ['ID', 'Agent', 'Description', 'Date'];
+            $filename = 'report_login_activity_' . now()->format('Ymd_His');
+            $csv = implode(',', array_map('json_encode', $headers)) . "\n";
+            foreach ($loginData as $r) {
+                $csv .= implode(',', array_map('json_encode', [
+                    $r['id'], $r['agent'], $r['description'], $r['date'],
+                ])) . "\n";
+            }
+            return \Illuminate\Support\Facades\Response::make($csv, 200, [
+                'Content-Type'        => 'text/csv',
+                'Content-Disposition' => "attachment; filename=\"{$filename}.csv\"",
+            ]);
+        }
+
+        return view('pages.report.login-activity', compact('loginData'));
     }
 }
