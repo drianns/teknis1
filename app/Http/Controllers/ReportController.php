@@ -450,7 +450,7 @@ class ReportController extends Controller
 
     // ─────────────────────────────────────────────────────────────────────────
 
-    public function aux(Request $request)
+    public function agentAux(Request $request)
     {
         $raw = [
             ['username' => 'Cindy_Kurnia',   'description' => 'Toilet',   'start' => '2025-03-28 01:39:17', 'end' => '2025-03-28 01:55:42'],
@@ -517,7 +517,7 @@ class ReportController extends Controller
             return $this->csvResponse($csv, $filename);
         }
 
-        return view('pages.report.aux', compact(
+        return view('pages.report.agent-aux', compact(
             'auxData', 'totalAux', 'lunchCount', 'totalAgents', 'avgDuration'
         ));
     }

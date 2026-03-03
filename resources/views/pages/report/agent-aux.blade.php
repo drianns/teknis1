@@ -22,7 +22,7 @@
 
         {{-- Filter Card --}}
         <div class="bg-gray-800/80 backdrop-blur-md rounded-2xl border border-gray-700/50 shadow-xl ring-1 ring-white/5 shrink-0 px-5 py-4">
-            <form id="filter-form" method="GET" action="{{ route('report.aux') }}">
+            <form id="filter-form" method="GET" action="{{ route('report.agent-aux') }}">
                 <div class="flex flex-wrap items-end gap-4">
 
                     {{-- Start Date --}}
@@ -49,7 +49,7 @@
                     </button>
 
                     @if(request('start_date') || request('end_date'))
-                    <a href="{{ route('report.aux') }}"
+                    <a href="{{ route('report.agent-aux') }}"
                         class="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white text-sm font-semibold rounded-xl transition-all active:scale-95">
                         <i class='bx bx-reset text-base'></i>
                         Reset
@@ -313,7 +313,7 @@
             end_date:   document.getElementById('end_date')?.value   || '',
             format, export: '1'
         });
-        window.location.href = '{{ route("report.aux") }}?' + params.toString();
+        window.location.href = '{{ route("report.agent-aux") }}?' + params.toString();
     }
 </script>
 @endsection

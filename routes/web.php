@@ -186,7 +186,7 @@ Route::prefix('report')->name('report.')->group(function () {
     Route::get('/base-on-staff', [ReportController::class, 'baseOnStaff'])->name('base-on-staff');
     Route::get('/thread-transaction', [ReportController::class, 'threadTransaction'])->name('thread-transaction');
     Route::get('/interaction-ticket', [ReportController::class, 'interactionTicket'])->name('interaction-ticket');
-    Route::get('/aux', [ReportController::class, 'aux'])->name('aux');
+    Route::get('/agent-aux', [ReportController::class, 'agentAux'])->name('agent-aux');
     Route::get('/channel-email', [ReportController::class, 'channelEmail'])->name('channel-email');
     Route::get('/login-activity', [ReportController::class, 'loginActivity'])->name('login-activity');
 });

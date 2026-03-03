@@ -152,7 +152,7 @@
                             ['route' => 'report.base-on-staff', 'label' => 'Report base on Staff'],
                             ['route' => 'report.thread-transaction', 'label' => 'Report Thread Transaction'],
                             ['route' => 'report.interaction-ticket', 'label' => 'Report Interaction Ticket'],
-                            ['route' => 'report.aux', 'label' => 'Report AUX'],
+                            ['route' => 'report.agent-aux', 'label' => 'Report AUX'],
                             ['route' => 'report.channel-email', 'label' => 'Report Channel Email'],
                         ] as $item)
                         <li>
