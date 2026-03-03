@@ -8,6 +8,51 @@ use Illuminate\Support\Facades\Response;
 
 class ReportController extends Controller
 {
+    // ─────────────────────────────────────────────────────────────────────────
+    // Helper: build a clean CSV string from headers + rows.
+    // Uses proper RFC 4180 quoting via fputcsv into a memory stream.
+    // Prepends UTF-8 BOM so Excel opens it with correct encoding.
+    // ─────────────────────────────────────────────────────────────────────────
+    private function buildCsv(array $headers, array $rows): string
+    {
+        $sep = "\t"; // Tab separator — works on all regional settings (ID/EN/etc)
+
+        $lines = [];
+
+        // Header row
+        $lines[] = implode($sep, array_map(fn($v) => $this->tsvEscape($v), $headers));
+
+        // Data rows
+        foreach ($rows as $row) {
+            $lines[] = implode($sep, array_map(fn($v) => $this->tsvEscape($v), $row));
+        }
+
+        // UTF-8 BOM so Excel opens with correct encoding
+        return "\xEF\xBB\xBF" . implode("\r\n", $lines) . "\r\n";
+    }
+
+    // Escape a single cell value for tab-separated output.
+    // Wraps in double-quotes only if the value contains tabs, newlines, or double-quotes.
+    private function tsvEscape(mixed $value): string
+    {
+        $v = (string) $value;
+        if (str_contains($v, '"') || str_contains($v, "\t") || str_contains($v, "\n")) {
+            return '"' . str_replace('"', '""', $v) . '"';
+        }
+        return $v;
+    }
+
+    // Helper: return a CSV download response.
+    private function csvResponse(string $csv, string $filename): \Illuminate\Http\Response
+    {
+        return Response::make($csv, 200, [
+            'Content-Type'        => 'text/tab-separated-values; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=\"{$filename}.csv\"",
+        ]);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+
     public function statisticCall()
     {
         return view('pages.report.statistic-call');
@@ -18,7 +63,6 @@ class ReportController extends Controller
         $query = ChatHeaderTicket::with(['userAgent.user'])
             ->whereNotNull('user_agent_id');
 
-        // Date filter
         if ($request->filled('start_date')) {
             $query->whereDate('created_at', '>=', $request->start_date);
         }
@@ -31,7 +75,7 @@ class ReportController extends Controller
         // Handle export
         if ($request->filled('export')) {
             $all = (clone $query)->get();
-            return $this->exportAssignEmail($all, $request->get('format', 'Excel'));
+            return $this->exportAssignEmail($all);
         }
 
         $perPage = (int) $request->get('per_page', 10);
@@ -40,21 +84,16 @@ class ReportController extends Controller
         return view('pages.report.assign-email', compact('tickets'));
     }
 
-    /**
-     * Export assign email report as CSV (Excel-compatible).
-     */
-    private function exportAssignEmail($tickets, string $format)
+    private function exportAssignEmail($tickets): \Illuminate\Http\Response
     {
         $headers = ['No', 'Ticket Number', 'Subject', 'Agent', 'Category', 'Status', 'Assigned At', 'Response Time (min)'];
 
         $rows = $tickets->map(function ($ticket, $i) {
             $agent = $ticket->userAgent->full_name
                 ?? ($ticket->userAgent->user->name ?? 'Unassigned');
-
             $responseMin = $ticket->created_at
                 ? (int) now()->diffInMinutes($ticket->created_at, false)
                 : 0;
-
             return [
                 $i + 1,
                 $ticket->ticket_number,
@@ -67,24 +106,12 @@ class ReportController extends Controller
             ];
         })->toArray();
 
+        $csv      = $this->buildCsv($headers, $rows);
         $filename = 'report_assign_email_' . now()->format('Ymd_His');
-
-        $csv = implode(',', array_map('json_encode', $headers)) . "\n";
-        foreach ($rows as $row) {
-            $csv .= implode(',', array_map('json_encode', $row)) . "\n";
-        }
-
-        $extension = match (strtolower($format)) {
-            'pdf'   => 'csv', // simplified fallback — real PDF needs a package
-            'csv'   => 'csv',
-            default => 'csv', // Excel-compatible CSV
-        };
-
-        return Response::make($csv, 200, [
-            'Content-Type'        => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"{$filename}.{$extension}\"",
-        ]);
+        return $this->csvResponse($csv, $filename);
     }
+
+    // ─────────────────────────────────────────────────────────────────────────
 
     public function slNespresso()
     {
@@ -96,14 +123,13 @@ class ReportController extends Controller
         return view('pages.report.placeholder', ['title' => 'Report SL Kanmo']);
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+
     public function baseOnSLA(Request $request)
     {
-        // SLA target in minutes (24 hours)
         $slaTargetMinutes = 1440;
-
         $query = ChatHeaderTicket::with(['userAgent.user']);
 
-        // Date filter
         if ($request->filled('start_date')) {
             $query->whereDate('created_at', '>=', $request->start_date);
         }
@@ -113,8 +139,7 @@ class ReportController extends Controller
 
         $query->orderByDesc('created_at');
 
-        // Calculate totals for summary cards (across ALL matching records)
-        $allForStats = (clone $query)->get();
+        $allForStats      = (clone $query)->get();
         $slaMetTotal      = $allForStats->filter(fn($t) =>
             $t->created_at && $t->created_at->diffInMinutes($t->updated_at ?? now()) <= $slaTargetMinutes
         )->count();
@@ -125,9 +150,8 @@ class ReportController extends Controller
             ? round(($slaMetTotal / $allForStats->count()) * 100)
             : 0;
 
-        // Handle export
         if ($request->filled('export')) {
-            return $this->exportBaseOnSLA($allForStats, $request->get('format', 'Excel'), $slaTargetMinutes);
+            return $this->exportBaseOnSLA($allForStats, $slaTargetMinutes);
         }
 
         $perPage = (int) $request->get('per_page', 10);
@@ -138,22 +162,17 @@ class ReportController extends Controller
         ));
     }
 
-    /**
-     * Export base-on-SLA report as CSV.
-     */
-    private function exportBaseOnSLA($tickets, string $format, int $slaTargetMinutes = 1440)
+    private function exportBaseOnSLA($tickets, int $slaTargetMinutes = 1440): \Illuminate\Http\Response
     {
         $headers = ['No', 'Ticket Number', 'Subject', 'Agent', 'Category', 'Status', 'SLA Target (min)', 'Response Time (min)', 'SLA Status'];
 
         $rows = $tickets->map(function ($ticket, $i) use ($slaTargetMinutes) {
             $agent = $ticket->userAgent->full_name
                 ?? ($ticket->userAgent->user->name ?? 'Unassigned');
-
-            $elapsed = $ticket->created_at
+            $elapsed   = $ticket->created_at
                 ? (int) $ticket->created_at->diffInMinutes($ticket->updated_at ?? now())
                 : 0;
             $slaStatus = $elapsed <= $slaTargetMinutes ? 'Met' : 'Breached';
-
             return [
                 $i + 1,
                 $ticket->ticket_number,
@@ -167,24 +186,17 @@ class ReportController extends Controller
             ];
         })->toArray();
 
+        $csv      = $this->buildCsv($headers, $rows);
         $filename = 'report_base_on_sla_' . now()->format('Ymd_His');
-
-        $csv = implode(',', array_map('json_encode', $headers)) . "\n";
-        foreach ($rows as $row) {
-            $csv .= implode(',', array_map('json_encode', $row)) . "\n";
-        }
-
-        return Response::make($csv, 200, [
-            'Content-Type'        => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"{$filename}.csv\"",
-        ]);
+        return $this->csvResponse($csv, $filename);
     }
+
+    // ─────────────────────────────────────────────────────────────────────────
 
     public function baseOnTransaction(Request $request)
     {
         $query = ChatHeaderTicket::with(['userAgent.user', 'chat_ticket_user']);
 
-        // Date filter
         if ($request->filled('start_date')) {
             $query->whereDate('created_at', '>=', $request->start_date);
         }
@@ -194,18 +206,16 @@ class ReportController extends Controller
 
         $query->orderByDesc('created_at');
 
-        // Summary counts (efficient DB-level aggregates)
-        $baseQuery     = clone $query;
-        $closedCount   = (clone $baseQuery)->where('status', 'like', '%close%')->count();
-        $openCount     = (clone $baseQuery)->where(function ($q) {
+        $baseQuery      = clone $query;
+        $closedCount    = (clone $baseQuery)->where('status', 'like', '%close%')->count();
+        $openCount      = (clone $baseQuery)->where(function ($q) {
             $q->where('status', 'like', '%open%')->orWhere('status', 'like', '%pending%');
         })->count();
         $escalatedCount = (clone $baseQuery)->where('need_escalated', true)->count();
 
-        // Handle export
         if ($request->filled('export')) {
             $all = (clone $query)->get();
-            return $this->exportBaseOnTransaction($all, $request->get('format', 'Excel'));
+            return $this->exportBaseOnTransaction($all);
         }
 
         $perPage = (int) $request->get('per_page', 10);
@@ -216,10 +226,7 @@ class ReportController extends Controller
         ));
     }
 
-    /**
-     * Export base-on-transaction report as CSV.
-     */
-    private function exportBaseOnTransaction($tickets, string $format)
+    private function exportBaseOnTransaction($tickets): \Illuminate\Http\Response
     {
         $headers = ['No', 'Ticket Number', 'Customer', 'Agent', 'Category', 'Sub Category', 'Priority', 'Status', 'Created At', 'Duration (min)'];
 
@@ -229,7 +236,6 @@ class ReportController extends Controller
             $duration = $ticket->created_at
                 ? (int) $ticket->created_at->diffInMinutes($ticket->updated_at ?? now())
                 : 0;
-
             return [
                 $i + 1,
                 $ticket->ticket_number,
@@ -244,25 +250,18 @@ class ReportController extends Controller
             ];
         })->toArray();
 
+        $csv      = $this->buildCsv($headers, $rows);
         $filename = 'report_base_on_transaction_' . now()->format('Ymd_His');
-        $csv = implode(',', array_map('json_encode', $headers)) . "\n";
-        foreach ($rows as $row) {
-            $csv .= implode(',', array_map('json_encode', $row)) . "\n";
-        }
-
-        return Response::make($csv, 200, [
-            'Content-Type'        => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"{$filename}.csv\"",
-        ]);
+        return $this->csvResponse($csv, $filename);
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
 
     public function baseOnStaff(Request $request)
     {
         $query = ChatHeaderTicket::with(['userAgent.user'])
             ->whereNotNull('user_agent_id');
 
-        // Date filter
         if ($request->filled('start_date')) {
             $query->whereDate('created_at', '>=', $request->start_date);
         }
@@ -272,23 +271,19 @@ class ReportController extends Controller
 
         $query->orderByDesc('created_at');
 
-        // Summary stats — DB-level where possible
         $baseQuery    = clone $query;
         $closedCount  = (clone $baseQuery)->where('status', 'like', '%close%')->count();
         $activeAgents = (clone $baseQuery)->distinct()->count('user_agent_id');
 
-        // Avg handle time (minutes) across ALL matching records
-        // Pull only timestamps column to keep it light
         $timings = (clone $baseQuery)->whereNotNull('updated_at')
             ->get(['created_at', 'updated_at']);
         $avgHandleTime = $timings->count() > 0
             ? (int) $timings->avg(fn($t) => $t->created_at->diffInMinutes($t->updated_at))
             : 0;
 
-        // Handle export
         if ($request->filled('export')) {
             $all = (clone $query)->get();
-            return $this->exportBaseOnStaff($all, $request->get('format', 'Excel'));
+            return $this->exportBaseOnStaff($all);
         }
 
         $perPage = (int) $request->get('per_page', 10);
@@ -299,20 +294,16 @@ class ReportController extends Controller
         ));
     }
 
-    /**
-     * Export base-on-staff report as CSV.
-     */
-    private function exportBaseOnStaff($tickets, string $format)
+    private function exportBaseOnStaff($tickets): \Illuminate\Http\Response
     {
         $headers = ['No', 'Agent Name', 'Layer', 'Ticket Number', 'Category', 'Sub Category', 'Priority', 'Status', 'Assigned At', 'Handle Time (min)', 'Escalated'];
 
         $rows = $tickets->map(function ($ticket, $i) {
-            $agent    = $ticket->userAgent->full_name ?? ($ticket->userAgent->user->name ?? 'Unassigned');
-            $layer    = $ticket->userAgent->layer ?? 'layer1';
+            $agent     = $ticket->userAgent->full_name ?? ($ticket->userAgent->user->name ?? 'Unassigned');
+            $layer     = $ticket->userAgent->layer ?? 'layer1';
             $handleMin = $ticket->created_at
                 ? (int) $ticket->created_at->diffInMinutes($ticket->updated_at ?? now())
                 : 0;
-
             return [
                 $i + 1,
                 $agent,
@@ -328,24 +319,17 @@ class ReportController extends Controller
             ];
         })->toArray();
 
+        $csv      = $this->buildCsv($headers, $rows);
         $filename = 'report_base_on_staff_' . now()->format('Ymd_His');
-        $csv = implode(',', array_map('json_encode', $headers)) . "\n";
-        foreach ($rows as $row) {
-            $csv .= implode(',', array_map('json_encode', $row)) . "\n";
-        }
-
-        return Response::make($csv, 200, [
-            'Content-Type'        => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"{$filename}.csv\"",
-        ]);
+        return $this->csvResponse($csv, $filename);
     }
+
+    // ─────────────────────────────────────────────────────────────────────────
 
     public function threadTransaction(Request $request)
     {
-        // Import at top of query scope
         $query = \App\Models\ChatHeader::with(['channel', 'latestTicket.userAgent.user']);
 
-        // Date filter on thread creation
         if ($request->filled('start_date')) {
             $query->whereDate('created_at', '>=', $request->start_date);
         }
@@ -355,7 +339,6 @@ class ReportController extends Controller
 
         $query->orderByDesc('created_at');
 
-        // Summary counts
         $baseQuery    = clone $query;
         $closedCount  = (clone $baseQuery)->where('status', 'like', '%close%')->count();
         $openCount    = (clone $baseQuery)->where('status', 'like', '%open%')->count();
@@ -365,10 +348,9 @@ class ReportController extends Controller
                 $q->whereDate('created_at', '<=', $request->end_date))
             ->count();
 
-        // Handle export
         if ($request->filled('export')) {
             $all = (clone $query)->get();
-            return $this->exportThreadTransaction($all, $request->get('format', 'Excel'));
+            return $this->exportThreadTransaction($all);
         }
 
         $perPage = (int) $request->get('per_page', 10);
@@ -379,18 +361,14 @@ class ReportController extends Controller
         ));
     }
 
-    /**
-     * Export thread-transaction report as CSV.
-     */
-    private function exportThreadTransaction($threads, string $format)
+    private function exportThreadTransaction($threads): \Illuminate\Http\Response
     {
         $headers = ['No', 'Thread ID', 'Channel', 'Ticket Number', 'Subject', 'Agent', 'Thread Status', 'Ticket Status', 'Created At'];
 
         $rows = $threads->map(function ($thread, $i) {
-            $ticket    = $thread->latestTicket;
-            $agent     = $ticket->userAgent->full_name ?? ($ticket->userAgent->user->name ?? 'Unassigned') ?? 'Unassigned';
-            $channel   = $thread->channel->name ?? ('CH-' . $thread->channel_id);
-
+            $ticket  = $thread->latestTicket;
+            $agent   = $ticket->userAgent->full_name ?? ($ticket->userAgent->user->name ?? 'Unassigned') ?? 'Unassigned';
+            $channel = $thread->channel->name ?? ('CH-' . $thread->channel_id);
             return [
                 $i + 1,
                 $thread->id,
@@ -404,23 +382,17 @@ class ReportController extends Controller
             ];
         })->toArray();
 
+        $csv      = $this->buildCsv($headers, $rows);
         $filename = 'report_thread_transaction_' . now()->format('Ymd_His');
-        $csv = implode(',', array_map('json_encode', $headers)) . "\n";
-        foreach ($rows as $row) {
-            $csv .= implode(',', array_map('json_encode', $row)) . "\n";
-        }
-
-        return Response::make($csv, 200, [
-            'Content-Type'        => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"{$filename}.csv\"",
-        ]);
+        return $this->csvResponse($csv, $filename);
     }
+
+    // ─────────────────────────────────────────────────────────────────────────
 
     public function interactionTicket(Request $request)
     {
         $query = \App\Models\ResultTicket::with(['channel', 'user_agent.user']);
 
-        // Date filter
         if ($request->filled('start_date')) {
             $query->whereDate('created_at', '>=', $request->start_date);
         }
@@ -430,7 +402,6 @@ class ReportController extends Controller
 
         $query->orderByDesc('created_at');
 
-        // Summary counts by flaging type (DB-level)
         $base          = clone $query;
         $totalCount    = (clone $base)->count();
         $inboundCount  = (clone $base)->where('flaging', 1)->count();
@@ -438,10 +409,9 @@ class ReportController extends Controller
         $chatCount     = (clone $base)->where('flaging', 3)->count();
         $emailCount    = (clone $base)->where('flaging', 4)->count();
 
-        // Handle export
         if ($request->filled('export')) {
             $all = (clone $query)->get();
-            return $this->exportInteractionTicket($all, $request->get('format', 'Excel'));
+            return $this->exportInteractionTicket($all);
         }
 
         $perPage = (int) $request->get('per_page', 10);
@@ -452,17 +422,13 @@ class ReportController extends Controller
         ));
     }
 
-    /**
-     * Export interaction-ticket report as CSV.
-     */
-    private function exportInteractionTicket($tickets, string $format)
+    private function exportInteractionTicket($tickets): \Illuminate\Http\Response
     {
         $headers = ['No', 'Ticket Number', 'Interaction Type', 'Channel', 'Agent', 'Category', 'Sub Category', 'Status', 'Merged', 'Created At'];
 
         $rows = $tickets->map(function ($ticket, $i) {
             $agent   = $ticket->user_agent->full_name ?? ($ticket->user_agent->user->name ?? 'Unassigned');
             $channel = $ticket->channel->name ?? ('CH-' . $ticket->channel_id);
-
             return [
                 $i + 1,
                 $ticket->ticket_number ?? '',
@@ -477,21 +443,15 @@ class ReportController extends Controller
             ];
         })->toArray();
 
+        $csv      = $this->buildCsv($headers, $rows);
         $filename = 'report_interaction_ticket_' . now()->format('Ymd_His');
-        $csv = implode(',', array_map('json_encode', $headers)) . "\n";
-        foreach ($rows as $row) {
-            $csv .= implode(',', array_map('json_encode', $row)) . "\n";
-        }
-
-        return Response::make($csv, 200, [
-            'Content-Type'        => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"{$filename}.csv\"",
-        ]);
+        return $this->csvResponse($csv, $filename);
     }
+
+    // ─────────────────────────────────────────────────────────────────────────
 
     public function aux(Request $request)
     {
-        // ── Dummy AUX data ─────────────────────────────────────────────────────
         $raw = [
             ['username' => 'Cindy_Kurnia',   'description' => 'Toilet',   'start' => '2025-03-28 01:39:17', 'end' => '2025-03-28 01:55:42'],
             ['username' => 'Cindy_Kurnia',   'description' => 'Lunch',    'start' => '2025-03-28 03:33:15', 'end' => '2025-03-28 04:39:00'],
@@ -513,7 +473,6 @@ class ReportController extends Controller
             ['username' => 'Dian_Pratama',   'description' => 'Lunch',    'start' => '2025-03-28 11:00:00', 'end' => '2025-03-28 12:00:00'],
         ];
 
-        // Apply date filter on dummy data
         if ($request->filled('start_date') || $request->filled('end_date')) {
             $raw = array_filter($raw, function ($r) use ($request) {
                 $date = substr($r['start'], 0, 10);
@@ -524,7 +483,6 @@ class ReportController extends Controller
             $raw = array_values($raw);
         }
 
-        // Build formatted rows with interval
         $auxData = collect($raw)->map(function ($r) {
             $start = \Carbon\Carbon::parse($r['start']);
             $end   = \Carbon\Carbon::parse($r['end']);
@@ -538,35 +496,25 @@ class ReportController extends Controller
             ];
         })->toArray();
 
-        // Summary stats
         $totalAux    = count($auxData);
         $lunchCount  = collect($auxData)->where('description', 'Lunch')->count();
         $totalAgents = collect($auxData)->pluck('username')->unique()->count();
 
-        // Average duration in mm:ss
         $totalSeconds = collect($raw)->sum(function ($r) {
             return \Carbon\Carbon::parse($r['start'])->diffInSeconds(\Carbon\Carbon::parse($r['end']));
         });
-        $avgSec = $totalAux > 0 ? (int) ($totalSeconds / $totalAux) : 0;
+        $avgSec      = $totalAux > 0 ? (int) ($totalSeconds / $totalAux) : 0;
         $avgDuration = sprintf('%02d:%02d', intdiv($avgSec, 60), $avgSec % 60);
 
-        // Handle export
         if ($request->filled('export')) {
             $headers = ['No', 'AUX UserName', 'AUX Description', 'AUX Start Date', 'AUX End Date', 'AUX Interval'];
             $rows    = collect($auxData)->map(fn($r, $i) => [
                 $i + 1, $r['username'], $r['description'], $r['start_date'], $r['end_date'], $r['interval'],
             ])->toArray();
 
+            $csv      = $this->buildCsv($headers, $rows);
             $filename = 'report_aux_' . now()->format('Ymd_His');
-            $csv = implode(',', array_map('json_encode', $headers)) . "\n";
-            foreach ($rows as $row) {
-                $csv .= implode(',', array_map('json_encode', $row)) . "\n";
-            }
-
-            return \Illuminate\Support\Facades\Response::make($csv, 200, [
-                'Content-Type'        => 'text/csv',
-                'Content-Disposition' => "attachment; filename=\"{$filename}.csv\"",
-            ]);
+            return $this->csvResponse($csv, $filename);
         }
 
         return view('pages.report.aux', compact(
@@ -574,9 +522,10 @@ class ReportController extends Controller
         ));
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+
     public function channelEmail(Request $request)
     {
-        // ── Dummy Channel Email data ────────────────────────────────────────────
         $raw = [
             ['ticket_number' => 'TKT-240301-001', 'subject' => 'Inquiry about order status',          'from' => 'customer1@gmail.com',   'agent' => 'Budi_Santoso',   'status' => 'Closed',  'received' => '2025-03-01 08:10:00', 'response_minutes' => 35],
             ['ticket_number' => 'TKT-240301-002', 'subject' => 'Return request for damaged item',     'from' => 'rina.wahyuni@yahoo.com', 'agent' => 'Rina_Wahyuni',   'status' => 'Replied', 'received' => '2025-03-01 08:45:00', 'response_minutes' => 20],
@@ -595,7 +544,6 @@ class ReportController extends Controller
             ['ticket_number' => 'TKT-240301-015', 'subject' => 'Exchange request different size',   'from' => 'kevin.w@gmail.com',     'agent' => 'Ahmad_Fauzi',    'status' => 'Replied', 'received' => '2025-03-01 15:20:00', 'response_minutes' => 75],
         ];
 
-        // Apply date filter
         if ($request->filled('start_date') || $request->filled('end_date')) {
             $raw = array_values(array_filter($raw, function ($r) use ($request) {
                 $date = substr($r['received'], 0, 10);
@@ -605,11 +553,10 @@ class ReportController extends Controller
             }));
         }
 
-        // Format rows
         $emailData = collect($raw)->map(function ($r) {
             $mins = $r['response_minutes'];
-            $h = intdiv($mins, 60);
-            $m = $mins % 60;
+            $h    = intdiv($mins, 60);
+            $m    = $mins % 60;
             return [
                 'ticket_number'    => $r['ticket_number'],
                 'subject'          => $r['subject'],
@@ -622,37 +569,33 @@ class ReportController extends Controller
             ];
         })->toArray();
 
-        // Handle export
         if ($request->filled('export')) {
             $headers = ['No', 'Ticket Number', 'Subject', 'From', 'Agent', 'Status', 'Response Time', 'Received At'];
+            $rows    = collect($emailData)->map(fn($r, $i) => [
+                $i + 1, $r['ticket_number'], $r['subject'], $r['from'],
+                $r['agent'], $r['status'], $r['response_time'], $r['received_at'],
+            ])->toArray();
+
+            $csv      = $this->buildCsv($headers, $rows);
             $filename = 'report_channel_email_' . now()->format('Ymd_His');
-            $csv = implode(',', array_map('json_encode', $headers)) . "\n";
-            foreach ($emailData as $i => $r) {
-                $csv .= implode(',', array_map('json_encode', [
-                    $i + 1, $r['ticket_number'], $r['subject'], $r['from'],
-                    $r['agent'], $r['status'], $r['response_time'], $r['received_at'],
-                ])) . "\n";
-            }
-            return \Illuminate\Support\Facades\Response::make($csv, 200, [
-                'Content-Type'        => 'text/csv',
-                'Content-Disposition' => "attachment; filename=\"{$filename}.csv\"",
-            ]);
+            return $this->csvResponse($csv, $filename);
         }
 
         return view('pages.report.channel-email', compact('emailData'));
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+
     public function loginActivity(Request $request)
     {
-        // ── Dummy Login Activity data ──────────────────────────────────────────
         $raw = [
-            ['id' => 294, 'agent' => 'Vica Damayanti',         'description' => 'Login', 'date' => '2025-08-01 08:58:00'],
-            ['id' => 293, 'agent' => 'Muhammad Ridho Fadilah', 'description' => 'Login', 'date' => '2025-08-01 09:48:00'],
-            ['id' => 292, 'agent' => 'Lukas Imanuel',          'description' => 'Login', 'date' => '2025-08-01 09:02:00'],
-            ['id' => 291, 'agent' => 'Firman Hadi Sanjaya',    'description' => 'Login', 'date' => '2025-08-01 10:14:00'],
-            ['id' => 290, 'agent' => 'Cindy Kurnia',           'description' => 'Login', 'date' => '2025-08-01 09:06:00'],
-            ['id' => 289, 'agent' => 'Ahmad Maulana',          'description' => 'Login', 'date' => '2025-08-01 09:05:00'],
-            ['id' => 288, 'agent' => 'Ahmad Maulana',          'description' => 'Login', 'date' => '2025-08-01 09:51:00'],
+            ['id' => 294, 'agent' => 'Vica Damayanti',         'description' => 'Login',  'date' => '2025-08-01 08:58:00'],
+            ['id' => 293, 'agent' => 'Muhammad Ridho Fadilah', 'description' => 'Login',  'date' => '2025-08-01 09:48:00'],
+            ['id' => 292, 'agent' => 'Lukas Imanuel',          'description' => 'Login',  'date' => '2025-08-01 09:02:00'],
+            ['id' => 291, 'agent' => 'Firman Hadi Sanjaya',    'description' => 'Login',  'date' => '2025-08-01 10:14:00'],
+            ['id' => 290, 'agent' => 'Cindy Kurnia',           'description' => 'Login',  'date' => '2025-08-01 09:06:00'],
+            ['id' => 289, 'agent' => 'Ahmad Maulana',          'description' => 'Login',  'date' => '2025-08-01 09:05:00'],
+            ['id' => 288, 'agent' => 'Ahmad Maulana',          'description' => 'Login',  'date' => '2025-08-01 09:51:00'],
             ['id' => 287, 'agent' => 'Budi Santoso',           'description' => 'Logout', 'date' => '2025-08-01 17:00:00'],
             ['id' => 286, 'agent' => 'Rina Wahyuni',           'description' => 'Login',  'date' => '2025-08-01 08:30:00'],
             ['id' => 285, 'agent' => 'Sari Dewi',              'description' => 'Logout', 'date' => '2025-08-01 16:45:00'],
@@ -663,7 +606,6 @@ class ReportController extends Controller
             ['id' => 280, 'agent' => 'Putri Rahayu',           'description' => 'Logout', 'date' => '2025-07-31 18:00:00'],
         ];
 
-        // Apply date filter
         if ($request->filled('start_date') || $request->filled('end_date')) {
             $raw = array_values(array_filter($raw, function ($r) use ($request) {
                 $date = substr($r['date'], 0, 10);
@@ -673,7 +615,6 @@ class ReportController extends Controller
             }));
         }
 
-        // Format rows
         $loginData = collect($raw)->map(function ($r) {
             return [
                 'id'          => $r['id'],
@@ -684,20 +625,15 @@ class ReportController extends Controller
             ];
         })->toArray();
 
-        // Handle export
         if ($request->filled('export')) {
-            $headers  = ['ID', 'Agent', 'Description', 'Date'];
+            $headers = ['ID', 'Agent', 'Description', 'Date'];
+            $rows    = collect($loginData)->map(fn($r) => [
+                $r['id'], $r['agent'], $r['description'], $r['date'],
+            ])->toArray();
+
+            $csv      = $this->buildCsv($headers, $rows);
             $filename = 'report_login_activity_' . now()->format('Ymd_His');
-            $csv = implode(',', array_map('json_encode', $headers)) . "\n";
-            foreach ($loginData as $r) {
-                $csv .= implode(',', array_map('json_encode', [
-                    $r['id'], $r['agent'], $r['description'], $r['date'],
-                ])) . "\n";
-            }
-            return \Illuminate\Support\Facades\Response::make($csv, 200, [
-                'Content-Type'        => 'text/csv',
-                'Content-Disposition' => "attachment; filename=\"{$filename}.csv\"",
-            ]);
+            return $this->csvResponse($csv, $filename);
         }
 
         return view('pages.report.login-activity', compact('loginData'));
