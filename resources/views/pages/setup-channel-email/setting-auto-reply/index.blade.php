@@ -45,30 +45,36 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-700/50 text-sm text-gray-300">
+                            @forelse($rows as $row)
                             <tr class="hover:bg-blue-500/[0.03] transition-colors">
-                                <td class="px-4 py-3 whitespace-nowrap font-mono text-blue-400 font-medium text-center">1</td>
-                                <td class="px-4 py-3 whitespace-nowrap font-medium text-white">Auto_Reply</td>
+                                <td class="px-4 py-3 whitespace-nowrap font-mono text-blue-400 font-medium text-center">{{ $row['id'] }}</td>
+                                <td class="px-4 py-3 whitespace-nowrap font-medium text-white">{{ $row['nama'] }}</td>
                                 <td class="px-4 py-3 whitespace-nowrap text-center">
                                     <label class="inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" class="sr-only peer">
+                                        <input type="checkbox" class="sr-only peer" {{ ($row['aktif'] ?? false) ? 'checked' : '' }}>
                                         <div class="relative w-11 h-6 bg-gray-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                                     </label>
                                 </td>
                             </tr>
-                            <tr class="hover:bg-blue-500/[0.03] transition-colors">
-                                <td colspan="3" class="p-8 text-center text-gray-500 text-sm hidden">No data found.</td>
+                            @empty
+                            <tr>
+                                <td colspan="3" class="px-4 py-12 text-center text-gray-500 text-sm">
+                                    <div class="flex flex-col items-center justify-center gap-2">
+                                        <i class='bx bx-folder-open text-4xl'></i>
+                                        <p class="text-sm font-medium">No auto reply settings found</p>
+                                    </div>
+                                </td>
                             </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
 
                 <!-- Pagination -->
                 <div class="table-pagination px-6 py-4 border-t border-gray-700/50 flex flex-wrap justify-between items-center gap-4 bg-gray-800/30">
-                    <div class="text-sm text-gray-500">Showing <span class="text-white font-bold">1</span> to <span class="text-white font-bold">1</span> of <span class="text-white font-bold">1</span> entries</div>
+                    <div class="text-sm text-gray-500">Showing <span class="text-white font-bold">{{ $rows->firstItem() ?? 0 }}</span> to <span class="text-white font-bold">{{ $rows->lastItem() ?? 0 }}</span> of <span class="text-white font-bold">{{ $rows->total() }}</span> entries</div>
                     <div class="flex gap-1">
-                        <button class="px-3 py-1.5 text-xs font-bold text-gray-500 border border-gray-700 rounded-lg hover:bg-gray-700 transition-colors">Previous</button>
-                        <button class="px-3 py-1.5 text-xs font-bold bg-blue-600 text-white rounded-lg shadow-lg shadow-blue-500/20">1</button>
-                        <button class="px-3 py-1.5 text-xs font-bold text-gray-500 border border-gray-700 rounded-lg hover:bg-gray-700 transition-colors">Next</button>
+                        {{ $rows->links('vendor.pagination.custom-dark') }}
                     </div>
                 </div>
             </div>

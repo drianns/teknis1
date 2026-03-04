@@ -21,7 +21,7 @@ class TaskboardController extends Controller
     {
         // Mocking company for now if not found
         $companyId = 1;
-        $company = Company::find($companyId) ?? new Company(['id' => 1, 'name' => 'Kanmo Group']);
+        $company = Company::find($companyId);
 
         // 1. Open
         $countOpen = ResultTicket::where('company_id', $companyId)
@@ -77,37 +77,14 @@ class TaskboardController extends Controller
         $perPage = $request->input('entries', 10);
         $resultTickets = $resultTicketsQuery->orderBy('created_at', 'desc')->paginate($perPage);
 
-        // Transform collection to add mocked data matching the reference image
+        // Transform collection to ensure extra_data is an object
         $resultTickets->getCollection()->transform(function ($ticket) {
-            // Mock SLA between 1-3 days
-            $ticket->sla = rand(1, 3);
-
-            // Mock Note SLA
-            $daysPassed = $ticket->created_at->diffInDays(now());
-            $ticket->note_sla = $daysPassed > $ticket->sla
-                ? ($daysPassed - $ticket->sla) . " Days Over"
-                : ($ticket->sla - $daysPassed) . " Days Later";
-
-            // Mock Department based on some logic or random
-            $departments = ['Warehouse', 'Logistics', 'IT', 'Finance', 'HR'];
-            $ticket->department = $departments[array_rand($departments)];
-
-            // Mock Customer Name if missing or static 'Vidya'
-            // Ensure extra_data is an object
             if (is_string($ticket->extra_data)) {
                 $ticket->extra_data = json_decode($ticket->extra_data);
             }
             if (!$ticket->extra_data) {
                 $ticket->extra_data = (object) [];
             }
-
-            // Force mock name for demo purposes to prove dynamic data
-            $names = ['Advan', 'Sarah', 'Budi', 'Dewi', 'Michael', 'Jessica', 'David', 'Putri'];
-            $randomName = $names[array_rand($names)];
-            // Append last 4 digits of ticket number to make it look unique
-            $suffix = substr($ticket->ticket_number, -4);
-            $ticket->extra_data->name = "$randomName ($suffix)";
-
             return $ticket;
         });
 

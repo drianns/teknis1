@@ -191,7 +191,7 @@
                             <div class="flex items-center gap-2">
                                 <i class="bx bx-phone text-blue-400/60"></i>
                                 <span
-                                    class="text-white text-sm font-medium">{{ isset($ticketData['name']) ? '628' . substr(crc32($ticketData['name']), 0, 10) : '-' }}</span>
+                                    class="text-white text-sm font-medium">{{ $ticketData['phone'] ?? '-' }}</span>
                             </div>
                         </div>
                     </div>
@@ -203,9 +203,7 @@
                         <div class="profile-field-group">
                             <div class="flex items-center gap-2">
                                 <i class="bx bx-envelope text-blue-400/60"></i>
-                                <span class="text-white text-sm font-medium">{{ isset($ticketData['name']) ?
-                                    strtolower(str_replace(' ', '.', $ticketData['name'])) . '@gmail.com' :
-                                    '-' }}</span>
+                                <span class="text-white text-sm font-medium">{{ $ticketData['email'] ?? '-' }}</span>
                             </div>
                         </div>
                     </div>
@@ -218,7 +216,7 @@
                             <div class="flex items-center gap-2">
                                 <i class="bx bx-id-card text-blue-400/60"></i>
                                 <span
-                                    class="text-white text-sm font-medium">MEM-{{ isset($ticketData['name']) ? substr(md5($ticketData['name']), 0, 8) : '2026-001' }}</span>
+                                    class="text-white text-sm font-medium">{{ $ticketData['member_id'] ?? '-' }}</span>
                             </div>
                         </div>
                     </div>
@@ -304,105 +302,60 @@
                                 </div>
                             </div>
 
-                            <!-- Card Item 1: Agent Chat -->
-                            <div class="flex gap-6 relative mb-10 group">
-                                <div class="w-12 flex justify-center z-10">
-                                    <div
-                                        class="w-12 h-12 rounded-2xl bg-orange-500 flex items-center justify-center shadow-lg border-4 border-gray-900 group-hover:scale-110 transition-transform duration-300">
-                                        <i class="bx bx-support text-white text-xl"></i>
-                                    </div>
-                                </div>
-                                <div class="flex-1">
-                                    <div
-                                        class="bg-gray-800/40 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/5 hover:border-orange-500/30 transition-all duration-300 group-hover:bg-gray-800/50">
-                                        <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-4">
-                                            <div class="flex items-center gap-3">
-                                                <div
-                                                    class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-400 border border-orange-500/20">
-                                                    {{ substr($ticketData['agent'] ?? 'Support', 0, 2) }}
-                                                </div>
-                                                <div>
-                                                    <h4 class="text-white font-bold text-base tracking-tight">
-                                                        {{ $ticketData['agent'] ?? 'Support Agent' }}
-                                                    </h4>
-                                                    <p
-                                                        class="text-orange-400/80 text-[10px] font-bold uppercase tracking-widest">
-                                                        Agent Support</p>
-                                                </div>
-                                            </div>
-                                            <div class="text-right">
-                                                <span class="text-gray-300 text-xs font-bold block">12:10:41 PM</span>
-                                                <span class="text-gray-500 text-[10px] font-medium">29 Dec 2025</span>
-                                            </div>
-                                        </div>
-                                        <div class="text-gray-300 text-sm leading-relaxed">
-                                            <p class="font-medium">"Hi team, cust sudah disarankan lakukan pengembalian
-                                                lewat shopee"</p>
-                                            <div class="mt-4 flex gap-2">
-                                                <span
-                                                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20 uppercase tracking-wide">
-                                                    <i class="bx bx-tag-alt"></i> Interaction Ticket
-                                                </span>
-                                            </div>
+                            @forelse($journey as $item)
+                                <!-- Timeline Item -->
+                                <div class="flex gap-6 relative mb-10 group">
+                                    <div class="w-12 flex justify-center z-10">
+                                        <div
+                                            class="w-12 h-12 rounded-2xl bg-orange-500 flex items-center justify-center shadow-lg border-4 border-gray-900 group-hover:scale-110 transition-transform duration-300">
+                                            <i class="bx bx-support text-white text-xl"></i>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            <!-- Card Item 2: Customer Chat -->
-                            <div class="flex gap-6 relative mb-10 group">
-                                <div class="w-12 flex justify-center z-10">
-                                    <div
-                                        class="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg border-4 border-gray-900 group-hover:scale-110 transition-transform duration-300">
-                                        <i class="bx bx-user text-white text-xl"></i>
-                                    </div>
-                                </div>
-                                <div class="flex-1">
-                                    <div
-                                        class="bg-gray-900/40 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/5 hover:border-blue-500/30 transition-all duration-300 group-hover:bg-gray-900/50">
-                                        <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-4">
-                                            <div class="flex items-center gap-3">
-                                                <div
-                                                    class="w-8 h-8 rounded-lg bg-blue-600/10 flex items-center justify-center text-blue-400 border border-blue-600/20">
-                                                    L3
+                                    <div class="flex-1">
+                                        <div
+                                            class="bg-gray-800/40 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/5 hover:border-orange-500/30 transition-all duration-300 group-hover:bg-gray-800/50">
+                                            <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-4">
+                                                <div class="flex items-center gap-3">
+                                                    <div
+                                                        class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-400 border border-orange-500/20">
+                                                        {{ substr($item->userAgent->full_name ?? 'Agent', 0, 2) }}
+                                                    </div>
+                                                    <div>
+                                                        <h4 class="text-white font-bold text-base tracking-tight">
+                                                            {{ $item->userAgent->full_name ?? 'Support Agent' }}
+                                                        </h4>
+                                                        <p
+                                                            class="text-orange-400/80 text-[10px] font-bold uppercase tracking-widest">
+                                                            {{ $item->source_type ?? 'Agent Support' }}</p>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <h4 class="text-white font-bold text-base tracking-tight">Warehouse
-                                                        L3</h4>
-                                                    <p
-                                                        class="text-blue-400/80 text-[10px] font-bold uppercase tracking-widest">
-                                                        Customer / External</p>
+                                                <div class="text-right">
+                                                    <span class="text-gray-300 text-xs font-bold block">{{ $item->created_at->format('H:i:s P') }}</span>
+                                                    <span class="text-gray-500 text-[10px] font-medium">{{ $item->created_at->format('d M Y') }}</span>
                                                 </div>
                                             </div>
-                                            <div class="text-right">
-                                                <span class="text-gray-300 text-xs font-bold block">10:05:00 AM</span>
-                                                <span class="text-gray-500 text-[10px] font-medium">29 Dec 2025</span>
-                                            </div>
-                                        </div>
-                                        <div class="text-gray-300 text-sm leading-relaxed space-y-4">
-                                            <p><span
-                                                    class="text-blue-400 font-bold bg-blue-500/10 px-2 py-0.5 rounded mr-1">EXTERNAL:</span>
-                                                Hi mas Adjie</p>
-                                            <p class="font-medium">Setelah di cek utk part setnya tdk ada yg tertinggal
-                                                dan untuk stoknya
-                                                pun sudah tidak tersedia.</p>
-                                            <div
-                                                class="bg-gray-800/60 backdrop-blur-sm rounded-xl p-4 border border-white/5 text-xs text-gray-400 italic leading-relaxed relative overflow-hidden">
-                                                <div class="absolute top-0 left-0 w-1 h-full bg-blue-500/30"></div>
-                                                <i
-                                                    class="bx bxs-quote-left text-blue-500/20 text-3xl absolute right-2 top-2"></i>
-                                                <span class="relative z-10">Mohon di bantu pengecekannya untuk pesanan
-                                                    Shopee 251226CNFXYBP3...</span>
-                                            </div>
-                                            <div class="pt-2 flex items-center gap-2">
-                                                <div class="w-1.5 h-1.5 rounded-full bg-gray-600"></div>
-                                                <p class="text-xs text-gray-500 font-semibold italic">Regards, Maulana
-                                                    Yusup Admin Warehouse</p>
+                                            <div class="text-gray-300 text-sm leading-relaxed">
+                                                <p class="font-medium">"{{ $item->question ?? $item->subject }}"</p>
+                                                <p class="font-medium mt-2 text-blue-300">"{{ $item->answer }}"</p>
+                                                <div class="mt-4 flex gap-2">
+                                                    <span
+                                                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20 uppercase tracking-wide">
+                                                        <i class="bx bx-tag-alt"></i> Category: {{ $item->category }}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            @empty
+                                <div class="text-center py-20">
+                                    <div class="bg-gray-800/50 rounded-2xl p-10 border border-white/5 inline-block">
+                                        <i class="bx bx-map-alt text-5xl text-gray-700 mb-4 block"></i>
+                                        <h4 class="text-white font-bold mb-1">No Journey Found</h4>
+                                        <p class="text-gray-500 text-sm">Wait for interactions to populate the timeline.</p>
+                                    </div>
+                                </div>
+                            @endforelse
 
                             <!-- End Node -->
                             <div class="flex gap-6 relative group">
@@ -414,9 +367,9 @@
                                 </div>
                                 <div class="flex-1 pt-1 opacity-60 group-hover:opacity-100 transition-opacity">
                                     <div
-                                        class="bg-gray-900/30 rounded-2xl p-5 border border-white/5 backdrop-blur-sm shadow-inner">
+                                        class="bg-gray-900/30 rounded-2xl p-5 border border-white/5 backdrop-blur-sm shadow-inner text-center">
                                         <h4
-                                            class="text-gray-500 font-bold text-sm uppercase tracking-widest text-center">
+                                            class="text-gray-500 font-bold text-sm uppercase tracking-widest">
                                             End of Timeline</h4>
                                     </div>
                                 </div>
@@ -522,23 +475,21 @@
                             <div class="bg-gray-900/40 p-3 rounded-xl border border-white/5">
                                 <label class="text-gray-500 text-[9px] uppercase font-bold tracking-tighter">Email
                                     Reported</label>
-                                <p class="text-gray-200 text-sm font-semibold">{{ isset($ticketData['name']) ?
-                                    strtolower(str_replace(' ', '.', $ticketData['name'])) . '@gmail.com' :
-                                    'customer@dummy.com' }}</p>
+                                <p class="text-gray-200 text-sm font-semibold">{{ $ticketData['email'] ?? '-' }}</p>
                             </div>
                             <div class="grid grid-cols-2 gap-3">
                                 <div class="bg-gray-900/40 p-3 rounded-xl border border-white/5">
                                     <label
                                         class="text-gray-500 text-[9px] uppercase font-bold tracking-tighter">Contact</label>
                                     <p class="text-gray-200 text-xs font-semibold">
-                                        {{ isset($ticketData['name']) ? '628' . substr(crc32($ticketData['name']), 0, 10) : '-' }}
+                                        {{ $ticketData['phone'] ?? '-' }}
                                     </p>
                                 </div>
                                 <div class="bg-gray-900/40 p-3 rounded-xl border border-white/5">
                                     <label
                                         class="text-gray-500 text-[9px] uppercase font-bold tracking-tighter">Account</label>
                                     <p class="text-gray-200 text-xs font-semibold">
-                                        {{ isset($ticketData['name']) ? '628' . substr(crc32($ticketData['name']), 0, 10) : '-' }}
+                                        {{ $ticketData['account'] ?? '-' }}
                                     </p>
                                 </div>
                             </div>
@@ -558,14 +509,14 @@
                             <div class="bg-gray-900/40 p-3 rounded-xl border border-white/5">
                                 <label class="text-gray-500 text-[9px] uppercase font-bold tracking-tighter">Created
                                     Date</label>
-                                <p class="text-gray-200 text-xs font-bold">{{ $ticketData['date'] ?? '2025-12-29' }}
+                                <p class="text-gray-200 text-xs font-bold">{{ $ticketData['date'] ?? '-' }}
                                 </p>
                             </div>
                             <div class="bg-gray-900/40 p-3 rounded-xl border border-white/5">
                                 <label class="text-gray-500 text-[9px] uppercase font-bold tracking-tighter">Assigned
                                     Agent</label>
                                 <p class="text-blue-400 text-xs font-bold">
-                                    {{ $ticketData['agent'] ?? 'Adjie Sona' }}
+                                    {{ $ticketData['agent'] ?? '-' }}
                                 </p>
                             </div>
                         </div>
@@ -576,7 +527,7 @@
                                 Identifier</label>
                             <div class="flex items-center justify-between">
                                 <p class="text-blue-400 text-base font-black font-mono tracking-tighter">
-                                    {{ isset($ticketData['ticket_number']) ? 'ORD-' . substr(md5($ticketData['ticket_number']), 0, 12) : '251226CNFXYBP3' }}
+                                    {{ $ticketData['order_id'] ?? '-' }}
                                 </p>
                                 <i class="bx bx-copy text-blue-500 group-hover:scale-125 transition-transform"></i>
                             </div>
@@ -585,12 +536,12 @@
                             <div class="bg-purple-500/5 p-3 rounded-xl border border-purple-500/20">
                                 <label
                                     class="text-purple-400/60 text-[9px] uppercase font-bold tracking-tighter">Channel</label>
-                                <p class="text-purple-400 text-[10px] font-black uppercase">Chat MP</p>
+                                <p class="text-purple-400 text-[10px] font-black uppercase">{{ $ticketData['channel'] ?? '-' }}</p>
                             </div>
                             <div class="bg-gray-700/20 p-3 rounded-xl border border-white/5">
                                 <label
                                     class="text-gray-500 text-[9px] uppercase font-bold tracking-tighter">Fulfillment</label>
-                                <p class="text-gray-300 text-[10px] font-black uppercase">Non-VIP</p>
+                                <p class="text-gray-300 text-[10px] font-black uppercase">{{ $ticketData['fulfillment'] ?? '-' }}</p>
                             </div>
                         </div>
                     </div>
@@ -600,16 +551,16 @@
                     <!-- Layout: Escalation & Status -->
                     <div class="bg-gray-900/60 rounded-2xl p-4 border border-white/5 space-y-4">
                         <div class="grid grid-cols-2 gap-4">
-                            <div>
+                             <div>
                                 <label
                                     class="text-gray-500 text-[9px] uppercase font-bold tracking-tighter block mb-1">Escalation</label>
                                 <span
-                                    class="inline-flex px-2 py-1 rounded bg-red-500/10 text-red-400 border border-red-500/20 text-[10px] font-black">{{ strtoupper($ticketData['posisi'] ?? 'LAYER 1') }}</span>
+                                    class="inline-flex px-2 py-1 rounded bg-red-500/10 text-red-400 border border-red-500/20 text-[10px] font-black">{{ strtoupper($ticketData['posisi'] ?? '-') }}</span>
                             </div>
                             <div>
                                 <label
                                     class="text-gray-500 text-[9px] uppercase font-bold tracking-tighter block mb-1">Unit</label>
-                                <p class="text-white text-xs font-bold">{{ $ticketData['department'] ?? 'Support' }}</p>
+                                <p class="text-white text-xs font-bold">{{ $ticketData['department'] ?? '-' }}</p>
                             </div>
                         </div>
                         <div class="pt-2 border-t border-white/5">
@@ -789,7 +740,7 @@
                             <label class="text-gray-500 text-[10px] font-black uppercase tracking-tighter">To</label>
                         </div>
                         <input type="text"
-                            value="{{ isset($ticketData['name']) ? strtolower(str_replace(' ', '.', $ticketData['name'])) . '@gmail.com' : 'customer@dummy.com' }}"
+                            value="{{ $ticketData['email'] ?? '' }}"
                             class="flex-1 bg-transparent border-b border-white/10 text-white font-bold text-sm py-2 focus:border-blue-500 outline-none transition-all">
                     </div>
                     <div class="flex items-center gap-4">

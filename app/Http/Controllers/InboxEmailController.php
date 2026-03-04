@@ -8,7 +8,11 @@ class InboxEmailController extends Controller
 {
     public function index()
     {
-        return view('pages.channel.email.inbox.index');
+        $inbox = collect([]);
+        $drafts = collect([]);
+        $spam = collect([]);
+        
+        return view('pages.channel.email.inbox.index', compact('inbox', 'drafts', 'spam'));
     }
 
     public function markAsRead($id)

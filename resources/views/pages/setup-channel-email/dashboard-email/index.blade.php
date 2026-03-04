@@ -9,11 +9,11 @@
                 <p class="text-gray-400 mt-1">Analytics and monitoring overview</p>
             </div>
             <div class="flex items-center gap-3 bg-gray-800/50 px-4 py-2.5 rounded-xl border border-gray-700 shadow-sm">
-                <span id="current-date" class="text-gray-300 font-medium">12 Februari 2026</span>
+                <span id="current-date" class="text-gray-300 font-medium">-</span>
                 <span class="w-1.5 h-1.5 rounded-full bg-gray-600"></span>
-                <span id="current-day" class="text-gray-300 font-medium">Kamis</span>
+                <span id="current-day" class="text-gray-300 font-medium">-</span>
                 <span class="w-1.5 h-1.5 rounded-full bg-gray-600"></span>
-                <span id="current-time" class="text-blue-400 font-bold tracking-wider">9:48 WIB</span>
+                <span id="current-time" class="text-blue-400 font-bold tracking-wider">-</span>
             </div>
         </div>
 
@@ -202,13 +202,12 @@
                     </table>
                 </div>
                 <div class="px-6 py-4 border-t border-gray-700 flex justify-between items-center bg-gray-800/30">
-                    <span class="text-xs text-gray-500">Showing <span class="text-gray-300 font-medium">1-5</span> of 24
-                        agents</span>
-                    <div class="flex gap-1">
+                    <span class="text-xs text-gray-500" x-show="agentSummary.length > 0">Showing <span class="text-gray-300 font-medium" x-text="`1-${agentSummary.length}`"></span> of <span class="text-gray-300 font-medium" x-text="agentSummary.length"></span> agents</span>
+                    <span class="text-xs text-gray-500" x-show="agentSummary.length === 0">No agents to show</span>
+                    <div class="flex gap-1" x-show="agentSummary.length > 0">
                         <button
                             class="p-1 px-3 rounded hover:bg-gray-700 text-gray-400 disabled:opacity-30 transition-colors text-xs">Prev</button>
                         <button class="p-1 px-3 rounded bg-blue-600 text-white font-medium text-xs">1</button>
-                        <button class="p-1 px-3 rounded hover:bg-gray-700 text-gray-400 text-xs">2</button>
                         <button class="p-1 px-3 rounded hover:bg-gray-700 text-gray-400 text-xs">Next</button>
                     </div>
                 </div>
@@ -249,8 +248,8 @@
                     </table>
                 </div>
                 <div class="px-6 py-4 border-t border-gray-700 flex justify-between items-center bg-gray-800/30">
-                    <span class="text-xs text-gray-500">Showing <span class="text-gray-300 font-medium">1-4</span> of 12
-                        items</span>
+                    <span class="text-xs text-gray-500" x-show="queueing.length > 0">Showing <span class="text-gray-300 font-medium" x-text="`1-${queueing.length}`"></span> of <span class="text-gray-300 font-medium" x-text="queueing.length"></span> items</span>
+                    <span class="text-xs text-gray-500" x-show="queueing.length === 0">No items in queue</span>
                     <button
                         class="text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors uppercase tracking-wider">View
                         Full Table</button>
@@ -277,6 +276,8 @@
         <script>
             function dashboardEmail() {
                 return {
+                    agentSummary: [],
+                    queueing: [],
                     init() {
                         this.updateDateTime();
                         setInterval(() => this.updateDateTime(), 1000);
@@ -313,8 +314,10 @@
                             .then(res => res.json())
                             .then(data => {
                                 this.updateStats(data.statistics);
-                                this.updateAgentSummary(data.agent_summary);
-                                this.updateQueueing(data.queueing);
+                                this.agentSummary = data.agent_summary;
+                                this.queueing = data.queueing;
+                                this.updateAgentSummary(this.agentSummary);
+                                this.updateQueueing(this.queueing);
                             })
                             .catch(err => console.error('Error fetching dashboard data:', err));
                     },

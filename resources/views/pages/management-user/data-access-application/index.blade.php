@@ -103,67 +103,12 @@
                         </tr>
                     </thead>
                     <tbody id="data-table-body" class="divide-y divide-gray-700/50 text-sm text-gray-300">
-                        <!-- Example rows -->
-                        <tr class="hover:bg-blue-500/[0.03] transition-colors group">
-                            <td class="px-3 py-3 whitespace-nowrap font-mono text-blue-400">#383898</td>
-                            <td class="px-3 py-3 whitespace-nowrap"><span
-                                    class="bg-blue-500/10 text-blue-400 px-2.5 py-1 rounded-lg text-xs font-bold border border-blue-500/20">Administrator</span>
-                            </td>
-                            <td class="px-3 py-3 whitespace-nowrap font-medium text-white">Master Data</td>
-                            <td class="px-3 py-3 whitespace-nowrap text-gray-500 italic">-</td>
-                            <td class="px-3 py-3 whitespace-nowrap text-gray-500 italic">-</td>
-                            <td class="px-3 py-3 whitespace-nowrap flex items-center gap-2">
-                                <div
-                                    class="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-[10px] font-bold text-white">
-                                    A</div>
-                                Agent1
-                            </td>
-                            <td class="px-3 py-3 whitespace-nowrap text-gray-400">10/15/2020 4:54:38 PM</td>
-                            <td class="px-3 py-3 whitespace-nowrap">
-                                <div
-                                    class="action-buttons flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button
-                                        class="w-8 h-8 rounded-lg bg-gray-700/50 hover:bg-blue-500 hover:text-white flex items-center justify-center transition-all"
-                                        onclick="openPreview(383898)">
-                                        <i class='bx bx-show'></i>
-                                    </button>
-                                    <button
-                                        class="w-8 h-8 rounded-lg bg-gray-700/50 hover:bg-red-500 hover:text-white flex items-center justify-center transition-all"
-                                        onclick="deleteAccess(383898)">
-                                        <i class='bx bx-trash'></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <!-- More example rows -->
-                        <tr class="hover:bg-blue-500/[0.03] transition-colors group">
-                            <td class="px-3 py-3 whitespace-nowrap font-mono text-blue-400">#383899</td>
-                            <td class="px-3 py-3 whitespace-nowrap"><span
-                                    class="bg-green-500/10 text-green-400 px-2.5 py-1 rounded-lg text-xs font-bold border border-green-500/20">Supervisor</span>
-                            </td>
-                            <td class="px-3 py-3 whitespace-nowrap font-medium text-white">Apps</td>
-                            <td class="px-3 py-3 whitespace-nowrap">Ticketing</td>
-                            <td class="px-3 py-3 whitespace-nowrap text-gray-500 italic">-</td>
-                            <td class="px-3 py-3 whitespace-nowrap flex items-center gap-2">
-                                <div
-                                    class="w-6 h-6 rounded-full bg-gradient-to-br from-pink-500 to-red-500 flex items-center justify-center text-[10px] font-bold text-white">
-                                    S</div>
-                                SuperAdmin
-                            </td>
-                            <td class="px-3 py-3 whitespace-nowrap text-gray-400">10/16/2020 9:12:00 AM</td>
-                            <td class="px-3 py-3 whitespace-nowrap">
-                                <div
-                                    class="action-buttons flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button
-                                        class="w-8 h-8 rounded-lg bg-gray-700/50 hover:bg-blue-500 hover:text-white flex items-center justify-center transition-all"
-                                        onclick="openPreview(383899)">
-                                        <i class='bx bx-show'></i>
-                                    </button>
-                                    <button
-                                        class="w-8 h-8 rounded-lg bg-gray-700/50 hover:bg-red-500 hover:text-white flex items-center justify-center transition-all"
-                                        onclick="deleteAccess(383899)">
-                                        <i class='bx bx-trash'></i>
-                                    </button>
+                        <tr>
+                            <td colspan="8" class="px-6 py-16 text-center">
+                                <div class="flex flex-col items-center justify-center text-gray-500">
+                                    <i class='bx bx-lock-open-alt text-5xl mb-3 opacity-20'></i>
+                                    <p class="text-sm font-medium">No access data found</p>
+                                    <p class="text-xs text-gray-600 mt-1">Use the Setting button above to assign menu access</p>
                                 </div>
                             </td>
                         </tr>
@@ -175,20 +120,13 @@
             <div
                 class="table-pagination px-6 py-4 border-t border-gray-700/50 bg-gray-800/30 flex flex-wrap justify-between items-center gap-4">
                 <div class="pagination-info text-sm text-gray-500">
-                    Showing <span class="text-white font-bold">1</span> to <span class="text-white font-bold">10</span>
-                    of <span class="text-white font-bold">169</span> entries
+                    Showing <span class="text-white font-bold">0</span> entries
                 </div>
                 <div class="pagination-controls flex gap-2">
-                    <button
-                        class="btn-page px-3 py-1.5 rounded-lg bg-gray-800 text-gray-400 text-sm hover:bg-gray-700 hover:text-white transition-all disabled:opacity-50">Previous</button>
-                    <button
-                        class="btn-page px-3 py-1.5 rounded-lg bg-blue-600 text-white text-sm font-bold shadow-lg shadow-blue-500/20">1</button>
-                    <button
-                        class="btn-page px-3 py-1.5 rounded-lg bg-gray-800 text-gray-400 text-sm hover:bg-gray-700 hover:text-white transition-all">2</button>
-                    <button
-                        class="btn-page px-3 py-1.5 rounded-lg bg-gray-800 text-gray-400 text-sm hover:bg-gray-700 hover:text-white transition-all">3</button>
-                    <button
-                        class="btn-page px-3 py-1.5 rounded-lg bg-gray-800 text-gray-400 text-sm hover:bg-gray-700 hover:text-white transition-all">Next</button>
+                    <button disabled
+                        class="btn-page px-3 py-1.5 rounded-lg bg-gray-800 text-gray-400 text-sm opacity-50 cursor-not-allowed">Previous</button>
+                    <button disabled
+                        class="btn-page px-3 py-1.5 rounded-lg bg-gray-800 text-gray-400 text-sm opacity-50 cursor-not-allowed">Next</button>
                 </div>
             </div>
         </div>

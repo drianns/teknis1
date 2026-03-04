@@ -417,12 +417,9 @@
                 <!-- Pagination -->
                 <div
                     class="p-3 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
-                    <span>Showing 1 to 6 of 6 entries</span>
-                    <div class="flex gap-1 mt-2 md:mt-0">
-                        <button class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg disabled:opacity-50"
-                            disabled>Previous</button>
-                        <button class="px-3 py-1 bg-blue-600 text-white rounded-lg">1</button>
-                        <button class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg">Next</button>
+                    <span>Showing {{ $histories->firstItem() ?? 0 }} to {{ $histories->lastItem() ?? 0 }} of {{ $histories->total() }} entries</span>
+                    <div class="mt-2 md:mt-0">
+                        {{ $histories->links() }}
                     </div>
                 </div>
             </div>

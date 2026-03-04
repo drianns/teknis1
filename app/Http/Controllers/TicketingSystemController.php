@@ -12,6 +12,18 @@ use App\Models\ChannelAccount;
 use App\Models\ChatHeaderTicket;
 use App\Models\ChatTicketUser;
 use App\Models\ChannelUser;
+use App\Models\DataCategory;
+use App\Models\DataStatusTicket;
+use App\Models\DataSubCategory;
+use App\Models\DataType;
+use App\Models\DataBrandName;
+use App\Models\DataBrandCategory;
+use App\Models\DataGroupName;
+use App\Models\DataFulfillment;
+use App\Models\DataSource;
+use App\Models\DataActivity;
+use App\Models\DepartmentEscalationUnit;
+
 
 class TicketingSystemController extends Controller
 {
@@ -22,30 +34,27 @@ class TicketingSystemController extends Controller
     {
         // Mocking company for now
         $companyId = 1;
-        $company = Company::find($companyId) ?? new Company(['id' => 1, 'name' => 'Kanmo Group']);
+        $company = Company::find($companyId);
 
         $channels = Channel::all();
         $channel_pages = ChannelPage::where('company_id', $companyId)->get();
         $channel_accounts = ChannelAccount::where('company_id', $companyId)->get();
 
-        $chat_ticket_statuses = [
-            (object) ['id' => 1, 'name' => 'Open'],
-            (object) ['id' => 2, 'name' => 'Pending'],
-            (object) ['id' => 3, 'name' => 'Resolved'],
-            (object) ['id' => 4, 'name' => 'Closed'],
-        ];
-        $chat_ticket_priorities = [
-            (object) ['id' => 1, 'name' => 'Low'],
-            (object) ['id' => 2, 'name' => 'Medium'],
-            (object) ['id' => 3, 'name' => 'High'],
-            (object) ['id' => 4, 'name' => 'Urgent'],
-        ];
-        $chat_ticket_categories = [
-            (object) ['id' => 1, 'name' => 'Inquiry'],
-            (object) ['id' => 2, 'name' => 'Complaint'],
-            (object) ['id' => 3, 'name' => 'Request'],
-            (object) ['id' => 4, 'name' => 'Feedback'],
-        ];
+        $chat_ticket_statuses = DataStatusTicket::all();
+        $chat_ticket_priorities = collect([]); // No DataPriority model found
+        $chat_ticket_categories = DataCategory::all();
+
+        // Additional data for form selects
+        $sub_categories = DataSubCategory::all();
+        $types = DataType::all();
+        $brands = DataBrandName::all();
+        $brand_categories = DataBrandCategory::all();
+        $groups = DataGroupName::all();
+        $fulfillments = DataFulfillment::all();
+        $sources = DataSource::all();
+        $activities = DataActivity::all();
+        $escalation_units = DepartmentEscalationUnit::all();
+
         $group_routes = [];
 
         // Fetch Ticket History with Filter & Pagination
@@ -98,7 +107,16 @@ class TicketingSystemController extends Controller
             'chat_ticket_priorities',
             'group_routes',
             'ticket_history',
-            'customers'
+            'customers',
+            'sub_categories',
+            'types',
+            'brands',
+            'brand_categories',
+            'groups',
+            'fulfillments',
+            'sources',
+            'activities',
+            'escalation_units'
         ));
     }
 }

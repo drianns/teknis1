@@ -29,8 +29,8 @@ class TicketNotificationSystemController extends Controller
                     'name' => $user->name,
                     'email' => $user->email,
                     'level' => $user->userAgent ? $user->userAgent->user_type : 'Undefined',
-                    'department' => $user->company ? $user->company->name : 'N/A', // Mocking Department with Company name as placeholder
-                    'group_agent' => 'General Group' // Mock data based on schema exploration
+                    'department' => $user->company ? $user->company->name : '-',
+                    'group_agent' => '-'
                 ];
             });
 

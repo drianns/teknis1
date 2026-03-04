@@ -326,7 +326,7 @@
                                 <i class="bx bx-envelope text-lg"></i>
                                 <span class="font-medium">Inbox</span>
                             </div>
-                            <span class="bg-yellow-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+                            <span class="bg-yellow-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">{{ $inbox->count() }}</span>
                         </a>
                         <a href="#" @click.prevent="activeView = 'sent'"
                             :class="activeView === 'sent' ? 'bg-blue-500/10 text-blue-400' : 'text-gray-400 hover:bg-gray-700 hover:text-white'"
@@ -343,7 +343,7 @@
                                 <i class="bx bx-file text-lg"></i>
                                 <span class="font-medium">Drafts</span>
                             </div>
-                            <span class="bg-teal-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+                            <span class="bg-teal-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">{{ $drafts->count() }}</span>
                         </a>
                         <a href="#" @click.prevent="activeView = 'spam'"
                             :class="activeView === 'spam' ? 'bg-blue-500/10 text-blue-400' : 'text-gray-400 hover:bg-gray-700 hover:text-white'"
@@ -352,7 +352,7 @@
                                 <i class="bx bx-trash text-lg"></i>
                                 <span class="font-medium">Spam</span>
                             </div>
-                            <span class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+                            <span class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">{{ $spam->count() }}</span>
                         </a>
                         <a href="#" @click.prevent="activeView = 'department'"
                             :class="activeView === 'department' ? 'bg-blue-500/10 text-blue-400' : 'text-gray-400 hover:bg-gray-700 hover:text-white'"
@@ -421,55 +421,26 @@
                     <!-- Online Agents Section -->
                     <div class="mt-2 space-y-2 pr-1">
                         <!-- Other Agents List -->
-                            @php $currentAgentId = optional(current_agent())->id;
+                            @php
+                                $currentAgentId = optional(current_agent())->id;
                                 $companyId = optional(current_agent())->company_id;
                                 $otherAgents = collect();
                                 if ($currentAgentId && $companyId) {
                                     $otherAgents = \App\Models\UserAgent::where('company_id', $companyId)->where('user_id', '!=', $currentAgentId)->with('user')->limit(10)->get();
-                            }                            @endphp
-                            @foreach($otherAgents as $agent)
-                                <div
-                                    class="flex items-center justify-between p-2 hover:bg-gray-700/30 rounded-lg transition-colors cursor-pointer group">
-                                    <div class="flex items-center gap-3 overflow-hidden">
-                                        <div
-                                            class="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-gray-300 flex-shrink-0">
-                                            <i class="bx bx-user"></i>
-                                        </div>
-                                        <p
-                                            class="text-gray-300 text-sm font-medium truncate group-hover:text-white transition-colors">
-                                            {{ optional($agent->user)->name ?? 'Unknown Agent' }}
-                                        </p>
+                                }
+                            @endphp
+                            @forelse($otherAgents as $agent)
+                                <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-700/50 transition-colors">
+                                    <div class="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-xs text-gray-300 shrink-0">
+                                        {{ strtoupper(substr($agent->user->name ?? 'A', 0, 1)) }}
                                     </div>
-                                    <div class="flex items-center gap-1.5 flex-shrink-0">
-                                        <span
-                                            class="w-2 h-2 rounded-full {{ $agent->aux != 0 ? 'bg-green-500' : 'bg-red-500' }}"></span>
-                                        <span
-                                            class="text-[10px] {{ $agent->aux != 0 ? 'text-green-400' : 'text-gray-500' }}">
-                                            {{ $agent->aux != 0 ? 'Online' : 'Offline' }}
-                                        </span>
-                                    </div>
-                            </div> @endforeach
-                            <!-- Dummy Data for Visual Demo if list is empty --> @if($otherAgents->isEmpty())
-                                @for ($i = 1; $i <= 6; $i++)
-                                    <div
-                                        class="flex items-center justify-between p-2 hover:bg-gray-700/30 rounded-lg transition-colors cursor-pointer group">
-                                        <div class="flex items-center gap-3 overflow-hidden">
-                                            <div
-                                                class="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-gray-300 flex-shrink-0">
-                                                <i class="bx bx-user"></i>
-                                            </div>
-                                            <p
-                                                class="text-gray-300 text-sm font-medium truncate group-hover:text-white transition-colors">
-                                                Demo Agent {{ $i }}</p>
-                                        </div>
-                                        <div class="flex items-center gap-1.5 flex-shrink-0">
-                                            <span
-                                                class="w-2 h-2 rounded-full {{ $i % 2 == 0 ? 'bg-red-500' : 'bg-green-500' }}"></span>
-                                            <span class="text-[10px] {{ $i % 2 == 0 ? 'text-gray-500' : 'text-green-400' }}">
-                                                {{ $i % 2 == 0 ? 'Offline' : 'Online' }}
-                                            </span>
-                                        </div>
-                            </div> @endfor @endif
+                                    <span class="text-sm text-gray-300 truncate">{{ $agent->user->name ?? '-' }}</span>
+                                </div>
+                            @empty
+                                <div class="p-4 text-center text-gray-500 text-xs">
+                                    No other agents found
+                                </div>
+                            @endforelse
                         </div>
                     </div> <!-- End Scrollable Bottom Section -->
                 </div>
@@ -540,8 +511,7 @@
                                         </tr>
                                     </thead>
                                     <tbody class="text-gray-300 text-sm divide-y divide-gray-700">
-                                        @php $mockEmails = [['id' => 40628, 'service' => 'support@kanmogroup.com', 'from' => 'Filiaratna@dummy.com', 'subject' => '[TicketNumber:2026020601490028Z] Product inquiry and support', 'status' => 'Unread', 'is_read' => false, 'date' => '2/6/2026 1:49:01 PM'], ['id' => 40627, 'service' => 'sales@techcorp.com', 'from' => 'john.doe@client.com', 'subject' => '[TicketNumber:2026020601230015A] Quotation request for enterprise plan', 'status' => 'Read', 'is_read' => true, 'date' => '2/6/2026 12:30:15 PM'], ['id' => 40626, 'service' => 'noreply@notification.io', 'from' => 'admin@platform.net', 'subject' => '[TicketNumber:2026020509450042B] Account verification completed', 'status' => 'Unread', 'is_read' => false, 'date' => '2/5/2026 9:45:42 AM'], ['id' => 40625, 'service' => 'hr@company.biz', 'from' => 'recruiter@talent.com', 'subject' => '[TicketNumber:2026020416320018C] Job application follow-up', 'status' => 'Read', 'is_read' => true, 'date' => '2/4/2026 4:32:18 PM'], ['id' => 40624, 'service' => 'billing@services.com', 'from' => 'finance@client.org', 'subject' => '[TicketNumber:2026020311150033D] Invoice #INV-2026-001 payment received', 'status' => 'Unread', 'is_read' => false, 'date' => '2/3/2026 11:15:33 AM'], ['id' => 40623, 'service' => 'marketing@agency.com', 'from' => 'campaign@media.io', 'subject' => '[TicketNumber:2026020214280051E] Campaign performance report Q1 2026', 'status' => 'Read', 'is_read' => true, 'date' => '2/2/2026 2:28:51 PM'], ['id' => 40622, 'service' => 'info@newsletter.net', 'from' => 'editor@tech.news', 'subject' => '[TicketNumber:2026020108450027F] Weekly technology digest - February 2026', 'status' => 'Unread', 'is_read' => false, 'date' => '2/1/2026 8:45:27 AM'], ['id' => 40621, 'service' => 'security@alert.com', 'from' => 'system@monitor.io', 'subject' => '[TicketNumber:2026013120150039G] Security alert: New login detected', 'status' => 'Read', 'is_read' => true, 'date' => '1/31/2026 8:15:39 PM'],];                                        @endphp
-                                        @forelse($mockEmails as $email)
+                                        @forelse($inbox as $email)
                                             <tr class="email-row group/row {{ !$email['is_read'] ? 'unread font-semibold' : 'read font-normal' }} {{ $loop->even ? 'bg-gray-700/50' : '' }} hover:bg-gray-700/30 transition-colors cursor-pointer"
                                                 data-email-id="{{ $email['id'] }}" data-email-name="{{ $email['from'] }}"
                                                 @click="markAsRead($el, {{ $email['id'] }}); selectedEmail = { from: $el.dataset.emailName }">
@@ -659,8 +629,7 @@
                                         </tr>
                                     </thead>
                                     <tbody class="text-gray-300 text-sm divide-y divide-gray-700">
-                                        @php $mockDrafts = [['id' => 50145, 'service' => 'draft@kanmogroup.com', 'to' => 'prospect@newclient.com', 'subject' => '[Draft] RE: [TicketNumber:2026020610250044H] Proposal for digital transformation', 'is_read' => false, 'date' => '2/6/2026 10:25:44 AM'], ['id' => 50144, 'service' => 'compose@techcorp.com', 'to' => 'board@company.com', 'subject' => '[Draft] FW: [TicketNumber:2026020515400062I] Q4 financial results presentation', 'is_read' => true, 'date' => '2/5/2026 3:40:62 PM'], ['id' => 50143, 'service' => 'draft@services.io', 'to' => 'legal@partner.biz', 'subject' => '[Draft] [TicketNumber:2026020412180035J] Contract amendment discussion', 'is_read' => false, 'date' => '2/4/2026 12:18:35 PM'], ['id' => 50142, 'service' => 'compose@agency.com', 'to' => 'client@customer.net', 'subject' => '[Draft] RE: [TicketNumber:2026020308550021K] Marketing campaign approval', 'is_read' => true, 'date' => '2/3/2026 8:55:21 AM'], ['id' => 50141, 'service' => 'draft@business.com', 'to' => 'vendor@supplier.org', 'subject' => '[Draft] [TicketNumber:2026020217320048L] Purchase order #PO-2026-0145', 'is_read' => false, 'date' => '2/2/2026 5:32:48 PM'],];                                        @endphp
-                                        @forelse($mockDrafts as $draft)
+                                        @forelse($drafts as $draft)
                                             <tr class="email-row group/row {{ !$draft['is_read'] ? 'unread font-semibold' : 'read font-normal' }} {{ $loop->even ? 'bg-gray-700/50' : '' }} hover:bg-gray-700/30 transition-colors cursor-pointer"
                                                 data-email-id="{{ $draft['id'] }}" data-email-name="{{ $draft['to'] }}"
                                                 @click="markAsRead($el, {{ $draft['id'] }}); selectedEmail = { from: $el.dataset.emailName }">
@@ -773,29 +742,28 @@
                                         </tr>
                                     </thead>
                                     <tbody class="text-gray-300 text-sm divide-y divide-gray-700">
-                                        @php $mockSpam = [['id' => 60234, 'service' => 'lottery@scam.net', 'from' => 'winner@fake-lottery.com', 'subject' => '[SPAM] Congratulations! You won $5,000,000 - Claim now!', 'status' => 'Spam', 'is_read' => false, 'date' => '2/9/2026 3:25:18 AM'], ['id' => 60233, 'service' => 'prince@nigeria.fake', 'from' => 'urgent@business-proposal.net', 'subject' => '[SPAM] Urgent: Transfer 10 million USD - Need your help', 'status' => 'Spam', 'is_read' => true, 'date' => '2/8/2026 10:15:42 PM'], ['id' => 60232, 'service' => 'deals@phishing.com', 'from' => 'offer@free-iphone.biz', 'subject' => '[SPAM] Click NOW! Free iPhone 15 Pro Max waiting for you', 'status' => 'Spam', 'is_read' => false, 'date' => '2/8/2026 6:45:33 PM'], ['id' => 60231, 'service' => 'alert@fake-bank.net', 'from' => 'security@phishing-site.com', 'subject' => '[SPAM] URGENT: Your account will be suspended in 24 hours', 'status' => 'Spam', 'is_read' => true, 'date' => '2/7/2026 8:30:55 PM'], ['id' => 60230, 'service' => 'pharmacy@cheap.biz', 'from' => 'meds@discount-pills.org', 'subject' => '[SPAM] 90% OFF medications - Limited time offer!!!', 'status' => 'Spam', 'is_read' => false, 'date' => '2/7/2026 3:10:27 PM'], ['id' => 60229, 'service' => 'verify@suspicious.com', 'from' => 'paypal-fake@scam.net', 'subject' => '[SPAM] Verify your PayPal account immediately or lose access', 'status' => 'Spam', 'is_read' => true, 'date' => '2/6/2026 12:40:15 PM'],];                                        @endphp
-                                        @forelse($mockSpam as $spam)
-                                            <tr class="email-row group/row {{ !$spam['is_read'] ? 'unread font-semibold' : 'read font-normal' }} {{ $loop->even ? 'bg-gray-700/50' : '' }} hover:bg-gray-700/30 transition-colors cursor-pointer"
-                                                data-email-id="{{ $spam['id'] }}" data-email-name="{{ $spam['from'] }}"
-                                                @click="markAsRead($el, {{ $spam['id'] }}); selectedEmail = { from: $el.dataset.emailName }">
+                                        @forelse($spam as $spam_item)
+                                            <tr class="email-row group/row {{ !$spam_item['is_read'] ? 'unread font-semibold' : 'read font-normal' }} {{ $loop->even ? 'bg-gray-700/50' : '' }} hover:bg-gray-700/30 transition-colors cursor-pointer"
+                                                data-email-id="{{ $spam_item['id'] }}" data-email-name="{{ $spam_item['from'] }}"
+                                                @click="markAsRead($el, {{ $spam_item['id'] }}); selectedEmail = { from: $el.dataset.emailName }">
                                                 <td class="py-3 px-4">
                                                     <span
-                                                        class="{{ !$spam['is_read'] ? 'text-blue-300 font-bold' : 'text-blue-400/60 font-medium' }}">
-                                                        #{{ $spam['id'] }}
+                                                        class="{{ !$spam_item['is_read'] ? 'text-blue-300 font-bold' : 'text-blue-400/60 font-medium' }}">
+                                                        #{{ $spam_item['id'] }}
                                                     </span>
                                                 </td>
                                                 <td class="py-3 px-4">
                                                     <span
-                                                        class="{{ !$spam['is_read'] ? 'text-blue-300 font-semibold' : 'text-blue-400/50 font-normal' }} hover:text-blue-300 transition-colors cursor-pointer block truncate"
-                                                        title="{{ $spam['service'] }}">{{ $spam['service'] }}</span>
+                                                        class="{{ !$spam_item['is_read'] ? 'text-blue-300 font-semibold' : 'text-blue-400/50 font-normal' }} hover:text-blue-300 transition-colors cursor-pointer block truncate"
+                                                        title="{{ $spam_item['service'] }}">{{ $spam_item['service'] }}</span>
                                                 </td>
-                                                <td class="py-3 px-4 {{ !$spam['is_read'] ? 'text-gray-100 font-semibold' : 'text-gray-400 font-normal' }} truncate"
-                                                    title="{{ $spam['from'] }}"> {{ $spam['from'] }}
+                                                <td class="py-3 px-4 {{ !$spam_item['is_read'] ? 'text-gray-100 font-semibold' : 'text-gray-400 font-normal' }} truncate"
+                                                    title="{{ $spam_item['from'] }}"> {{ $spam_item['from'] }}
                                                 </td>
                                                 <td class="py-3 px-4">
                                                     <span
-                                                        class="{{ !$spam['is_read'] ? 'text-white font-bold' : 'text-gray-400 font-normal' }} block truncate"
-                                                        title="{{ $spam['subject'] }}">{{ $spam['subject'] }}</span>
+                                                        class="{{ !$spam_item['is_read'] ? 'text-white font-bold' : 'text-gray-400 font-normal' }} block truncate"
+                                                        title="{{ $spam_item['subject'] }}">{{ $spam_item['subject'] }}</span>
                                                 </td>
                                                 <td class="py-3 px-4">
                                                     <span

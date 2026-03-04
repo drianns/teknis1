@@ -56,10 +56,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-700/50 text-sm text-gray-300">
-                            @foreach([
-                                ['id'=>11,'name'=>'Nespresso','inc_acc'=>'club.indonesia@nespresso.co.id','inc_pass'=>'*******','inc_srv'=>'outlook.office365.com','inc_port'=>993,'enc'=>'True','out_acc'=>'club.indonesia@nespresso.co.id','out_pass'=>'*******','out_srv'=>'outlook.office365.com','out_port'=>587,'enc_out'=>'True','need_login'=>'True','inc_bk'=>'C:\KANMO\FileEmail\Inbox','out_bk'=>'C:\KANMO\FileEmail\Outbox','srv_p'=>2,'srv_p_out'=>1,'srv_prof'=>2,'sig'=>9,'method'=>3,'status'=>'Active'],
-                                ['id'=>13,'name'=>'Kanmo','inc_acc'=>'support@kanmogroup.com','inc_pass'=>'*******','inc_srv'=>'outlook.office365.com','inc_port'=>993,'enc'=>'True','out_acc'=>'support@kanmogroup.com','out_pass'=>'*******','out_srv'=>'outlook.office365.com','out_port'=>587,'enc_out'=>'True','need_login'=>'True','inc_bk'=>'C:\KANMO\FileEmail\Inbox','out_bk'=>'C:\KANMO\FileEmail\Outbox','srv_p'=>2,'srv_p_out'=>1,'srv_prof'=>2,'sig'=>9,'method'=>3,'status'=>'Active'],
-                            ] as $row)
+                            @forelse($rows as $row)
                             <tr class="hover:bg-blue-500/[0.03] transition-colors group/row">
                                 <td class="px-4 py-3 font-mono text-blue-400 font-medium text-center whitespace-nowrap">{{ $row['id'] }}</td>
                                 <td class="px-4 py-3 font-medium text-white whitespace-nowrap">{{ $row['name'] }}</td>
@@ -91,17 +88,24 @@
                                     </div>
                                 </td>
                             </tr>
-                            @endforeach
+                            @empty
+                            <tr>
+                                <td colspan="22" class="px-4 py-12 text-center text-gray-500 text-sm">
+                                    <div class="flex flex-col items-center justify-center gap-2">
+                                        <i class='bx bx-folder-open text-4xl'></i>
+                                        <p class="text-sm font-medium">No email account data found</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
 
                 <div class="table-pagination px-6 py-4 border-t border-gray-700/50 flex flex-wrap justify-between items-center gap-4 bg-gray-800/30">
-                    <div class="text-sm text-gray-500">Showing <span class="text-white font-bold">1</span> to <span class="text-white font-bold">2</span> of <span class="text-white font-bold">2</span> entries</div>
+                    <div class="text-sm text-gray-500">Showing <span class="text-white font-bold">{{ $rows->firstItem() ?? 0 }}</span> to <span class="text-white font-bold">{{ $rows->lastItem() ?? 0 }}</span> of <span class="text-white font-bold">{{ $rows->total() }}</span> entries</div>
                     <div class="flex gap-1">
-                        <button class="px-3 py-1.5 text-xs font-bold text-gray-500 border border-gray-700 rounded-lg hover:bg-gray-700 transition-colors">Previous</button>
-                        <button class="px-3 py-1.5 text-xs font-bold bg-blue-600 text-white rounded-lg">1</button>
-                        <button class="px-3 py-1.5 text-xs font-bold text-gray-500 border border-gray-700 rounded-lg hover:bg-gray-700 transition-colors">Next</button>
+                        {{ $rows->links('vendor.pagination.custom-dark') }}
                     </div>
                 </div>
             </div>

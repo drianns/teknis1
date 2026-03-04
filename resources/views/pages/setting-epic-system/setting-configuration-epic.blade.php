@@ -56,56 +56,29 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-700/50 text-sm text-gray-300">
-                            @php
-                                $configs = [
-                                    [
-                                        'id'             => 1,
-                                        'aes'            => 'AVAYA#BRILIFEAES#CSTA#BRILIFEAES',
-                                        'aes_user'       => 'support',
-                                        'aes_pass'       => 'Avaya123!',
-                                        'port'           => 65004,
-                                        'ip_db'          => '10.28.2.224',
-                                        'db_user'        => 'sa',
-                                        'db_pass'        => 'Sa212',
-                                        'db_name'        => 'BRILIFE_OmniChannel',
-                                        'dial_code'      => '9',
-                                        'call_history'   => '',
-                                        'agent_ep'       => 'http://10.28.2.222/brilifecc/auth_login.aspx',
-                                        'inbound_ep'     => 'http://10.28.2.222/brilifecc/apps/TrxDirect.aspx',
-                                        'outbound_ep'    => '',
-                                        'browser_path'   => 'C:\Program Files\Google\Chrome\Application\chrome.exe',
-                                        'theme'          => 'Default',
-                                        'acw'            => 0,
-                                        'pbx_login'      => '*95',
-                                        'pbx_logout'     => '*96',
-                                        'pbx_aux'        => '*94',
-                                        'pbx_autoin'     => '*93',
-                                    ],
-                                ];
-                            @endphp
-                            @foreach($configs as $c)
+                            @forelse($configs as $c)
                             <tr class="hover:bg-blue-500/[0.03] transition-colors">
-                                <td class="px-4 py-3 font-mono text-blue-400 font-medium text-center whitespace-nowrap">{{ $c['id'] }}</td>
-                                <td class="px-4 py-3 text-blue-300 font-semibold text-xs whitespace-nowrap">{{ $c['aes'] }}</td>
-                                <td class="px-4 py-3 text-gray-300 whitespace-nowrap">{{ $c['aes_user'] }}</td>
-                                <td class="px-4 py-3 text-gray-300 font-mono whitespace-nowrap">{{ $c['aes_pass'] }}</td>
-                                <td class="px-4 py-3 text-gray-300 text-center whitespace-nowrap">{{ $c['port'] }}</td>
-                                <td class="px-4 py-3 text-gray-300 whitespace-nowrap">{{ $c['ip_db'] }}</td>
-                                <td class="px-4 py-3 text-gray-300 whitespace-nowrap">{{ $c['db_user'] }}</td>
-                                <td class="px-4 py-3 text-gray-300 font-mono whitespace-nowrap">{{ $c['db_pass'] }}</td>
-                                <td class="px-4 py-3 text-gray-300 whitespace-nowrap">{{ $c['db_name'] }}</td>
-                                <td class="px-4 py-3 text-gray-300 text-center whitespace-nowrap">{{ $c['dial_code'] ?: '—' }}</td>
-                                <td class="px-4 py-3 text-gray-500 italic whitespace-nowrap">{{ $c['call_history'] ?: '—' }}</td>
-                                <td class="px-4 py-3 text-blue-400 text-xs whitespace-nowrap">{{ $c['agent_ep'] }}</td>
-                                <td class="px-4 py-3 text-blue-400 text-xs whitespace-nowrap">{{ $c['inbound_ep'] }}</td>
-                                <td class="px-4 py-3 text-gray-500 italic whitespace-nowrap">{{ $c['outbound_ep'] ?: '—' }}</td>
-                                <td class="px-4 py-3 text-gray-400 text-xs font-mono whitespace-nowrap">{{ $c['browser_path'] }}</td>
-                                <td class="px-4 py-3 text-gray-300 text-center whitespace-nowrap">{{ $c['theme'] }}</td>
-                                <td class="px-4 py-3 text-gray-300 text-center whitespace-nowrap">{{ $c['acw'] }}</td>
-                                <td class="px-4 py-3 text-gray-300 font-mono text-center whitespace-nowrap">{{ $c['pbx_login'] }}</td>
-                                <td class="px-4 py-3 text-gray-300 font-mono text-center whitespace-nowrap">{{ $c['pbx_logout'] }}</td>
-                                <td class="px-4 py-3 text-gray-300 font-mono text-center whitespace-nowrap">{{ $c['pbx_aux'] }}</td>
-                                <td class="px-4 py-3 text-gray-300 font-mono text-center whitespace-nowrap">{{ $c['pbx_autoin'] }}</td>
+                                <td class="px-4 py-3 font-mono text-blue-400 font-medium text-center whitespace-nowrap">{{ $c->id }}</td>
+                                <td class="px-4 py-3 text-blue-300 font-semibold text-xs whitespace-nowrap">{{ $c->aes }}</td>
+                                <td class="px-4 py-3 text-gray-300 whitespace-nowrap">{{ $c->aes_user }}</td>
+                                <td class="px-4 py-3 text-gray-300 font-mono whitespace-nowrap">{{ $c->aes_pass }}</td>
+                                <td class="px-4 py-3 text-gray-300 text-center whitespace-nowrap">{{ $c->port }}</td>
+                                <td class="px-4 py-3 text-gray-300 whitespace-nowrap">{{ $c->ip_db }}</td>
+                                <td class="px-4 py-3 text-gray-300 whitespace-nowrap">{{ $c->db_user }}</td>
+                                <td class="px-4 py-3 text-gray-300 font-mono whitespace-nowrap">{{ $c->db_pass }}</td>
+                                <td class="px-4 py-3 text-gray-300 whitespace-nowrap">{{ $c->db_name }}</td>
+                                <td class="px-4 py-3 text-gray-300 text-center whitespace-nowrap">{{ $c->dial_code ?: '—' }}</td>
+                                <td class="px-4 py-3 text-gray-500 italic whitespace-nowrap">{{ $c->call_history ?: '—' }}</td>
+                                <td class="px-4 py-3 text-blue-400 text-xs whitespace-nowrap">{{ $c->agent_ep }}</td>
+                                <td class="px-4 py-3 text-blue-400 text-xs whitespace-nowrap">{{ $c->inbound_ep }}</td>
+                                <td class="px-4 py-3 text-gray-500 italic whitespace-nowrap">{{ $c->outbound_ep ?: '—' }}</td>
+                                <td class="px-4 py-3 text-gray-400 text-xs font-mono whitespace-nowrap">{{ $c->browser_path }}</td>
+                                <td class="px-4 py-3 text-gray-300 text-center whitespace-nowrap">{{ $c->theme }}</td>
+                                <td class="px-4 py-3 text-gray-300 text-center whitespace-nowrap">{{ $c->acw }}</td>
+                                <td class="px-4 py-3 text-gray-300 font-mono text-center whitespace-nowrap">{{ $c->pbx_login }}</td>
+                                <td class="px-4 py-3 text-gray-300 font-mono text-center whitespace-nowrap">{{ $c->pbx_logout }}</td>
+                                <td class="px-4 py-3 text-gray-300 font-mono text-center whitespace-nowrap">{{ $c->pbx_aux }}</td>
+                                <td class="px-4 py-3 text-gray-300 font-mono text-center whitespace-nowrap">{{ $c->pbx_autoin }}</td>
                                 <td class="px-4 py-3 text-center">
                                     <div class="relative flex justify-center" x-data="{ open: false }">
                                         <button @click.stop="open = !open" class="w-8 h-8 rounded-lg bg-gray-800 hover:bg-gray-700 flex items-center justify-center text-gray-400 hover:text-white">
@@ -120,17 +93,24 @@
                                     </div>
                                 </td>
                             </tr>
-                            @endforeach
+                            @empty
+                            <tr>
+                                <td colspan="22" class="px-4 py-16 text-center">
+                                    <div class="flex flex-col items-center justify-center gap-2 text-gray-500">
+                                        <i class='bx bx-data text-5xl mb-3 opacity-20'></i>
+                                        <p class="text-sm font-medium">No EPIC configurations found</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
-
+ 
                 <div class="table-pagination px-6 py-4 border-t border-gray-700/50 flex flex-wrap justify-between items-center gap-4 bg-gray-800/30">
-                    <div class="text-sm text-gray-500">Showing <span class="text-white font-bold">1</span> to <span class="text-white font-bold">1</span> of <span class="text-white font-bold">1</span> entries</div>
+                    <div class="text-sm text-gray-500">Showing <span class="text-white font-bold">{{ $configs->firstItem() ?? 0 }}</span> to <span class="text-white font-bold">{{ $configs->lastItem() ?? 0 }}</span> of <span class="text-white font-bold">{{ $configs->total() }}</span> entries</div>
                     <div class="flex gap-1">
-                        <button class="px-3 py-1.5 text-xs font-bold text-gray-500 border border-gray-700 rounded-lg hover:bg-gray-700 transition-colors">Previous</button>
-                        <button class="px-3 py-1.5 text-xs font-bold bg-blue-600 text-white rounded-lg">1</button>
-                        <button class="px-3 py-1.5 text-xs font-bold text-gray-500 border border-gray-700 rounded-lg hover:bg-gray-700 transition-colors">Next</button>
+                        {{ $configs->links('vendor.pagination.custom-dark') }}
                     </div>
                 </div>
             </div>

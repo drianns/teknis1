@@ -90,122 +90,12 @@
                         </tr>
                     </thead>
                     <tbody id="user-table-body" class="divide-y divide-gray-700/50 text-sm text-gray-300">
-                        <!-- Example rows -->
-                        <tr class="hover:bg-blue-500/[0.03] transition-colors group/row">
-                            <td class="px-3 py-3 whitespace-nowrap font-mono text-blue-400 font-medium">
-                                <a href="#" class="hover:underline">#100</a>
-                            </td>
-                            <td class="px-3 py-3 whitespace-nowrap font-medium text-white">
-                                admin</td>
-                            <td class="px-3 py-3 whitespace-nowrap">Admin</td>
-                            <td class="px-3 py-3 whitespace-nowrap"><span
-                                    class="bg-purple-500/20 text-purple-300 px-2.5 py-1 rounded-full text-xs font-medium border border-purple-500/30">Administrator</span>
-                            </td>
-                            <td class="px-3 py-3 whitespace-nowrap text-gray-400 truncate">
-                                wandairwansyah@gmail.com</td>
-                            <td class="px-3 py-3 whitespace-nowrap text-gray-500 italic">-
-                            </td>
-                            <td class="px-3 py-3 whitespace-nowrap text-gray-500 italic">-
-                            </td>
-                            <td class="px-3 py-3 whitespace-nowrap text-gray-500 italic">-
-                            </td>
-                            <td class="px-3 py-3 whitespace-nowrap"><span
-                                    class="bg-green-500/20 text-green-400 px-2.5 py-1 rounded-full text-xs font-medium border border-green-500/30">Aktif</span>
-                            </td>
-                            <td class="px-3 py-3 whitespace-nowrap text-center">
-                                <div class="action-dropdown relative flex justify-center"
-                                    x-data="{ dropdownOpen: false }">
-                                    <button @click.stop="dropdownOpen = !dropdownOpen"
-                                        class="w-8 h-8 rounded-lg bg-gray-800 hover:bg-gray-700 flex items-center justify-center transition-all text-gray-400 hover:text-white">
-                                        <i class='bx bx-dots-vertical-rounded'></i>
-                                    </button>
-                                    <div x-show="dropdownOpen" @click.outside="dropdownOpen = false"
-                                        x-transition:enter="transition ease-out duration-100"
-                                        x-transition:enter-start="opacity-0 scale-95"
-                                        x-transition:enter-end="opacity-100 scale-100"
-                                        x-transition:leave="transition ease-in duration-75"
-                                        x-transition:leave-start="opacity-100 scale-100"
-                                        x-transition:leave-end="opacity-0 scale-95"
-                                        class="absolute right-0 top-full mt-2 w-48 bg-gray-800 border border-gray-700 rounded-xl shadow-xl z-20 overflow-hidden text-left">
-                                        <button
-                                            class="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-700/50 hover:text-white flex items-center gap-3 transition-colors border-b border-gray-700/50"
-                                            @click="editUser(100); dropdownOpen = false">
-                                            <i class='bx bx-edit-alt text-blue-400 text-lg'></i>
-                                            <span class="font-medium">Edit</span>
-                                        </button>
-                                        <button
-                                            class="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-700/50 hover:text-white flex items-center gap-3 transition-colors border-b border-gray-700/50"
-                                            @click="openProfile(100); dropdownOpen = false">
-                                            <i class='bx bx-user-circle text-purple-400 text-lg'></i>
-                                            <span class="font-medium">Profile</span>
-                                        </button>
-                                        <button
-                                            class="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-700/50 hover:text-white flex items-center gap-3 transition-colors border-b border-gray-700/50"
-                                            @click="previewUser(100); dropdownOpen = false">
-                                            <i class='bx bx-show text-green-400 text-lg'></i>
-                                            <span class="font-medium">Preview</span>
-                                        </button>
-                                        <button
-                                            class="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-red-500/10 hover:text-red-400 flex items-center gap-3 transition-colors"
-                                            onclick="deleteUser(100)">
-                                            <i class='bx bx-trash text-red-500 text-lg'></i>
-                                            <span class="font-medium">Delete</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        <!-- Additional Logic for Empty Row -->
-                        <tr class="hover:bg-blue-500/[0.03] transition-colors group/row">
-                            <td class="px-3 py-3 whitespace-nowrap font-mono text-blue-400 font-medium">
-                                <a href="#" class="hover:underline">#101</a>
-                            </td>
-                            <td class="px-3 py-3 whitespace-nowrap font-medium text-white">agent1</td>
-                            <td class="px-3 py-3 whitespace-nowrap">Agent One</td>
-                            <td class="px-3 py-3 whitespace-nowrap"><span
-                                    class="bg-blue-500/20 text-blue-300 px-2.5 py-1 rounded-full text-xs font-medium border border-blue-500/30">Layer
-                                    1</span></td>
-                            <td class="px-3 py-3 whitespace-nowrap text-gray-400 truncate">agent1@kanmo.com</td>
-                            <td class="px-3 py-3 whitespace-nowrap text-gray-300">Kanmo</td>
-                            <td class="px-3 py-3 whitespace-nowrap text-gray-500 italic">-</td>
-                            <td class="px-3 py-3 whitespace-nowrap text-gray-300">Jakarta</td>
-                            <td class="px-3 py-3 whitespace-nowrap"><span
-                                    class="bg-green-500/20 text-green-400 px-2.5 py-1 rounded-full text-xs font-medium border border-green-500/30">Aktif</span>
-                            </td>
-                            <td class="px-3 py-3 whitespace-nowrap text-center">
-                                <div class="action-dropdown relative flex justify-center"
-                                    x-data="{ dropdownOpen: false }">
-                                    <button @click.stop="dropdownOpen = !dropdownOpen"
-                                        class="w-8 h-8 rounded-lg bg-gray-800 hover:bg-gray-700 flex items-center justify-center transition-all text-gray-400 hover:text-white">
-                                        <i class='bx bx-dots-vertical-rounded'></i>
-                                    </button>
-                                    <div x-show="dropdownOpen" @click.outside="dropdownOpen = false" x-transition
-                                        class="absolute right-0 top-full mt-2 w-48 bg-gray-800 border border-gray-700 rounded-xl shadow-xl z-20 overflow-hidden text-left">
-                                        <button
-                                            class="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-700/50 hover:text-white flex items-center gap-3 transition-colors border-b border-gray-700/50"
-                                            @click="editUser(101); dropdownOpen = false">
-                                            <i class='bx bx-pencil text-blue-400 text-lg'></i> <span
-                                                class="font-medium">Edit</span>
-                                        </button>
-                                        <button
-                                            class="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-700/50 hover:text-white flex items-center gap-3 transition-colors border-b border-gray-700/50"
-                                            @click="openProfile(101); dropdownOpen = false">
-                                            <i class='bx bx-user-circle text-purple-400 text-lg'></i> <span
-                                                class="font-medium">Profile</span>
-                                        </button>
-                                        <button
-                                            class="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-700/50 hover:text-white flex items-center gap-3 transition-colors border-b border-gray-700/50"
-                                            @click="previewUser(101); dropdownOpen = false">
-                                            <i class='bx bx-show text-green-400 text-lg'></i> <span
-                                                class="font-medium">Preview</span>
-                                        </button>
-                                        <button
-                                            class="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-red-500/10 hover:text-red-400 flex items-center gap-3 transition-colors"
-                                            onclick="deleteUser(101)">
-                                            <i class='bx bx-trash text-red-500 text-lg'></i> <span
-                                                class="font-medium">Delete</span>
-                                        </button>
-                                    </div>
+                        <tr>
+                            <td colspan="10" class="px-6 py-16 text-center">
+                                <div class="flex flex-col items-center justify-center text-gray-500">
+                                    <i class='bx bx-group text-5xl mb-3 opacity-20'></i>
+                                    <p class="text-sm font-medium">No users found</p>
+                                    <p class="text-xs text-gray-600 mt-1">Click "Add User" to create a new user account</p>
                                 </div>
                             </td>
                         </tr>
@@ -217,23 +107,13 @@
             <div
                 class="table-pagination px-6 py-4 border-t border-gray-700/50 flex flex-wrap justify-between items-center gap-4 bg-gray-800/30">
                 <div class="pagination-info text-sm text-gray-500">
-                    Showing <span class="text-white font-bold">1</span> to <span class="text-white font-bold">10</span>
-                    of <span class="text-white font-bold">356</span> entries
+                    Showing <span class="text-white font-bold">0</span> entries
                 </div>
                 <div class="pagination-controls flex gap-2">
-                    <button
-                        class="btn-page px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-gray-400 text-sm hover:bg-gray-700 hover:text-white transition-all disabled:opacity-50">Previous</button>
-                    <button
-                        class="btn-page px-3 py-1.5 rounded-lg bg-blue-600 border border-blue-600 text-white text-sm font-bold shadow-lg shadow-blue-500/20">1</button>
-                    <button
-                        class="btn-page px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-gray-400 text-sm hover:bg-gray-700 hover:text-white transition-all">2</button>
-                    <button
-                        class="btn-page px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-gray-400 text-sm hover:bg-gray-700 hover:text-white transition-all">3</button>
-                    <span class="px-2 text-gray-500">...</span>
-                    <button
-                        class="btn-page px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-gray-400 text-sm hover:bg-gray-700 hover:text-white transition-all">36</button>
-                    <button
-                        class="btn-page px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-gray-400 text-sm hover:bg-gray-700 hover:text-white transition-all">Next</button>
+                    <button disabled
+                        class="btn-page px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-gray-400 text-sm opacity-50 cursor-not-allowed">Previous</button>
+                    <button disabled
+                        class="btn-page px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-gray-400 text-sm opacity-50 cursor-not-allowed">Next</button>
                 </div>
             </div>
 

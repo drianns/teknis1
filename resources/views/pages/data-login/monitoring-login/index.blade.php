@@ -236,12 +236,12 @@
                                         <span class="text-xs text-gray-400">{{ $user->email ?? '-' }}</span>
                                     </td>
                                     <td class="px-3 py-3 whitespace-nowrap">
-                                        <!-- Mock Level User -->
-                                        <span class="text-xs text-gray-400">Layer 1</span>
+                                        <!-- Level User -->
+                                        <span class="text-xs text-gray-400">{{ $user->level ?? '-' }}</span>
                                     </td>
                                     <td class="px-3 py-3 whitespace-nowrap">
-                                        <!-- Mock Aux Description -->
-                                        <span class="text-xs text-gray-400">Ready</span>
+                                        <!-- Aux Description -->
+                                        <span class="text-xs text-gray-400">{{ $user->aux_description ?? '-' }}</span>
                                     </td>
                                     <td class="px-3 py-3 text-center whitespace-nowrap">
                                         <div class="flex items-center justify-center gap-2">

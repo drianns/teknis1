@@ -1,4 +1,4 @@
-git push origin development@extends('layouts.app')
+@extends('layouts.app')
 
 @section('content')
 <div class="flex-1 flex flex-col h-screen overflow-hidden bg-gray-900 report-thread-transaction-page">

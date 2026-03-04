@@ -26,8 +26,8 @@ class MonitoringLoginController extends Controller
         // Dummy stats representing the 4 cards at the top
         $cardStats = [
             'total_user' => User::count(),
-            'not_login' => 40,
-            'login' => 1,
+            'not_login' => 0,
+            'login' => 0,
             'aux' => 0,
         ];
 

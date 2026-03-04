@@ -472,11 +472,6 @@
                             <select id="assign-agent"
                                 class="w-full bg-gray-900 border border-gray-700 text-white rounded-xl p-3 outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all cursor-pointer">
                                 <option value="">Select Agent</option>
-                                <option>Adjie Sona</option>
-                                <option>Siti Muntaha</option>
-                                <option>Shifa Riani</option>
-                                <option>Andrean Setiawan</option>
-                                <option>Visa Damayanti</option>
                             </select>
                         </div>
                         <div class="space-y-2">
@@ -515,36 +510,8 @@
                     </div>
                     <div class="p-8 overflow-y-auto space-y-8 bg-gray-800/50 scrollbar-hide">
                         <div class="relative pl-8 border-l-2 border-gray-700 space-y-10 py-2">
-                            <!-- Agent Message -->
-                            <div class="relative">
-                                <div
-                                    class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-blue-500 border-4 border-gray-800 shadow-lg shadow-blue-500/30">
-                                </div>
-                                <div class="bg-blue-600/10 border border-blue-500/20 p-5 rounded-2xl">
-                                    <div class="flex justify-between items-center mb-3">
-                                        <span class="text-blue-400 text-xs font-bold uppercase tracking-widest">Agent
-                                            (Adjie Sona)</span>
-                                        <span class="text-gray-500 text-[10px] font-bold">2026-02-11 10:30 WIB</span>
-                                    </div>
-                                    <p class="text-gray-300 text-sm leading-relaxed">Halo Bapak/Ibu, ada yang bisa kami
-                                        bantu terkait pesanan Anda?</p>
-                                </div>
-                            </div>
-                            <!-- Customer Message -->
-                            <div class="relative">
-                                <div
-                                    class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-rose-500 border-4 border-gray-800 shadow-lg shadow-rose-500/30">
-                                </div>
-                                <div class="bg-rose-600/10 border border-rose-500/20 p-5 rounded-2xl">
-                                    <div class="flex justify-between items-center mb-3">
-                                        <span
-                                            class="text-rose-400 text-xs font-bold uppercase tracking-widest">Customer</span>
-                                        <span class="text-gray-500 text-[10px] font-bold">2026-02-11 10:35 WIB</span>
-                                    </div>
-                                    <p class="text-gray-300 text-sm leading-relaxed">Saya ingin menanyakan status refund
-                                        untuk invoice #INV-2026-001.</p>
-                                </div>
-                            </div>
+                            <!-- No conversation logic yet -->
+                            <p class="text-gray-500 text-sm italic">No conversation history available.</p>
                         </div>
                     </div>
                     <div class="p-6 bg-gray-900/30 border-t border-gray-700 flex justify-end">

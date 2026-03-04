@@ -452,26 +452,7 @@ class ReportController extends Controller
 
     public function agentAux(Request $request)
     {
-        $raw = [
-            ['username' => 'Cindy_Kurnia',   'description' => 'Toilet',   'start' => '2025-03-28 01:39:17', 'end' => '2025-03-28 01:55:42'],
-            ['username' => 'Cindy_Kurnia',   'description' => 'Lunch',    'start' => '2025-03-28 03:33:15', 'end' => '2025-03-28 04:39:00'],
-            ['username' => 'Cindy_Kurnia',   'description' => 'Prayer',   'start' => '2025-03-28 06:36:39', 'end' => '2025-03-28 06:50:17'],
-            ['username' => 'Budi_Santoso',   'description' => 'Break',    'start' => '2025-03-28 08:10:00', 'end' => '2025-03-28 08:25:30'],
-            ['username' => 'Budi_Santoso',   'description' => 'Lunch',    'start' => '2025-03-28 12:00:00', 'end' => '2025-03-28 13:05:00'],
-            ['username' => 'Budi_Santoso',   'description' => 'Meeting',  'start' => '2025-03-28 14:30:00', 'end' => '2025-03-28 15:15:45'],
-            ['username' => 'Rina_Wahyuni',   'description' => 'Prayer',   'start' => '2025-03-28 04:00:00', 'end' => '2025-03-28 04:12:20'],
-            ['username' => 'Rina_Wahyuni',   'description' => 'Toilet',   'start' => '2025-03-28 09:45:00', 'end' => '2025-03-28 09:55:10'],
-            ['username' => 'Rina_Wahyuni',   'description' => 'Lunch',    'start' => '2025-03-28 11:30:00', 'end' => '2025-03-28 12:30:00'],
-            ['username' => 'Ahmad_Fauzi',    'description' => 'Training', 'start' => '2025-03-28 07:00:00', 'end' => '2025-03-28 08:30:00'],
-            ['username' => 'Ahmad_Fauzi',    'description' => 'Break',    'start' => '2025-03-28 10:15:00', 'end' => '2025-03-28 10:30:00'],
-            ['username' => 'Ahmad_Fauzi',    'description' => 'Lunch',    'start' => '2025-03-28 12:30:00', 'end' => '2025-03-28 13:30:00'],
-            ['username' => 'Sari_Dewi',      'description' => 'Meeting',  'start' => '2025-03-28 09:00:00', 'end' => '2025-03-28 10:00:00'],
-            ['username' => 'Sari_Dewi',      'description' => 'Prayer',   'start' => '2025-03-28 12:05:00', 'end' => '2025-03-28 12:18:00'],
-            ['username' => 'Sari_Dewi',      'description' => 'Lunch',    'start' => '2025-03-28 13:00:00', 'end' => '2025-03-28 14:00:00'],
-            ['username' => 'Dian_Pratama',   'description' => 'Toilet',   'start' => '2025-03-28 02:20:00', 'end' => '2025-03-28 02:30:00'],
-            ['username' => 'Dian_Pratama',   'description' => 'Break',    'start' => '2025-03-28 05:45:00', 'end' => '2025-03-28 06:00:00'],
-            ['username' => 'Dian_Pratama',   'description' => 'Lunch',    'start' => '2025-03-28 11:00:00', 'end' => '2025-03-28 12:00:00'],
-        ];
+        $raw = [];
 
         if ($request->filled('start_date') || $request->filled('end_date')) {
             $raw = array_filter($raw, function ($r) use ($request) {
@@ -526,23 +507,7 @@ class ReportController extends Controller
 
     public function channelEmail(Request $request)
     {
-        $raw = [
-            ['ticket_number' => 'TKT-240301-001', 'subject' => 'Inquiry about order status',          'from' => 'customer1@gmail.com',   'agent' => 'Budi_Santoso',   'status' => 'Closed',  'received' => '2025-03-01 08:10:00', 'response_minutes' => 35],
-            ['ticket_number' => 'TKT-240301-002', 'subject' => 'Return request for damaged item',     'from' => 'rina.wahyuni@yahoo.com', 'agent' => 'Rina_Wahyuni',   'status' => 'Replied', 'received' => '2025-03-01 08:45:00', 'response_minutes' => 20],
-            ['ticket_number' => 'TKT-240301-003', 'subject' => 'Question about warranty policy',     'from' => 'ahmad.f@hotmail.com',   'agent' => 'Ahmad_Fauzi',    'status' => 'Open',    'received' => '2025-03-01 09:05:00', 'response_minutes' => 180],
-            ['ticket_number' => 'TKT-240301-004', 'subject' => 'Complaint about late delivery',      'from' => 'saridewi@gmail.com',    'agent' => 'Sari_Dewi',      'status' => 'Pending', 'received' => '2025-03-01 09:30:00', 'response_minutes' => 300],
-            ['ticket_number' => 'TKT-240301-005', 'subject' => 'Request for invoice copy',           'from' => 'dian.p@outlook.com',    'agent' => 'Dian_Pratama',   'status' => 'Closed',  'received' => '2025-03-01 10:00:00', 'response_minutes' => 15],
-            ['ticket_number' => 'TKT-240301-006', 'subject' => 'Product feedback submission',        'from' => 'cindy.k@gmail.com',     'agent' => 'Cindy_Kurnia',   'status' => 'Closed',  'received' => '2025-03-01 10:20:00', 'response_minutes' => 45],
-            ['ticket_number' => 'TKT-240301-007', 'subject' => 'Shipping address change request',   'from' => 'hendra99@yahoo.com',    'agent' => 'Budi_Santoso',   'status' => 'Replied', 'received' => '2025-03-01 10:55:00', 'response_minutes' => 60],
-            ['ticket_number' => 'TKT-240301-008', 'subject' => 'Missing item in package',           'from' => 'lestari@gmail.com',     'agent' => 'Rina_Wahyuni',   'status' => 'Open',    'received' => '2025-03-01 11:15:00', 'response_minutes' => 240],
-            ['ticket_number' => 'TKT-240301-009', 'subject' => 'Account password reset assistance', 'from' => 'wibowo.j@gmail.com',    'agent' => 'Ahmad_Fauzi',    'status' => 'Closed',  'received' => '2025-03-01 11:40:00', 'response_minutes' => 10],
-            ['ticket_number' => 'TKT-240301-010', 'subject' => 'Bulk order quotation request',      'from' => 'toko.maju@email.com',   'agent' => 'Sari_Dewi',      'status' => 'Pending', 'received' => '2025-03-01 12:00:00', 'response_minutes' => 420],
-            ['ticket_number' => 'TKT-240301-011', 'subject' => 'Promo code not working',            'from' => 'nanda.s@gmail.com',     'agent' => 'Dian_Pratama',   'status' => 'Replied', 'received' => '2025-03-01 13:05:00', 'response_minutes' => 30],
-            ['ticket_number' => 'TKT-240301-012', 'subject' => 'Request product catalogue',         'from' => 'margareth@hotmail.com', 'agent' => 'Cindy_Kurnia',   'status' => 'Closed',  'received' => '2025-03-01 13:30:00', 'response_minutes' => 55],
-            ['ticket_number' => 'TKT-240301-013', 'subject' => 'Refund status follow-up',           'from' => 'felix.tan@gmail.com',   'agent' => 'Budi_Santoso',   'status' => 'Open',    'received' => '2025-03-01 14:10:00', 'response_minutes' => 150],
-            ['ticket_number' => 'TKT-240301-014', 'subject' => 'Loyalty points inquiry',            'from' => 'putri.r@yahoo.com',     'agent' => 'Rina_Wahyuni',   'status' => 'Closed',  'received' => '2025-03-01 14:45:00', 'response_minutes' => 25],
-            ['ticket_number' => 'TKT-240301-015', 'subject' => 'Exchange request different size',   'from' => 'kevin.w@gmail.com',     'agent' => 'Ahmad_Fauzi',    'status' => 'Replied', 'received' => '2025-03-01 15:20:00', 'response_minutes' => 75],
-        ];
+        $raw = [];
 
         if ($request->filled('start_date') || $request->filled('end_date')) {
             $raw = array_values(array_filter($raw, function ($r) use ($request) {
@@ -588,23 +553,7 @@ class ReportController extends Controller
 
     public function loginActivity(Request $request)
     {
-        $raw = [
-            ['id' => 294, 'agent' => 'Vica Damayanti',         'description' => 'Login',  'date' => '2025-08-01 08:58:00'],
-            ['id' => 293, 'agent' => 'Muhammad Ridho Fadilah', 'description' => 'Login',  'date' => '2025-08-01 09:48:00'],
-            ['id' => 292, 'agent' => 'Lukas Imanuel',          'description' => 'Login',  'date' => '2025-08-01 09:02:00'],
-            ['id' => 291, 'agent' => 'Firman Hadi Sanjaya',    'description' => 'Login',  'date' => '2025-08-01 10:14:00'],
-            ['id' => 290, 'agent' => 'Cindy Kurnia',           'description' => 'Login',  'date' => '2025-08-01 09:06:00'],
-            ['id' => 289, 'agent' => 'Ahmad Maulana',          'description' => 'Login',  'date' => '2025-08-01 09:05:00'],
-            ['id' => 288, 'agent' => 'Ahmad Maulana',          'description' => 'Login',  'date' => '2025-08-01 09:51:00'],
-            ['id' => 287, 'agent' => 'Budi Santoso',           'description' => 'Logout', 'date' => '2025-08-01 17:00:00'],
-            ['id' => 286, 'agent' => 'Rina Wahyuni',           'description' => 'Login',  'date' => '2025-08-01 08:30:00'],
-            ['id' => 285, 'agent' => 'Sari Dewi',              'description' => 'Logout', 'date' => '2025-08-01 16:45:00'],
-            ['id' => 284, 'agent' => 'Dian Pratama',           'description' => 'Login',  'date' => '2025-07-31 08:15:00'],
-            ['id' => 283, 'agent' => 'Hendra Gunawan',         'description' => 'Logout', 'date' => '2025-07-31 17:30:00'],
-            ['id' => 282, 'agent' => 'Nanda Sari',             'description' => 'Login',  'date' => '2025-07-31 09:00:00'],
-            ['id' => 281, 'agent' => 'Felix Tan',              'description' => 'Login',  'date' => '2025-07-31 08:45:00'],
-            ['id' => 280, 'agent' => 'Putri Rahayu',           'description' => 'Logout', 'date' => '2025-07-31 18:00:00'],
-        ];
+        $raw = [];
 
         if ($request->filled('start_date') || $request->filled('end_date')) {
             $raw = array_values(array_filter($raw, function ($r) use ($request) {

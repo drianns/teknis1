@@ -517,8 +517,9 @@
                                                 <select
                                                     class="form-select bg-gray-800 border-gray-700 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full hover:border-gray-600 transition-colors">
                                                     <option value="" selected>Select</option>
-                                                    <option value="call">Call</option>
-                                                    <option value="chat">Chat</option>
+                                                    @foreach($sources as $source)
+                                                        <option value="{{ $source->id }}">{{ $source->name }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             <!-- Order ID -->
@@ -562,7 +563,9 @@
                                                     class="form-select bg-gray-800 border-gray-700 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full hover:border-gray-600 transition-colors"
                                                     id="selectSubCategory">
                                                     <option value="" selected>Select Sub Category</option>
-                                                    <option value="1">Sub Category Demo</option>
+                                                    @foreach($sub_categories as $sub_category)
+                                                        <option value="{{ $sub_category->id }}">{{ $sub_category->name }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             <!-- Activity -->
@@ -572,7 +575,9 @@
                                                 <select
                                                     class="form-select bg-gray-800 border-gray-700 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full hover:border-gray-600 transition-colors">
                                                     <option value="" selected>Select</option>
-                                                    <option value="1">Dummy Activity</option>
+                                                    @foreach($activities as $activity)
+                                                        <option value="{{ $activity->id }}">{{ $activity->name }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             <!-- Type -->
@@ -581,7 +586,9 @@
                                                 <select
                                                     class="form-select bg-gray-800 border-gray-700 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full hover:border-gray-600 transition-colors">
                                                     <option value="" selected>Select</option>
-                                                    <option value="1">Dummy Type</option>
+                                                    @foreach($types as $type)
+                                                        <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             <!-- Ticket Status -->
@@ -615,7 +622,9 @@
                                                 <select
                                                     class="form-select bg-gray-800 border-gray-700 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full hover:border-gray-600 transition-colors">
                                                     <option value="" selected>Select</option>
-                                                    <option value="1">Dummy Brand</option>
+                                                    @foreach($brands as $brand)
+                                                        <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             <!-- Brand Category -->
@@ -625,7 +634,9 @@
                                                 <select
                                                     class="form-select bg-gray-800 border-gray-700 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full hover:border-gray-600 transition-colors">
                                                     <option value="" selected>Select</option>
-                                                    <option value="1">Dummy Brand Cat</option>
+                                                    @foreach($brand_categories as $brand_category)
+                                                        <option value="{{ $brand_category->id }}">{{ $brand_category->name }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             <!-- Group Name -->
@@ -635,7 +646,9 @@
                                                 <select
                                                     class="form-select bg-gray-800 border-gray-700 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full hover:border-gray-600 transition-colors">
                                                     <option value="" selected>Select</option>
-                                                    <option value="1">Dummy Group</option>
+                                                    @foreach($groups as $group)
+                                                        <option value="{{ $group->id }}">{{ $group->name }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             <!-- Fulfillment -->
@@ -645,7 +658,9 @@
                                                 <select
                                                     class="form-select bg-gray-800 border-gray-700 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full hover:border-gray-600 transition-colors">
                                                     <option value="" selected>Select</option>
-                                                    <option value="1">Dummy Fulfillment 1</option>
+                                                    @foreach($fulfillments as $fulfillment)
+                                                        <option value="{{ $fulfillment->id }}">{{ $fulfillment->name }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                         </div>
@@ -667,7 +682,9 @@
                                                 <select
                                                     class="form-select bg-gray-800 border-gray-700 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full hover:border-gray-600 transition-colors">
                                                     <option value="" selected>Select</option>
-                                                    <option value="1">Unit 1</option>
+                                                    @foreach($escalation_units as $unit)
+                                                        <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             <!-- Escalation Ticket -->
@@ -677,7 +694,6 @@
                                                 <select
                                                     class="form-select bg-gray-800 border-gray-700 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full hover:border-gray-600 transition-colors">
                                                     <option value="" selected>Select</option>
-                                                    <option value="1">Tiket 1</option>
                                                 </select>
                                             </div>
                                             <!-- Meta (Full Width) -->
@@ -1345,14 +1361,7 @@
                 const searchActions = document.getElementById('sidebar-search-actions');
 
                 if (searchInput && searchResults && searchPlaceholder && searchActions) {
-                    const mockData = [
-                        { name: 'Boy', email: 'diorahmad777@gmail.com', phone: '6285359473293' },
-                        { name: 'Tiara', email: 'tiararahmani93@gmail.com', phone: '6281320007679' },
-                        { name: 'Rahmat Hidayat', email: 'fifimurfiyasih13@icloud.com', phone: '6282217782746' },
-                        { name: 'Ahmad', email: 'moejeep@gmail.com', phone: '6282114957673' },
-                        { name: 'Yanti', email: 'yanti.rahman76@gmail.com', phone: '6285244310008' },
-                        { name: 'Ahmad Zariruddin', email: 'a.zariruddin@gmail.com', phone: '6285212348983' }
-                    ];
+                    const mockData = [];
 
                     searchInput.addEventListener('input', function (e) {
                         const keyword = e.target.value.toLowerCase();

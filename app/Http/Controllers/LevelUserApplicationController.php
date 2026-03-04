@@ -10,11 +10,11 @@ class LevelUserApplicationController extends Controller
     {
         // Use dummy data since the user_applications table doesn't exist in the current schema.
         $counts = [
-            'layer1' => 20,
-            'layer2' => 3,
-            'layer3' => 331,
+            'layer1' => 0,
+            'layer2' => 0,
+            'layer3' => 0,
             'supervisor' => 0,
-            'administrator' => 2,
+            'administrator' => 0,
         ];
 
         return view('pages.management-user.level-user-application.index', compact('counts'));
@@ -24,11 +24,11 @@ class LevelUserApplicationController extends Controller
     {
         // Use dummy data since the user_applications table doesn't exist in the current schema.
         $counts = [
-            'layer1' => 20,
-            'layer2' => 3,
-            'layer3' => 331,
+            'layer1' => 0,
+            'layer2' => 0,
+            'layer3' => 0,
             'supervisor' => 0,
-            'administrator' => 2,
+            'administrator' => 0,
         ];
 
         return response()->json($counts);

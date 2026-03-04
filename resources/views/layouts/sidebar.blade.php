@@ -3,7 +3,7 @@
     $activePath = request()->path();
 @endphp
 
-<aside x-data="sidebar()" @mouseenter="expanded = true" @mouseleave="expanded = false" @click.stop=""
+<aside x-data="sidebar()" @mouseenter="expanded = true" @mouseleave="expanded = false"
     class="fixed left-0 top-0 h-screen flex transition-all duration-300 z-50 bg-gray-900 border-r border-gray-800 rounded-r-[20px] overflow-visible group"
     :class="expanded ? 'w-[280px] sm:w-[300px] shadow-2xl' : 'w-[60px] shadow-lg'" id="main-sidebar">
     <!-- Left Icon Bar (Always Visible Strip) -->

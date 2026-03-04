@@ -8,88 +8,106 @@ class SetupChannelEmailController extends Controller
 {
     public function accountCorporate()
     {
-        return view('pages.setup-channel-email.account-corporate.index');
+        $rows = \App\Models\ChannelAccount::paginate(10);
+        return view('pages.setup-channel-email.account-corporate.index', compact('rows'));
     }
 
     public function dataSignature()
     {
-        return view('pages.setup-channel-email.data-signature.index');
+        // Placeholder for ChannelSignature model
+        $rows = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
+        return view('pages.setup-channel-email.data-signature.index', compact('rows'));
     }
 
     public function filterJumlahHari()
     {
-        return view('pages.setup-channel-email.filter-jumlah-hari.index');
+        $rows = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
+        return view('pages.setup-channel-email.filter-jumlah-hari.index', compact('rows'));
     }
 
     public function incomingEmail()
     {
-        return view('pages.setup-channel-email.incoming-email.index');
+        $rows = \App\Models\ChatHeaderTicket::where('status', 'inbound')->paginate(10);
+        return view('pages.setup-channel-email.incoming-email.index', compact('rows'));
     }
 
     public function jamOperasional()
     {
-        return view('pages.setup-channel-email.jam-operasional.index');
+        $rows = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
+        return view('pages.setup-channel-email.jam-operasional.index', compact('rows'));
     }
 
     public function settingAgent()
     {
-        return view('pages.setup-channel-email.setting-agent.index');
+        $rows = \App\Models\UserAgent::paginate(10);
+        return view('pages.setup-channel-email.setting-agent.index', compact('rows'));
     }
 
     public function settingAutoReply()
     {
-        return view('pages.setup-channel-email.setting-auto-reply.index');
+        $rows = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
+        return view('pages.setup-channel-email.setting-auto-reply.index', compact('rows'));
     }
 
     public function templateAutoReply()
     {
-        return view('pages.setup-channel-email.template-auto-reply.index');
+        $rows = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
+        return view('pages.setup-channel-email.template-auto-reply.index', compact('rows'));
     }
 
     public function templateResponse()
     {
-        return view('pages.setup-channel-email.template-response.index');
+        $rows = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
+        return view('pages.setup-channel-email.template-response.index', compact('rows'));
     }
 
     // Setting Email System
     public function emailAccounts()
     {
-        return view('pages.setting-email-system.accounts.index');
+        $rows = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
+        return view('pages.setting-email-system.accounts.index', compact('rows'));
     }
 
     public function emailSignature()
     {
-        return view('pages.setting-email-system.signature.index');
+        $rows = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
+        return view('pages.setting-email-system.signature.index', compact('rows'));
     }
 
     public function emailService()
     {
-        return view('pages.setting-email-system.service.index');
+        $rows = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
+        return view('pages.setting-email-system.service.index', compact('rows'));
     }
 
     public function emailServiceMethod()
     {
-        return view('pages.setting-email-system.service-method.index');
+        $rows = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
+        return view('pages.setting-email-system.service-method.index', compact('rows'));
     }
 
     public function serverProfile()
     {
-        return view('pages.setting-email-system.server-profile.index');
+        $rows = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
+        return view('pages.setting-email-system.server-profile.index', compact('rows'));
     }
 
     public function serverProtocol()
     {
-        return view('pages.setting-email-system.server-protocol.index');
+        $rows = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
+        return view('pages.setting-email-system.server-protocol.index', compact('rows'));
     }
 
     public function serverProtocolOut()
     {
-        return view('pages.setting-email-system.server-protocol-out.index');
+        $rows = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
+        return view('pages.setting-email-system.server-protocol-out.index', compact('rows'));
     }
 
     // Setting EPIC System
     public function epicConfiguration()
     {
-        return view('pages.setting-epic-system.setting-configuration-epic');
+        $configs = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10);
+        return view('pages.setting-epic-system.setting-configuration-epic', compact('configs'));
     }
 }
