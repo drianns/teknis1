@@ -23,7 +23,12 @@ class RecordingController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where('file_name', 'like', "%{$search}%");
+            $query->where(function($q) use ($search) {
+                $q->where('unique_id', 'like', "%{$search}%")
+                  ->orWhere('ticket_number', 'like', "%{$search}%")
+                  ->orWhere('customer', 'like', "%{$search}%")
+                  ->orWhere('agent', 'like', "%{$search}%");
+            });
         }
 
         try {

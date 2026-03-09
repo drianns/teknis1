@@ -8,49 +8,19 @@ use App\Models\AgentAuxLog;
 use App\Models\LoginActivity;
 use Illuminate\Support\Facades\Response;
 
+use App\Exports\GenericReportExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
 class ReportController extends Controller
 {
-    // ─────────────────────────────────────────────────────────────────────────
-    // Helper: build a clean CSV string from headers + rows.
-    // Uses proper RFC 4180 quoting via fputcsv into a memory stream.
-    // Prepends UTF-8 BOM so Excel opens it with correct encoding.
-    // ─────────────────────────────────────────────────────────────────────────
-    private function buildCsv(array $headers, array $rows): string
+    // Helper: Perform a stylized Excel (.xlsx) download.
+    private function performExport(array $headers, array $rows, string $filename): BinaryFileResponse
     {
-        $sep = "\t"; // Tab separator — works on all regional settings (ID/EN/etc)
-
-        $lines = [];
-
-        // Header row
-        $lines[] = implode($sep, array_map(fn($v) => $this->tsvEscape($v), $headers));
-
-        // Data rows
-        foreach ($rows as $row) {
-            $lines[] = implode($sep, array_map(fn($v) => $this->tsvEscape($v), $row));
-        }
-
-        // UTF-8 BOM so Excel opens with correct encoding
-        return "\xEF\xBB\xBF" . implode("\r\n", $lines) . "\r\n";
-    }
-
-    // Escape a single cell value for tab-separated output.
-    // Wraps in double-quotes only if the value contains tabs, newlines, or double-quotes.
-    private function tsvEscape(mixed $value): string
-    {
-        $v = (string) $value;
-        if (str_contains($v, '"') || str_contains($v, "\t") || str_contains($v, "\n")) {
-            return '"' . str_replace('"', '""', $v) . '"';
-        }
-        return $v;
-    }
-
-    // Helper: return a CSV download response.
-    private function csvResponse(string $csv, string $filename): \Illuminate\Http\Response
-    {
-        return Response::make($csv, 200, [
-            'Content-Type'        => 'text/tab-separated-values; charset=UTF-8',
-            'Content-Disposition' => "attachment; filename=\"{$filename}.csv\"",
-        ]);
+        return Excel::download(
+            new GenericReportExport($headers, $rows, $filename, 'Data'),
+            "{$filename}_" . now()->format('Ymd_His') . ".xlsx"
+        );
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -86,7 +56,7 @@ class ReportController extends Controller
         return view('pages.report.assign-email', compact('tickets'));
     }
 
-    private function exportAssignEmail($tickets): \Illuminate\Http\Response
+    private function exportAssignEmail($tickets): BinaryFileResponse
     {
         $headers = ['No', 'Ticket Number', 'Subject', 'Agent', 'Category', 'Status', 'Assigned At', 'Response Time (min)'];
 
@@ -108,9 +78,7 @@ class ReportController extends Controller
             ];
         })->toArray();
 
-        $csv      = $this->buildCsv($headers, $rows);
-        $filename = 'report_assign_email_' . now()->format('Ymd_His');
-        return $this->csvResponse($csv, $filename);
+        return $this->performExport($headers, $rows, 'report_assign_email');
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -164,7 +132,7 @@ class ReportController extends Controller
         ));
     }
 
-    private function exportBaseOnSLA($tickets, int $slaTargetMinutes = 1440): \Illuminate\Http\Response
+    private function exportBaseOnSLA($tickets, int $slaTargetMinutes = 1440): BinaryFileResponse
     {
         $headers = ['No', 'Ticket Number', 'Subject', 'Agent', 'Category', 'Status', 'SLA Target (min)', 'Response Time (min)', 'SLA Status'];
 
@@ -188,9 +156,7 @@ class ReportController extends Controller
             ];
         })->toArray();
 
-        $csv      = $this->buildCsv($headers, $rows);
-        $filename = 'report_base_on_sla_' . now()->format('Ymd_His');
-        return $this->csvResponse($csv, $filename);
+        return $this->performExport($headers, $rows, 'report_base_on_sla');
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -228,7 +194,7 @@ class ReportController extends Controller
         ));
     }
 
-    private function exportBaseOnTransaction($tickets): \Illuminate\Http\Response
+    private function exportBaseOnTransaction($tickets): BinaryFileResponse
     {
         $headers = ['No', 'Ticket Number', 'Customer', 'Agent', 'Category', 'Sub Category', 'Priority', 'Status', 'Created At', 'Duration (min)'];
 
@@ -252,9 +218,7 @@ class ReportController extends Controller
             ];
         })->toArray();
 
-        $csv      = $this->buildCsv($headers, $rows);
-        $filename = 'report_base_on_transaction_' . now()->format('Ymd_His');
-        return $this->csvResponse($csv, $filename);
+        return $this->performExport($headers, $rows, 'report_base_on_transaction');
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -296,7 +260,7 @@ class ReportController extends Controller
         ));
     }
 
-    private function exportBaseOnStaff($tickets): \Illuminate\Http\Response
+    private function exportBaseOnStaff($tickets): BinaryFileResponse
     {
         $headers = ['No', 'Agent Name', 'Layer', 'Ticket Number', 'Category', 'Sub Category', 'Priority', 'Status', 'Assigned At', 'Handle Time (min)', 'Escalated'];
 
@@ -321,9 +285,7 @@ class ReportController extends Controller
             ];
         })->toArray();
 
-        $csv      = $this->buildCsv($headers, $rows);
-        $filename = 'report_base_on_staff_' . now()->format('Ymd_His');
-        return $this->csvResponse($csv, $filename);
+        return $this->performExport($headers, $rows, 'report_base_on_staff');
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -363,7 +325,7 @@ class ReportController extends Controller
         ));
     }
 
-    private function exportThreadTransaction($threads): \Illuminate\Http\Response
+    private function exportThreadTransaction($threads): BinaryFileResponse
     {
         $headers = ['No', 'Thread ID', 'Channel', 'Ticket Number', 'Subject', 'Agent', 'Thread Status', 'Ticket Status', 'Created At'];
 
@@ -384,9 +346,7 @@ class ReportController extends Controller
             ];
         })->toArray();
 
-        $csv      = $this->buildCsv($headers, $rows);
-        $filename = 'report_thread_transaction_' . now()->format('Ymd_His');
-        return $this->csvResponse($csv, $filename);
+        return $this->performExport($headers, $rows, 'report_thread_transaction');
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -424,7 +384,7 @@ class ReportController extends Controller
         ));
     }
 
-    private function exportInteractionTicket($tickets): \Illuminate\Http\Response
+    private function exportInteractionTicket($tickets): BinaryFileResponse
     {
         $headers = ['No', 'Ticket Number', 'Interaction Type', 'Channel', 'Agent', 'Category', 'Sub Category', 'Status', 'Merged', 'Created At'];
 
@@ -445,9 +405,7 @@ class ReportController extends Controller
             ];
         })->toArray();
 
-        $csv      = $this->buildCsv($headers, $rows);
-        $filename = 'report_interaction_ticket_' . now()->format('Ymd_His');
-        return $this->csvResponse($csv, $filename);
+        return $this->performExport($headers, $rows, 'report_interaction_ticket');
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -491,9 +449,7 @@ class ReportController extends Controller
                 $i + 1, $r['username'], $r['description'], $r['start_date'], $r['end_date'], $r['interval'],
             ])->toArray();
 
-            $csv      = $this->buildCsv($headers, $rows);
-            $filename = 'report_aux_' . now()->format('Ymd_His');
-            return $this->csvResponse($csv, $filename);
+            return $this->performExport($headers, $rows, 'report_aux');
         }
 
         return view('pages.report.agent-aux', compact(
@@ -544,9 +500,7 @@ class ReportController extends Controller
                 $r['agent'], $r['status'], $r['response_time'], $r['received_at'],
             ])->toArray();
 
-            $csv      = $this->buildCsv($headers, $rows);
-            $filename = 'report_channel_email_' . now()->format('Ymd_His');
-            return $this->csvResponse($csv, $filename);
+            return $this->performExport($headers, $rows, 'report_channel_email');
         }
 
         return view('pages.report.channel-email', compact('emailData'));
@@ -585,9 +539,7 @@ class ReportController extends Controller
                 $r['id'], $r['agent'], $r['description'], $r['date'],
             ])->toArray();
 
-            $csv      = $this->buildCsv($headers, $rows);
-            $filename = 'report_login_activity_' . now()->format('Ymd_His');
-            return $this->csvResponse($csv, $filename);
+            return $this->performExport($headers, $rows, 'report_login_activity');
         }
 
         return view('pages.report.login-activity', compact('loginData'));

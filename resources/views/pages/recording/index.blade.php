@@ -79,6 +79,70 @@
         </div>
     </div>
 
+    <!-- Audio Player Modal -->
+    <div id="recordingModal" class="fixed inset-0 z-[60] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Background overlay -->
+            <div class="fixed inset-0 transition-opacity bg-gray-950/80 backdrop-blur-sm" aria-hidden="true" onclick="closeRecordingModal()"></div>
+
+            <!-- Modal panel -->
+            <div class="inline-block overflow-hidden text-left align-bottom transition-all transform bg-gray-800 rounded-2xl shadow-2xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-gray-700 ring-1 ring-white/10">
+                <div class="px-6 py-5 border-b border-gray-700/50 flex justify-between items-center bg-gray-900/50">
+                    <div>
+                        <h3 class="text-lg font-bold text-white" id="modal-title">Voice Recording</h3>
+                        <p class="text-xs text-gray-400 mt-0.5" id="modal-subtitle">REC-000000</p>
+                    </div>
+                    <button onclick="closeRecordingModal()" class="text-gray-400 hover:text-white transition-colors bg-gray-800 rounded-lg p-2 border border-gray-700">
+                        <i class='bx bx-x text-2xl'></i>
+                    </button>
+                </div>
+                
+                <div class="p-8">
+                    <!-- Waveform Visualizer Placeholder -->
+                    <div class="mb-8 flex items-end justify-center gap-1 h-16 w-full px-4 overflow-hidden">
+                        @for($i = 0; $i < 40; $i++)
+                            <div class="w-1.5 bg-blue-500/30 rounded-full animate-wave" style="height: {{ rand(20, 100) }}%; animation-delay: {{ $i * 0.05 }}s"></div>
+                        @endfor
+                    </div>
+
+                    <div class="space-y-6">
+                        <!-- Playback Status -->
+                        <div class="flex justify-between items-center px-1">
+                            <span class="text-sm font-mono text-blue-400" id="currentTime">00:00</span>
+                            <span class="text-sm font-mono text-gray-400" id="totalDuration">00:00</span>
+                        </div>
+
+                        <!-- Audio Element -->
+                        <div class="bg-gray-900/50 rounded-xl p-4 border border-gray-700/50 shadow-inner">
+                            <audio id="audioPlayer" controls class="w-full filter invert hue-rotate-180 brightness-200">
+                                <source src="" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+
+                        <!-- Meta Info Grid -->
+                        <div class="grid grid-cols-2 gap-4 pt-4">
+                            <div class="bg-gray-900/30 rounded-xl p-3 border border-white/5">
+                                <span class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Agent</span>
+                                <span class="text-sm text-gray-200" id="modalAgent">-</span>
+                            </div>
+                            <div class="bg-gray-900/30 rounded-xl p-3 border border-white/5">
+                                <span class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Customer</span>
+                                <span class="text-sm text-gray-200" id="modalCustomer">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-6 py-4 bg-gray-900/50 border-t border-gray-700/50 flex justify-end">
+                    <button onclick="closeRecordingModal()" class="px-6 py-2.5 bg-gray-700 hover:bg-gray-600 text-white rounded-xl text-sm font-bold transition-all border border-gray-600">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <style>
         .backend-blur-md {
             backdrop-filter: blur(12px);
@@ -98,6 +162,13 @@
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.2);
+        }
+        .animate-wave {
+            animation: wave 1.2s ease-in-out infinite;
+        }
+        @keyframes wave {
+            0%, 100% { transform: scaleY(0.5); opacity: 0.3; }
+            50% { transform: scaleY(1.3); opacity: 1; }
         }
     </style>
     
@@ -192,7 +263,7 @@
                     <td class="px-6 py-4 text-gray-400">${ag}</td>
                     <td class="px-6 py-4 text-center text-gray-300 font-mono">${dur}</td>
                     <td class="px-6 py-4 text-center">
-                        <button class="w-8 h-8 rounded-lg bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white transition-all inline-flex items-center justify-center border border-blue-500/30" title="Play Recording">
+                        <button onclick="openRecordingModal(${JSON.stringify(item).replace(/"/g, '&quot;')})" class="w-8 h-8 rounded-lg bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white transition-all inline-flex items-center justify-center border border-blue-500/30" title="Play Recording">
                             <i class='bx bx-play text-xl'></i>
                         </button>
                     </td>
@@ -207,6 +278,38 @@
                 `;
                 tbody.appendChild(tr);
             });
+        }
+
+        function openRecordingModal(item) {
+            const modal = document.getElementById('recordingModal');
+            const audio = document.getElementById('audioPlayer');
+            
+            document.getElementById('modal-subtitle').innerText = item.unique_id || 'N/A';
+            document.getElementById('modalAgent').innerText = item.agent || '-';
+            document.getElementById('modalCustomer').innerText = item.customer || '-';
+            document.getElementById('totalDuration').innerText = item.duration || '00:00';
+            
+            // Set dummy recording if file not available
+            const source = item.recording_file || 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
+            audio.src = source;
+            
+            modal.classList.remove('hidden');
+            
+            // Sync time display
+            audio.ontimeupdate = function() {
+                const mins = Math.floor(audio.currentTime / 60);
+                const secs = Math.floor(audio.currentTime % 60);
+                document.getElementById('currentTime').innerText = 
+                    `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            };
+        }
+
+        function closeRecordingModal() {
+            const modal = document.getElementById('recordingModal');
+            const audio = document.getElementById('audioPlayer');
+            audio.pause();
+            audio.src = '';
+            modal.classList.add('hidden');
         }
 
         function renderPagination(data) {

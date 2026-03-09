@@ -14,45 +14,39 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
-class UserExport implements FromCollection, WithHeadings, WithStyles, ShouldAutoSize, WithTitle, WithEvents
+class AgentAuxExport implements FromCollection, WithHeadings, WithStyles, ShouldAutoSize, WithTitle, WithEvents
 {
-    protected $users;
-    protected $groupedBy;
+    protected $data;
+    protected $headers;
+    protected $title;
 
-    public function __construct($users, $groupedBy = [])
+    public function __construct($data, $headers, $title = 'Report')
     {
-        $this->users     = $users;
-        $this->groupedBy = $groupedBy;
+        $this->data    = collect($data);
+        $this->headers = $headers;
+        $this->title   = $title;
     }
 
     public function collection()
     {
-        return $this->users;
+        return $this->data;
     }
 
     public function title(): string
     {
-        return 'User Data';
+        return $this->title;
     }
 
     public function headings(): array
     {
-        return [
-            'User Name',
-            'Name',
-            'Level User',
-            'Email Address',
-            'Department',
-            'Group',
-            'Status',
-        ];
+        return $this->headers;
     }
 
     public function styles(Worksheet $sheet)
     {
-        $totalCols  = count($this->headings());
-        $totalRows  = $this->users->count() + 1;
-        $lastCol    = $this->colLetter($totalCols);
+        $totalCols = count($this->headers);
+        $totalRows = $this->data->count() + 1;
+        $lastCol   = $this->colLetter($totalCols);
 
         // Header styling
         $sheet->getStyle("A1:{$lastCol}1")->applyFromArray([
@@ -63,7 +57,7 @@ class UserExport implements FromCollection, WithHeadings, WithStyles, ShouldAuto
             ],
             'fill' => [
                 'fillType'   => Fill::FILL_SOLID,
-                'startColor' => ['rgb' => '2563EB'],
+                'startColor' => ['rgb' => '2563EB'], // Blue-600 to match UI
             ],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
@@ -71,7 +65,7 @@ class UserExport implements FromCollection, WithHeadings, WithStyles, ShouldAuto
             ],
         ]);
 
-        // Zebra striping on data rows
+        // Zebra striping and row styling
         for ($row = 2; $row <= $totalRows; $row++) {
             $range = "A{$row}:{$lastCol}{$row}";
             $sheet->getStyle($range)->applyFromArray([
@@ -79,7 +73,7 @@ class UserExport implements FromCollection, WithHeadings, WithStyles, ShouldAuto
                     'fillType'   => Fill::FILL_SOLID,
                     'startColor' => ['rgb' => ($row % 2 === 0) ? 'F8FAFC' : 'FFFFFF'],
                 ],
-                'font'      => ['size' => 10],
+                'font'      => ['size' => 10, 'color' => ['rgb' => '334155']],
                 'alignment' => ['vertical' => Alignment::VERTICAL_CENTER],
             ]);
         }
@@ -89,7 +83,7 @@ class UserExport implements FromCollection, WithHeadings, WithStyles, ShouldAuto
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => Border::BORDER_THIN,
-                    'color'       => ['rgb' => 'C5D0E0'],
+                    'color'       => ['rgb' => 'E2E8F0'],
                 ],
                 'outline' => [
                     'borderStyle' => Border::BORDER_MEDIUM,
@@ -99,9 +93,9 @@ class UserExport implements FromCollection, WithHeadings, WithStyles, ShouldAuto
         ]);
 
         // Row heights
-        $sheet->getRowDimension(1)->setRowHeight(24);
+        $sheet->getRowDimension(1)->setRowHeight(30);
         for ($row = 2; $row <= $totalRows; $row++) {
-            $sheet->getRowDimension($row)->setRowHeight(20);
+            $sheet->getRowDimension($row)->setRowHeight(22);
         }
 
         return [];
@@ -112,19 +106,11 @@ class UserExport implements FromCollection, WithHeadings, WithStyles, ShouldAuto
         return [
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
-                $sheet->getTabColor()->setRGB('2563EB');
                 $sheet->freezePane('A2');
-
-                // Center the first column
+                
+                // Set column alignment for specific types if needed
+                // e.g., center No column
                 $sheet->getStyle('A')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-
-                // Cap column widths
-                for ($col = 1; $col <= count($this->headings()); $col++) {
-                    $letter = $this->colLetter($col);
-                    if ($sheet->getColumnDimension($letter)->getWidth() > 40) {
-                        $sheet->getColumnDimension($letter)->setWidth(40);
-                    }
-                }
             },
         ];
     }
