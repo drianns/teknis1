@@ -256,11 +256,11 @@
                 <div class="p-4 border-b border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
                     <div class="flex items-center text-gray-400 text-sm">
                         <span>Show</span>
-                        <select
+                        <select id="perPageSelect"
                             class="mx-2 bg-gray-900 border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-1.5">
-                            <option>10</option>
-                            <option>25</option>
-                            <option>50</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
                         </select>
                         <span>entries</span>
                     </div>
@@ -271,7 +271,7 @@
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="bx bx-search text-gray-500"></i>
                             </div>
-                            <input type="text" id="searchInput" onkeyup="searchTable()"
+                            <input type="text" id="searchInput"
                                 class="bg-gray-900 border border-gray-700 text-gray-300 text-sm rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 block w-full pl-12 p-2.5 transition-all outline-none"
                                 placeholder="Search histories...">
                         </div>
@@ -322,104 +322,17 @@
                                 </th>
                             </tr>
                         </thead>
-                        <tbody id="historyTableBody" class="divide-y divide-gray-800 bg-transparent">
-                            @forelse ($emails as $email)
-                                <tr class="hover:bg-gray-800/50 transition-colors even:bg-gray-900/40">
-                                    <td class="px-3 py-3 text-gray-400 max-w-[160px]">
-                                        <div class="truncate" title="{{ $email->email_service }}">
-                                            {{ $email->email_service }}
-                                        </div>
-                                    </td>
-                                    <td class="px-3 py-3 text-cyan-400 max-w-[200px]">
-                                        <div class="truncate" title="{{ $email->email_address }}">
-                                            {{ $email->email_address }}
-                                        </div>
-                                    </td>
-                                    <td class="px-3 py-3 text-gray-400 max-w-[180px]">
-                                        <div class="truncate" title="{{ $email->subject ?: '-' }}">
-                                            {{ $email->subject ?: '-' }}
-                                        </div>
-                                    </td>
-                                    <td class="px-3 py-3 text-gray-400 max-w-[120px]">
-                                        <div class="truncate" title="{{ $email->agent_name }}">
-                                            {{ $email->agent_name }}
-                                        </div>
-                                    </td>
-                                    <td class="px-3 py-3 text-gray-500 text-xs whitespace-nowrap">{{ $email->date }}</td>
-                                    <td class="px-3 py-3 whitespace-nowrap">
-                                        @if($email->type)
-                                            @php
-                                                $typeColor = strtoupper($email->type) === 'OUT'
-                                                    ? 'bg-amber-500 text-white'
-                                                    : 'bg-blue-500 text-white';
-                                            @endphp
-                                            <span class="px-2.5 py-1 rounded-full text-xs font-semibold {{ $typeColor }}">
-                                                {{ $email->type }}
-                                            </span>
-                                        @else
-                                            <span class="text-gray-600 text-xs">-</span>
-                                        @endif
-                                    </td>
-                                    <td class="px-3 py-3 text-center whitespace-nowrap">
-                                        <div class="relative inline-block">
-                                            <button onclick="toggleDropdown({{ $email->id }})"
-                                                class="text-gray-400 hover:text-white transition-colors">
-                                                <i class="bx bx-dots-vertical-rounded text-xl"></i>
-                                            </button>
-                                            <!-- Dropdown Menu -->
-                                            <div id="dropdown-{{ $email->id }}"
-                                                class="hidden absolute right-0 mt-2 w-40 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50">
-                                                <ul class="py-1 text-sm">
-                                                    <li>
-                                                        <a href="javascript:void(0)"
-                                                            onclick="viewEmailContent({{ $email->id }})"
-                                                            class="flex items-center gap-2 px-4 py-2 text-gray-300 hover:bg-gray-700 transition-colors">
-                                                            <i class="bx bx-envelope text-base"></i>
-                                                            <span>File Email</span>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="javascript:void(0)"
-                                                            onclick="viewAttachments({{ $email->id }})"
-                                                            class="flex items-center gap-2 px-4 py-2 text-gray-300 hover:bg-gray-700 transition-colors">
-                                                            <i class="bx bx-paperclip text-base"></i>
-                                                            <span>Attachment</span>
-                                                        </a>
-                                                    </li>
-                                                    <!-- Hidden Data for JS -->
-                                                    <div id="email-raw-{{ $email->id }}" class="hidden"
-                                                        data-subject="{{ $email->subject }}"
-                                                        data-content="{{ base64_encode($email->content) }}"
-                                                        data-attachments="{{ json_encode($email->attachments) }}">
-                                                    </div>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="7" class="px-6 py-8 text-center text-gray-500">
-                                        <div class="flex flex-col items-center justify-center">
-                                            <i class="bx bx-folder-open text-4xl mb-2 text-gray-600"></i>
-                                            <p>No email history available</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforelse
+                        <tbody id="dataTableBody" class="divide-y divide-gray-800 bg-transparent">
+                            <!-- Populated dynamically via JS AJAX -->
                         </tbody>
                     </table>
                 </div>
 
                 <!-- Pagination -->
-                <div
-                    class="p-3 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
-                    <span>Showing 1 to {{ count($emails) }} of {{ count($emails) }} entries</span>
-                    <div class="flex gap-1 mt-2 md:mt-0">
-                        <button class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg disabled:opacity-50"
-                            disabled>Previous</button>
-                        <button class="px-3 py-1 bg-blue-600 text-white rounded-lg">1</button>
-                        <button class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg">Next</button>
+                <div class="p-3 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
+                    <span id="dataTableInfo">Showing 0 to 0 of 0 entries</span>
+                    <div class="flex gap-1 mt-2 md:mt-0" id="paginationContainer">
+                        <!-- JS paginated -->
                     </div>
                 </div>
             </div>
@@ -464,19 +377,9 @@
     </div>
 
     <script>
-        // Search function
-        function searchTable() {
-            const input = document.getElementById('searchInput');
-            const filter = input.value.toLowerCase();
-            const tbody = document.getElementById('historyTableBody');
-            const rows = tbody.getElementsByTagName('tr');
+        // Search function - AJAX Handled
+        // Removed old DOM search onkeyup based filtering
 
-            for (let i = 0; i < rows.length; i++) {
-                const row = rows[i];
-                const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(filter) ? '' : 'none';
-            }
-        }
 
         // Toggle dropdown
         function toggleDropdown(emailId) {
@@ -581,71 +484,12 @@
         }
 
         function applyDateFilter() {
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
-            const selectFeature = document.getElementById('selectFeature').value;
-            const emailAddress = document.getElementById('emailAddress').value.toLowerCase().trim();
-
             updateBarLabels(); // Sync bar labels
-
-            // Filter table rows
-            const tbody = document.getElementById('historyTableBody');
-            const rows = tbody.getElementsByTagName('tr');
-
-            for (let i = 0; i < rows.length; i++) {
-                const row = rows[i];
-                let showRow = true;
-
-                // Filter by date range if both dates are selected
-                if (startDate && endDate) {
-                    const start = new Date(startDate);
-                    const end = new Date(endDate);
-                    end.setHours(23, 59, 59, 999); // Inclusion check for same day
-
-                    if (start > end) {
-                        alert('Start date cannot be after end date');
-                        return;
-                    }
-
-                    const dateCell = row.cells[4]; // Date column
-                    if (dateCell) {
-                        const dateText = dateCell.textContent.trim();
-                        const rowDate = new Date(dateText);
-
-                        if (!(rowDate >= start && rowDate <= end)) {
-                            showRow = false;
-                        }
-                    }
-                }
-
-                // Filter by feature (Inbox/Outbox)
-                if (showRow && selectFeature) {
-                    const typeCell = row.cells[5]; // Type column
-                    if (typeCell) {
-                        const typeText = typeCell.textContent.trim().toUpperCase();
-                        if (selectFeature === 'inbox' && typeText !== 'IN') {
-                            showRow = false;
-                        } else if (selectFeature === 'outbox' && typeText !== 'OUT') {
-                            showRow = false;
-                        }
-                    }
-                }
-
-                // Filter by email address
-                if (showRow && emailAddress) {
-                    const emailCell = row.cells[1]; // Email Address column
-                    if (emailCell) {
-                        const emailText = emailCell.textContent.toLowerCase();
-                        if (!emailText.includes(emailAddress)) {
-                            showRow = false;
-                        }
-                    }
-                }
-
-                row.style.display = showRow ? '' : 'none';
-            }
-
             closeDateFilter();
+            
+            // Trigger AJAX Real Load
+            currentPage = 1;
+            loadTableData();
         }
 
         // Initialize dates on load
@@ -658,7 +502,179 @@
             if(endInput && !endInput.value) endInput.value = today;
             
             updateBarLabels();
+            loadTableData(); // Initial JS Load
+            
+            document.getElementById('searchInput').addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    currentPage = 1;
+                    loadTableData();
+                }, 300);
+            });
+
+            document.getElementById('perPageSelect').addEventListener('change', function() {
+                currentPage = 1;
+                loadTableData();
+            });
         });
+
+        let currentPage = 1;
+        let debounceTimer;
+
+        // Note: For demonstration since real attachments require DB logic we use a mock payload
+        // But table rendering is real via AJAX
+        let currentDataBucket = {}; 
+
+        function loadTableData(page = 1) {
+            currentPage = page;
+            const search = document.getElementById('searchInput').value;
+            const perPage = document.getElementById('perPageSelect').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const emailAddress = document.getElementById('emailAddress').value;
+            const feature = document.getElementById('selectFeature').value; // if we can pass it, we can filter in backend too, ignored for now
+            
+            const tbody = document.getElementById('dataTableBody');
+            tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8"><i class="bx bx-loader-alt bx-spin text-3xl text-blue-500"></i><p class="mt-2 text-gray-400">Loading emails...</p></td></tr>`;
+
+            const url = `{{ route('channel.email.history.getData') }}?page=${page}&search=${encodeURIComponent(search)}&per_page=${perPage}&start_date=${startDate}&end_date=${endDate}`;
+
+            fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    renderTable(data);
+                    renderPagination(data);
+                })
+                .catch(err => {
+                    console.error('Error fetching data:', err);
+                    tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-red-500"><i class="bx bx-error text-4xl mb-2"></i><p>Error loading data</p></td></tr>`;
+                });
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('dataTableBody');
+            tbody.innerHTML = '';
+            currentDataBucket = {}; // clear bucket
+
+            if (!data.data || data.data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                            <div class="flex flex-col items-center justify-center">
+                                <i class="bx bx-folder-open text-4xl mb-2 text-gray-600"></i>
+                                <p>No email history available</p>
+                            </div>
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            data.data.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-800/50 transition-colors even:bg-gray-900/40 relative z-0';
+
+                const svc = item.email_service || '-';
+                const addr = item.contact || item.email_address || '-';
+                const subj = item.subject || '-';
+                const agent = item.agent || item.agent_name || '-';
+                const type = item.type || '-';
+                const dt = item.created_at ? new Date(item.created_at).toLocaleString() : '-';
+                const contentText = item.content || 'Content not available'; // Or handle real body
+                const attachmentsMock = "[]"; // Replace with real if present
+                
+                // Store mapped data for modal viewing
+                currentDataBucket[item.id] = {
+                    subject: subj,
+                    content: btoa(unescape(encodeURIComponent(contentText))),
+                    attachments: attachmentsMock
+                };
+
+                let typeColorHtml = `<span class="text-gray-600 text-xs">-</span>`;
+                if(type && type !== '-') {
+                    const tc = type.toUpperCase() === 'OUT' ? 'bg-amber-500 text-white' : 'bg-blue-500 text-white';
+                    typeColorHtml = `<span class="px-2.5 py-1 rounded-full text-xs font-semibold ${tc}">${type}</span>`;
+                }
+
+                tr.innerHTML = `
+                    <td class="px-3 py-3 text-gray-400 max-w-[160px]">
+                        <div class="truncate" title="${svc}">${svc}</div>
+                    </td>
+                    <td class="px-3 py-3 text-cyan-400 max-w-[200px]">
+                        <div class="truncate" title="${addr}">${addr}</div>
+                    </td>
+                    <td class="px-3 py-3 text-gray-400 max-w-[180px]">
+                        <div class="truncate" title="${subj}">${subj}</div>
+                    </td>
+                    <td class="px-3 py-3 text-gray-400 max-w-[120px]">
+                        <div class="truncate" title="${agent}">${agent}</div>
+                    </td>
+                    <td class="px-3 py-3 text-gray-500 text-xs whitespace-nowrap">${dt}</td>
+                    <td class="px-3 py-3 whitespace-nowrap">${typeColorHtml}</td>
+                    <td class="px-3 py-3 text-center whitespace-nowrap">
+                        <div class="relative inline-block z-10">
+                            <button onclick="toggleDropdown(${item.id})" class="text-gray-400 hover:text-white transition-colors">
+                                <i class="bx bx-dots-vertical-rounded text-xl"></i>
+                            </button>
+                            <!-- Dropdown Menu -->
+                            <div id="dropdown-${item.id}" class="hidden absolute right-0 top-6 mt-2 w-40 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50">
+                                <ul class="py-1 text-sm">
+                                    <li>
+                                        <a href="javascript:void(0)" onclick="viewEmailContent(${item.id})" class="flex items-center gap-2 px-4 py-2 text-gray-300 hover:bg-gray-700 transition-colors">
+                                            <i class="bx bx-envelope text-base"></i>
+                                            <span>File Email</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0)" onclick="viewAttachments(${item.id})" class="flex items-center gap-2 px-4 py-2 text-gray-300 hover:bg-gray-700 transition-colors">
+                                            <i class="bx bx-paperclip text-base"></i>
+                                            <span>Attachment</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderPagination(data) {
+            const info = document.getElementById('dataTableInfo');
+            const container = document.getElementById('paginationContainer');
+
+            let from = data.from || 0;
+            let to = data.to || 0;
+            info.innerHTML = `Showing ${from} to ${to} of ${data.total} entries`;
+
+            if (data.last_page <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            
+            // Prev
+            html += `<button onclick="loadTableData(${data.current_page - 1})" ${data.current_page === 1 ? 'disabled' : ''} class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg disabled:opacity-50 text-white disabled:cursor-not-allowed">Previous</button>`;
+            
+            // Page numbers
+            for (let i = 1; i <= data.last_page; i++) {
+                if (i === 1 || i === data.last_page || (i >= data.current_page - 2 && i <= data.current_page + 2)) {
+                    if (i === data.current_page) {
+                        html += `<button class="px-3 py-1 bg-blue-600 text-white rounded-lg">${i}</button>`;
+                    } else {
+                        html += `<button onclick="loadTableData(${i})" class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg text-white">${i}</button>`;
+                    }
+                } else if (i === data.current_page - 3 || i === data.current_page + 3) {
+                    html += `<span class="px-2 py-1 text-gray-500">...</span>`;
+                }
+            }
+
+            // Next
+            html += `<button onclick="loadTableData(${data.current_page + 1})" ${data.current_page === data.last_page ? 'disabled' : ''} class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg disabled:opacity-50 text-white disabled:cursor-not-allowed">Next</button>`;
+            
+            container.innerHTML = html;
+        }
 
         // Close date filter popup when clicking outside
         document.addEventListener('click', function (event) {
@@ -671,11 +687,11 @@
         });
         // View Email Content in new tab
         function viewEmailContent(id) {
-            const el = document.getElementById(`email-raw-${id}`);
-            if (!el) return;
+            const stored = currentDataBucket[id];
+            if (!stored) return;
 
-            const subject = el.dataset.subject;
-            const content = atob(el.dataset.content); // Decode base64
+            const subject = stored.subject;
+            const content = atob(stored.content); // Decode base64
 
             const newTab = window.open('', '_blank');
             newTab.document.write(`
@@ -725,11 +741,11 @@
 
         // Attachment Modal Functions
         function viewAttachments(id) {
-            const el = document.getElementById(`email-raw-${id}`);
-            if (!el) return;
+            const stored = currentDataBucket[id];
+            if (!stored) return;
 
-            const subject = el.dataset.subject;
-            const attachments = JSON.parse(el.dataset.attachments);
+            const subject = stored.subject;
+            const attachments = JSON.parse(stored.attachments);
 
             const modal = document.getElementById('attachmentModal');
             const list = document.getElementById('attachmentList');

@@ -7,11 +7,13 @@ use App\Models\User;
 
 class SettingAgentEmailController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $users = User::latest()->take(50)->get();
+        return view('pages.setup-channel-email.setting-agent-email.index');
+    }
 
-        // For the modal table
+    public function getData(Request $request)
+    {
         $query = User::query();
 
         if ($request->filled('search')) {
@@ -23,9 +25,7 @@ class SettingAgentEmailController extends Controller
             });
         }
 
-        $entries = $request->get('entries', 10);
-        $modalUsers = $query->paginate($entries)->withQueryString();
-
-        return view('pages.setup-channel-email.setting-agent-email.index', compact('users', 'modalUsers'));
+        $perPage = $request->input('per_page', 20);
+        return response()->json($query->latest()->paginate($perPage));
     }
 }

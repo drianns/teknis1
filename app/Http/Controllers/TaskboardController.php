@@ -7,7 +7,7 @@ use App\Models\Company;
 use App\Models\Channel;
 use App\Models\ChannelPage;
 use App\Models\ChannelAccount;
-use App\Models\ResultTicket;
+use App\Models\ChatHeaderTicket;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -24,22 +24,22 @@ class TaskboardController extends Controller
         $company = Company::find($companyId);
 
         // 1. Open
-        $countOpen = ResultTicket::where('company_id', $companyId)
+        $countOpen = ChatHeaderTicket::where('company_id', $companyId)
             ->where('status', 'open')
             ->count();
 
         // 2. Pending
-        $countPending = ResultTicket::where('company_id', $companyId)
+        $countPending = ChatHeaderTicket::where('company_id', $companyId)
             ->where('status', 'pending')
             ->count();
 
         // 3. In Progress
-        $countInProgress = ResultTicket::where('company_id', $companyId)
+        $countInProgress = ChatHeaderTicket::where('company_id', $companyId)
             ->whereIn('status', ['in_progress', 'process'])
             ->count();
 
         // 4. Closed
-        $countClosed = ResultTicket::where('company_id', $companyId)
+        $countClosed = ChatHeaderTicket::where('company_id', $companyId)
             ->whereIn('status', ['closed', 'resolved'])
             ->count();
 
@@ -50,48 +50,44 @@ class TaskboardController extends Controller
             'closed' => $countClosed
         ];
 
-        // Query for Table
-        $resultTicketsQuery = ResultTicket::with([
+        return view('pages.apps.taskboard.index', compact(
             'company',
-        ])->where('company_id', $companyId);
+            'cardStats'
+        ));
+    }
 
-        // Simple Search Filter
+    public function getData(Request $request)
+    {
+        $companyId = 1;
+
+        $query = ChatHeaderTicket::with(['company', 'chat_ticket_user', 'userAgent.user'])
+            ->where('company_id', $companyId);
+
         if ($request->filled('search')) {
             $searchTerm = $request->search;
-            $resultTicketsQuery->where(function ($q) use ($searchTerm) {
-                $q->where('ticket_number', 'like', '%' . $searchTerm . '%');
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('ticket_number', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('subject', 'like', '%' . $searchTerm . '%')
+                  ->orWhereHas('chat_ticket_user', function($u) use ($searchTerm) {
+                      $u->where('name', 'like', '%' . $searchTerm . '%');
+                  });
             });
         }
 
         if ($request->filled('status')) {
             $status = $request->status;
             if ($status == 'in_progress') {
-                $resultTicketsQuery->whereIn('status', ['in_progress', 'process']);
+                $query->whereIn('status', ['in_progress', 'process']);
             } elseif ($status == 'closed') {
-                $resultTicketsQuery->whereIn('status', ['closed', 'resolved']);
+                $query->whereIn('status', ['closed', 'resolved']);
             } else {
-                $resultTicketsQuery->where('status', $status);
+                $query->where('status', $status);
             }
         }
 
-        $perPage = $request->input('entries', 10);
-        $resultTickets = $resultTicketsQuery->orderBy('created_at', 'desc')->paginate($perPage);
+        $perPage = $request->get('entries', 10);
+        $tickets = $query->orderBy('created_at', 'desc')->paginate($perPage);
 
-        // Transform collection to ensure extra_data is an object
-        $resultTickets->getCollection()->transform(function ($ticket) {
-            if (is_string($ticket->extra_data)) {
-                $ticket->extra_data = json_decode($ticket->extra_data);
-            }
-            if (!$ticket->extra_data) {
-                $ticket->extra_data = (object) [];
-            }
-            return $ticket;
-        });
-
-        return view('pages.apps.taskboard.index', compact(
-            'company',
-            'cardStats',
-            'resultTickets'
-        ));
+        return response()->json($tickets);
     }
 }

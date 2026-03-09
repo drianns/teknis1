@@ -103,154 +103,41 @@
                     <table class="w-full text-sm text-left text-gray-400" id="customerTable">
                         <thead class="text-xs text-gray-400 uppercase bg-gray-900/50">
                             <tr>
-                                <th scope="col" draggable="true" data-column="id"
-                                    class="px-3 py-3 font-bold cursor-move hover:bg-gray-800 group">
-                                    <div class="flex items-center gap-1">
-                                        <i class="bx bx-move text-gray-600 group-hover:text-blue-400"></i>
-                                        ID
-                                    </div>
+                                <th scope="col" draggable="true" data-column="id" class="px-3 py-3 font-bold cursor-move hover:bg-gray-800 group">
+                                    <div class="flex items-center gap-1"><i class="bx bx-move text-gray-600 group-hover:text-blue-400"></i>ID</div>
                                 </th>
-                                <th scope="col" draggable="true" data-column="name"
-                                    class="px-3 py-3 font-bold cursor-move hover:bg-gray-800 group">
-                                    <div class="flex items-center gap-1">
-                                        <i class="bx bx-move text-gray-600 group-hover:text-blue-400"></i>
-                                        Name
-                                    </div>
+                                <th scope="col" draggable="true" data-column="name" class="px-3 py-3 font-bold cursor-move hover:bg-gray-800 group">
+                                    <div class="flex items-center gap-1"><i class="bx bx-move text-gray-600 group-hover:text-blue-400"></i>Name</div>
                                 </th>
-                                <th scope="col" draggable="true" data-column="email"
-                                    class="px-3 py-3 font-bold cursor-move hover:bg-gray-800 group">
-                                    <div class="flex items-center gap-1">
-                                        <i class="bx bx-move text-gray-600 group-hover:text-blue-400"></i>
-                                        Email
-                                    </div>
+                                <th scope="col" draggable="true" data-column="email" class="px-3 py-3 font-bold cursor-move hover:bg-gray-800 group">
+                                    <div class="flex items-center gap-1"><i class="bx bx-move text-gray-600 group-hover:text-blue-400"></i>Email</div>
                                 </th>
-                                <th scope="col" draggable="true" data-column="phone"
-                                    class="px-3 py-3 font-bold cursor-move hover:bg-gray-800 group">
-                                    <div class="flex items-center gap-1">
-                                        <i class="bx bx-move text-gray-600 group-hover:text-blue-400"></i>
-                                        Phone
-                                    </div>
+                                <th scope="col" draggable="true" data-column="phone" class="px-3 py-3 font-bold cursor-move hover:bg-gray-800 group">
+                                    <div class="flex items-center gap-1"><i class="bx bx-move text-gray-600 group-hover:text-blue-400"></i>Phone</div>
                                 </th>
-                                <th scope="col" draggable="true" data-column="company"
-                                    class="px-3 py-3 font-bold cursor-move hover:bg-gray-800 group">
-                                    <div class="flex items-center gap-1">
-                                        <i class="bx bx-move text-gray-600 group-hover:text-blue-400"></i>
-                                        Company
-                                    </div>
-                                </th>
-                                <th scope="col" draggable="true" data-column="channel"
-                                    class="px-3 py-3 font-bold cursor-move hover:bg-gray-800 group">
-                                    <div class="flex items-center gap-1">
-                                        <i class="bx bx-move text-gray-600 group-hover:text-blue-400"></i>
-                                        Channel
-                                    </div>
-                                </th>
-                                <th scope="col" draggable="true" data-column="status"
-                                    class="px-3 py-3 font-bold cursor-move hover:bg-gray-800 group">
-                                    <div class="flex items-center gap-1">
-                                        <i class="bx bx-move text-gray-600 group-hover:text-blue-400"></i>
-                                        Status
-                                    </div>
-                                </th>
-                                <th scope="col" draggable="true" data-column="created_at"
-                                    class="px-3 py-3 font-bold cursor-move hover:bg-gray-800 group">
-                                    <div class="flex items-center gap-1">
-                                        <i class="bx bx-move text-gray-600 group-hover:text-blue-400"></i>
-                                        Created At
-                                    </div>
-                                </th>
+                                <th scope="col" class="px-3 py-3 font-bold">Created At</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-800 bg-transparent">
-                            @forelse($customers as $customer)
-                                <tr class="hover:bg-gray-800/50 transition-colors even:bg-gray-900/40">
-                                    <td class="px-3 py-3 text-blue-400">{{ $customer->id }}</td>
-                                    <td class="px-3 py-3 text-white font-medium">{{ $customer->name }}</td>
-                                    <td class="px-3 py-3 text-cyan-400">{{ $customer->email }}</td>
-                                    <td class="px-3 py-3">{{ $customer->phone }}</td>
-                                    <td class="px-3 py-3">{{ $customer->company }}</td>
-                                    <td class="px-3 py-3">
-                                        @php
-                                            $channelConfig = match (strtolower($customer->channel)) {
-                                                'whatsapp' => [
-                                                    'icon' => 'bxl-whatsapp',
-                                                    'color' => 'text-green-400',
-                                                    'bg' => 'bg-green-500/20'
-                                                ],
-                                                'email' => [
-                                                    'icon' => 'bx-envelope',
-                                                    'color' => 'text-blue-400',
-                                                    'bg' => 'bg-blue-500/20'
-                                                ],
-                                                'telegram' => [
-                                                    'icon' => 'bxl-telegram',
-                                                    'color' => 'text-cyan-400',
-                                                    'bg' => 'bg-cyan-500/20'
-                                                ],
-                                                'instagram' => [
-                                                    'icon' => 'bxl-instagram',
-                                                    'color' => 'text-pink-400',
-                                                    'bg' => 'bg-pink-500/20'
-                                                ],
-                                                default => [
-                                                    'icon' => 'bx-message',
-                                                    'color' => 'text-gray-400',
-                                                    'bg' => 'bg-gray-500/20'
-                                                ]
-                                            };
-                                        @endphp
-                                        <div class="flex items-center gap-2">
-                                            <div
-                                                class="w-8 h-8 rounded-full {{ $channelConfig['bg'] }} flex items-center justify-center">
-                                                <i
-                                                    class="bx {{ $channelConfig['icon'] }} {{ $channelConfig['color'] }} text-lg"></i>
-                                            </div>
-                                            <span
-                                                class="text-xs {{ $channelConfig['color'] }}">{{ $customer->channel }}</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-3 py-3">
-                                        @php
-                                            $statusColor = match (strtolower($customer->status)) {
-                                                'active' => 'bg-green-500 text-white',
-                                                'inactive' => 'bg-red-500 text-white',
-                                                default => 'bg-gray-500 text-white'
-                                            };
-                                        @endphp
-                                        <span class="px-2.5 py-1 rounded-full text-xs font-semibold {{ $statusColor }}">
-                                            {{ $customer->status }}
-                                        </span>
-                                    </td>
-                                    <td class="px-3 py-3 text-gray-500 text-xs">{{ $customer->created_at }}</td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="8" class="px-6 py-8 text-center text-gray-500">
-                                        <div class="flex flex-col items-center justify-center">
-                                            <i class="bx bx-folder-open text-4xl mb-2 text-gray-600"></i>
-                                            <p>No customers available</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforelse
+                        <tbody id="tableBody" class="divide-y divide-gray-800 bg-transparent">
+                            <tr><td colspan="5" class="px-6 py-16 text-center text-gray-500">
+                                <div class="flex flex-col items-center gap-3">
+                                    <div class="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                                    <p class="font-bold tracking-widest uppercase text-xs">Loading data...</p>
+                                </div>
+                            </td></tr>
                         </tbody>
                     </table>
                 </div>
 
                 <!-- Pagination -->
-                <div
-                    class="p-3 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
-                    <span>Showing 1 to {{ count($customers) }} of {{ count($customers) }} entries</span>
-                    <div class="flex gap-1 mt-2 md:mt-0">
-                        <button class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg disabled:opacity-50"
-                            disabled>Previous</button>
-                        <button class="px-3 py-1 bg-blue-600 text-white rounded-lg">1</button>
-                        <button class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg">Next</button>
-                    </div>
+                <div class="p-3 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
+                    <span id="paginationInfo">Showing 0 to 0 of 0 entries</span>
+                    <div id="paginationLinks" class="flex gap-1 mt-2 md:mt-0"></div>
                 </div>
             </div>
         </main>
     </div>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
@@ -381,31 +268,97 @@
             XLSX.writeFile(wb, filename, { bookType: bookType });
         }
 
-        // Search Table
-        function searchTable() {
-            const input = document.getElementById('searchInput');
-            const filter = input.value.toLowerCase();
-            const table = document.getElementById('customerTable');
-            const rows = table.getElementsByTagName('tr');
+        // AJAX Table Loading
+        const AJAX_URL = '{{ route('master-customer.data-table.getData') }}';
+        let searchTimeout;
+        let currentPerPage = 10;
 
-            for (let i = 1; i < rows.length; i++) {
-                const row = rows[i];
-                const cells = row.getElementsByTagName('td');
-                let found = false;
+        function loadTable(page = 1) {
+            const search = document.getElementById('searchInput')?.value ?? '';
+            const tableBody = document.getElementById('tableBody');
 
-                for (let j = 0; j < cells.length; j++) {
-                    const cell = cells[j];
-                    if (cell) {
-                        const textValue = cell.textContent || cell.innerText;
-                        if (textValue.toLowerCase().indexOf(filter) > -1) {
-                            found = true;
-                            break;
-                        }
-                    }
-                }
+            tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                <div class="flex flex-col items-center gap-3">
+                    <div class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                    <p class="text-xs uppercase tracking-widest font-bold">Loading...</p>
+                </div></td></tr>`;
 
-                row.style.display = found ? '' : 'none';
-            }
+            fetch(`${AJAX_URL}?page=${page}&search=${encodeURIComponent(search)}&per_page=${currentPerPage}`, {
+                headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(res => res.json())
+            .then(data => {
+                renderRows(data.data);
+                renderPagination(data);
+            })
+            .catch(() => {
+                tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-400 font-bold">Error loading data. Please try again.</td></tr>`;
+            });
         }
+
+        function renderRows(rows) {
+            const tableBody = document.getElementById('tableBody');
+            if (!rows || rows.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                    <div class="flex flex-col items-center gap-2"><i class="bx bx-folder-open text-4xl mb-2 text-gray-600"></i><p>No customers found</p></div>
+                </td></tr>`;
+                return;
+            }
+            tableBody.innerHTML = rows.map(c => `
+                <tr class="hover:bg-gray-800/50 transition-colors even:bg-gray-900/40">
+                    <td class="px-3 py-3 text-blue-400 font-mono">${c.id}</td>
+                    <td class="px-3 py-3 text-white font-medium">${esc(c.name)}</td>
+                    <td class="px-3 py-3 text-cyan-400">${esc(c.email ?? '-')}</td>
+                    <td class="px-3 py-3 text-gray-300">${esc(c.phone ?? '-')}</td>
+                    <td class="px-3 py-3 text-gray-500 text-xs">${c.created_at ? c.created_at.substring(0,10) : '-'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderPagination(data) {
+            document.getElementById('paginationInfo').innerHTML =
+                `Showing <span class="text-white">${data.from || 0}</span> to <span class="text-white">${data.to || 0}</span> of <span class="text-blue-400">${data.total}</span> entries`;
+            const container = document.getElementById('paginationLinks');
+            container.innerHTML = '';
+            if (data.last_page <= 1) return;
+            const btn = (label, page, active = false, disabled = false) => {
+                const b = document.createElement('button');
+                b.innerHTML = label;
+                b.disabled = disabled;
+                b.className = `px-3 py-1 rounded-lg text-xs font-bold transition-all ${active ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-400 hover:bg-gray-600'} ${disabled ? 'opacity-40 cursor-not-allowed' : ''}`;
+                if (!disabled && !active) b.onclick = () => loadTable(page);
+                return b;
+            };
+            container.appendChild(btn('Previous', data.current_page - 1, false, data.current_page === 1));
+            for (let i = 1; i <= data.last_page; i++) {
+                if (i === 1 || i === data.last_page || (i >= data.current_page - 1 && i <= data.current_page + 1)) {
+                    container.appendChild(btn(i, i, i === data.current_page));
+                } else if (i === 2 || i === data.last_page - 1) {
+                    const dots = document.createElement('span');
+                    dots.textContent = '...';
+                    dots.className = 'px-1 text-gray-500';
+                    container.appendChild(dots);
+                }
+            }
+            container.appendChild(btn('Next', data.current_page + 1, false, data.current_page === data.last_page));
+        }
+
+        // Search Table (AJAX debounce)
+        function searchTable() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => loadTable(1), 400);
+        }
+
+        function esc(s) {
+            return String(s || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+        }
+
+        // Per-page change
+        document.querySelector('select')?.addEventListener('change', function() {
+            currentPerPage = parseInt(this.value);
+            loadTable(1);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => loadTable(1));
     </script>
 </x-dashonic-horizontal-layout>

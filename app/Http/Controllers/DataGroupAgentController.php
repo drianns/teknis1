@@ -9,33 +9,48 @@ class DataGroupAgentController extends Controller
 {
     public function index()
     {
-        $items = DataGroupAgent::latest()->paginate(15);
-        return view('pages.master-data.data-group-agent.index', compact('items'));
+        return view('pages.master-data.data-group-agent.index');
+    }
+
+    public function getData(Request $request)
+    {
+        $query = DataGroupAgent::query();
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        $perPage = $request->get('per_page', 10);
+        $items = $query->latest()->paginate($perPage);
+
+        return response()->json($items);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name'   => 'required|string|max:255',
             'status' => 'required|in:Aktif,Non Aktif'
         ]);
         DataGroupAgent::create($request->only('name', 'status'));
-        return redirect()->back()->with('success', 'Data Group Agent created successfully.');
+        return response()->json(['success' => true, 'message' => 'Data Group Agent created successfully.']);
     }
 
-    public function update(Request $request, DataGroupAgent $record)
+    public function update(Request $request, $id)
     {
+        $record = DataGroupAgent::findOrFail($id);
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name'   => 'required|string|max:255',
             'status' => 'required|in:Aktif,Non Aktif'
         ]);
         $record->update($request->only('name', 'status'));
-        return redirect()->back()->with('success', 'Data Group Agent updated successfully.');
+        return response()->json(['success' => true, 'message' => 'Data Group Agent updated successfully.']);
     }
 
-    public function destroy(DataGroupAgent $record)
+    public function destroy($id)
     {
+        $record = DataGroupAgent::findOrFail($id);
         $record->delete();
-        return redirect()->back()->with('success', 'Data Group Agent deleted successfully.');
+        return response()->json(['success' => true, 'message' => 'Data Group Agent deleted successfully.']);
     }
 }

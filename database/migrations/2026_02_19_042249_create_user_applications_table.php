@@ -13,6 +13,18 @@ return new class extends Migration
     {
         Schema::create('user_applications', function (Blueprint $table) {
             $table->id();
+            $table->string('user_name')->unique();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->string('level_user');
+            $table->string('department')->nullable();
+            $table->string('group_agent')->nullable();
+            $table->string('site')->nullable();
+            $table->string('status')->default('Aktif');
+            $table->json('channels')->nullable();
+            $table->text('description')->nullable();
+            $table->string('photo_url')->nullable();
             $table->timestamps();
         });
     }

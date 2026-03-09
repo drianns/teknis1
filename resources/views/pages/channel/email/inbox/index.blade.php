@@ -468,17 +468,17 @@
                     <div class="p-6 pb-0 flex flex-col md:flex-row justify-between gap-4">
                         <div class="flex items-center gap-2 text-gray-400 text-sm">
                             <span>Show</span>
-                            <select
+                            <select id="entriesInfo"
                                 class="form-select bg-gray-900 border-gray-700 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2">
-                                <option>10</option>
-                                <option>25</option>
-                                <option>50</option>
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
                             </select>
                             <span>entries</span>
                         </div>
                         <div class="flex items-center gap-2 text-gray-400 text-sm">
                             <span>Search:</span>
-                            <input type="text"
+                            <input type="text" id="searchInput" placeholder="Search Data..."
                                 class="form-input bg-gray-900 border-gray-700 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 w-64">
                         </div>
                     </div>
@@ -510,97 +510,13 @@
                                                     class="bx bx-sort text-xs ml-1"></i></th>
                                         </tr>
                                     </thead>
-                                    <tbody class="text-gray-300 text-sm divide-y divide-gray-700">
-                                        @forelse($inbox as $email)
-                                            <tr class="email-row group/row {{ !$email['is_read'] ? 'unread font-semibold' : 'read font-normal' }} {{ $loop->even ? 'bg-gray-700/50' : '' }} hover:bg-gray-700/30 transition-colors cursor-pointer"
-                                                data-email-id="{{ $email['id'] }}" data-email-name="{{ $email['from'] }}"
-                                                @click="markAsRead($el, {{ $email['id'] }}); selectedEmail = { from: $el.dataset.emailName }">
-                                                <td class="py-3 px-4">
-                                                    <span
-                                                        class="{{ !$email['is_read'] ? 'text-blue-300 font-bold' : 'text-blue-400/60 font-medium' }}">
-                                                        #{{ $email['id'] }}
-                                                    </span>
-                                                </td>
-                                                <td class="py-3 px-4">
-                                                    <span
-                                                        class="{{ !$email['is_read'] ? 'text-blue-300 font-semibold' : 'text-blue-400/50 font-normal' }} hover:text-blue-300 transition-colors cursor-pointer block truncate"
-                                                        title="{{ $email['service'] }}">{{ $email['service'] }}</span>
-                                                </td>
-                                                <td class="py-3 px-4 {{ !$email['is_read'] ? 'text-gray-100 font-semibold' : 'text-gray-400 font-normal' }} truncate"
-                                                    title="{{ $email['from'] }}"> {{ $email['from'] }}
-                                                </td>
-                                                <td class="py-3 px-4">
-                                                    <span
-                                                        class="{{ !$email['is_read'] ? 'text-white font-bold' : 'text-gray-400 font-normal' }} block truncate"
-                                                        title="{{ $email['subject'] }}">{{ $email['subject'] }}</span>
-                                                </td>
-                                                <td class="py-3 px-4">
-                                                    <span
-                                                        class="px-2 py-1 rounded text-xs font-medium {{ $email['status'] == 'Unread' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-gray-500/20 text-gray-400' }}">
-                                                        {{ $email['status'] }}
-                                                    </span>
-                                                </td>
-                                                <td
-                                                    class="py-3 px-4 {{ !$email['is_read'] ? 'text-gray-300' : 'text-gray-500' }}">
-                                                    {{ $email['date'] }}
-                                                </td>
-                                                <td class="py-3 px-4 text-center relative" x-data="{ open: false }">
-                                                    <button @click.stop="open = !open" @click.away="open = false"
-                                                        class="text-gray-400 hover:text-blue-400 transition-colors">
-                                                        <i class="bx bx-dots-vertical-rounded text-xl"></i>
-                                                    </button>
-                                                    <div x-show="open"
-                                                        class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-xl shadow-2xl z-50 border border-white/10 py-2 text-left"
-                                                        style="display: none;"
-                                                        x-transition:enter="transition ease-out duration-100"
-                                                        x-transition:enter-start="transform opacity-0 scale-95"
-                                                        x-transition:enter-end="transform opacity-100 scale-100"
-                                                        x-transition:leave="transition ease-in duration-75"
-                                                        x-transition:leave-start="transform opacity-100 scale-100"
-                                                        x-transition:leave-end="transform opacity-0 scale-95">
-                                                        <a href="javascript:void(0)"
-                                                            @click.stop="selectedEmailId = {{ $email['id'] }}; showSpamModal = true; open = false"
-                                                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors">
-                                                            <i class="bx bx-error-circle text-lg"></i> Spam
-                                                        </a>
-                                                        <a href="javascript:void(0)"
-                                                            @click.stop="handleReplyAction({{ $email['id'] }}, '{{ $email['from'] }}'); open = false"
-                                                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors">
-                                                            <i class="bx bx-reply text-lg"></i> Reply
-                                                        </a>
-                                                        <a href="javascript:void(0)"
-                                                            @click.stop="handleAssignAction({{ $email['id'] }}); open = false"
-                                                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors">
-                                                            <i class="bx bx-user-plus text-lg"></i> Assign
-                                                        </a>
-                                                        <a href="javascript:void(0)"
-                                                            @click.stop="handleForwardAction({{ $email['id'] }}); open = false"
-                                                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors">
-                                                            <i class="bx bx-share text-lg"></i> Forward
-                                                        </a>
-                                                        <a href="#"
-                                                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors opacity-50 cursor-not-allowed">
-                                                            <i class="bx bx-show-alt text-lg"></i> Preview
-                                                        </a>
-                                                        <a href="javascript:void(0)"
-                                                            @click.stop="handleConversationAction({{ $email['id'] }}); open = false"
-                                                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors">
-                                                            <i class="bx bx-chat text-lg"></i> Conversation
-                                                        </a>
-                                                        <a href="javascript:void(0)"
-                                                            @click.stop="handlePreviewJourneyAction({{ $email['id'] }}); open = false"
-                                                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors">
-                                                            <i class="bx bx-map-alt text-lg"></i> Preview Journey
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                        </tr> @empty
-                                            <tr>
-                                                <td colspan="7"
-                                                    class="py-12 text-center text-gray-500 bg-gray-900/50 rounded-lg"> No
-                                                    inbox emails available
-                                                </td>
-                                        </tr> @endforelse
+                                    <tbody id="inboxTableBody" class="text-gray-300 text-sm divide-y divide-gray-700">
+                                        <tr>
+                                            <td colspan="7" class="py-12 text-center text-gray-500 bg-gray-900/50 rounded-lg">
+                                                <i class="bx bx-loader-alt bx-spin text-2xl mb-2"></i>
+                                                <p>Loading inbox emails...</p>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -628,92 +544,13 @@
                                                     class="bx bx-sort text-xs ml-1"></i></th>
                                         </tr>
                                     </thead>
-                                    <tbody class="text-gray-300 text-sm divide-y divide-gray-700">
-                                        @forelse($drafts as $draft)
-                                            <tr class="email-row group/row {{ !$draft['is_read'] ? 'unread font-semibold' : 'read font-normal' }} {{ $loop->even ? 'bg-gray-700/50' : '' }} hover:bg-gray-700/30 transition-colors cursor-pointer"
-                                                data-email-id="{{ $draft['id'] }}" data-email-name="{{ $draft['to'] }}"
-                                                @click="markAsRead($el, {{ $draft['id'] }}); selectedEmail = { from: $el.dataset.emailName }">
-                                                <td class="py-3 px-4">
-                                                    <span
-                                                        class="{{ !$draft['is_read'] ? 'text-blue-300 font-bold' : 'text-blue-400/60 font-medium' }}">
-                                                        #{{ $draft['id'] }}
-                                                    </span>
-                                                </td>
-                                                <td class="py-3 px-4">
-                                                    <span
-                                                        class="{{ !$draft['is_read'] ? 'text-blue-300 font-semibold' : 'text-blue-400/50 font-normal' }} hover:text-blue-300 transition-colors cursor-pointer block truncate"
-                                                        title="{{ $draft['service'] }}">{{ $draft['service'] }}</span>
-                                                </td>
-                                                <td class="py-3 px-4 {{ !$draft['is_read'] ? 'text-gray-100 font-semibold' : 'text-gray-400 font-normal' }} truncate"
-                                                    title="{{ $draft['to'] }}"> {{ $draft['to'] }}
-                                                </td>
-                                                <td class="py-3 px-4">
-                                                    <span
-                                                        class="{{ !$draft['is_read'] ? 'text-white font-bold' : 'text-gray-400 font-normal' }} block truncate"
-                                                        title="{{ $draft['subject'] }}">{{ $draft['subject'] }}</span>
-                                                </td>
-                                                <td class="py-3 px-4"><span class="px-2 py-1 text-gray-500">-</span></td>
-                                                <td
-                                                    class="py-3 px-4 {{ !$draft['is_read'] ? 'text-gray-300' : 'text-gray-500' }}">
-                                                    {{ $draft['date'] }}
-                                                </td>
-                                                <td class="py-3 px-4 text-center relative" x-data="{ open: false }">
-                                                    <button @click="open = !open" @click.away="open = false"
-                                                        class="text-gray-400 hover:text-blue-400 transition-colors">
-                                                        <i class="bx bx-dots-vertical-rounded text-xl"></i>
-                                                    </button>
-                                                    <div x-show="open"
-                                                        class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-xl shadow-2xl z-50 border border-white/10 py-2 text-left"
-                                                        style="display: none;"
-                                                        x-transition:enter="transition ease-out duration-100"
-                                                        x-transition:enter-start="transform opacity-0 scale-95"
-                                                        x-transition:enter-end="transform opacity-100 scale-100"
-                                                        x-transition:leave="transition ease-in duration-75"
-                                                        x-transition:leave-start="transform opacity-100 scale-100"
-                                                        x-transition:leave-end="transform opacity-0 scale-95">
-                                                        <a href="javascript:void(0)"
-                                                            @click.stop="selectedEmailId = {{ $draft['id'] }}; showSpamModal = true; open = false"
-                                                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors">
-                                                            <i class="bx bx-error-circle text-lg"></i> Spam
-                                                        </a>
-                                                        <a href="javascript:void(0)"
-                                                            @click.stop="handleReplyAction({{ $draft['id'] }}, '{{ $draft['to'] ?? '' }}'); open = false"
-                                                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors">
-                                                            <i class="bx bx-reply text-lg"></i> Reply
-                                                        </a>
-                                                        <a href="javascript:void(0)"
-                                                            @click.stop="handleAssignAction({{ $draft['id'] }}); open = false"
-                                                            class="w-full px-4 py-2.5 text-sm text-gray-300 hover:bg-blue-600 hover:text-white flex items-center gap-3 transition-colors">
-                                                            <i class="bx bx-user-plus text-lg"></i> Assign
-                                                        </a>
-                                                        <a href="javascript:void(0)"
-                                                            @click.stop="handleForwardAction({{ $draft['id'] }}); open = false"
-                                                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors">
-                                                            <i class="bx bx-share text-lg"></i> Forward
-                                                        </a>
-                                                        <a href="#"
-                                                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors opacity-50 cursor-not-allowed">
-                                                            <i class="bx bx-show-alt text-lg"></i> Preview
-                                                        </a>
-                                                        <a href="javascript:void(0)"
-                                                            @click.stop="handleConversationAction({{ $draft['id'] }}); open = false"
-                                                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors">
-                                                            <i class="bx bx-chat text-lg"></i> Conversation
-                                                        </a>
-                                                        <a href="javascript:void(0)"
-                                                            @click.stop="handlePreviewJourneyAction({{ $draft['id'] }}); open = false"
-                                                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors">
-                                                            <i class="bx bx-map-alt text-lg"></i> Preview Journey
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                        </tr> @empty
-                                            <tr>
-                                                <td colspan="7"
-                                                    class="py-12 text-center text-gray-500 bg-gray-900/50 rounded-lg"> No
-                                                    draft emails available
-                                                </td>
-                                        </tr> @endforelse
+                                    <tbody id="draftsTableBody" class="text-gray-300 text-sm divide-y divide-gray-700">
+                                        <tr>
+                                            <td colspan="7" class="py-12 text-center text-gray-500 bg-gray-900/50 rounded-lg">
+                                                <i class="bx bx-loader-alt bx-spin text-2xl mb-2"></i>
+                                                <p>Loading draft emails...</p>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -741,77 +578,13 @@
                                                     class="bx bx-sort text-xs ml-1"></i></th>
                                         </tr>
                                     </thead>
-                                    <tbody class="text-gray-300 text-sm divide-y divide-gray-700">
-                                        @forelse($spam as $spam_item)
-                                            <tr class="email-row group/row {{ !$spam_item['is_read'] ? 'unread font-semibold' : 'read font-normal' }} {{ $loop->even ? 'bg-gray-700/50' : '' }} hover:bg-gray-700/30 transition-colors cursor-pointer"
-                                                data-email-id="{{ $spam_item['id'] }}" data-email-name="{{ $spam_item['from'] }}"
-                                                @click="markAsRead($el, {{ $spam_item['id'] }}); selectedEmail = { from: $el.dataset.emailName }">
-                                                <td class="py-3 px-4">
-                                                    <span
-                                                        class="{{ !$spam_item['is_read'] ? 'text-blue-300 font-bold' : 'text-blue-400/60 font-medium' }}">
-                                                        #{{ $spam_item['id'] }}
-                                                    </span>
-                                                </td>
-                                                <td class="py-3 px-4">
-                                                    <span
-                                                        class="{{ !$spam_item['is_read'] ? 'text-blue-300 font-semibold' : 'text-blue-400/50 font-normal' }} hover:text-blue-300 transition-colors cursor-pointer block truncate"
-                                                        title="{{ $spam_item['service'] }}">{{ $spam_item['service'] }}</span>
-                                                </td>
-                                                <td class="py-3 px-4 {{ !$spam_item['is_read'] ? 'text-gray-100 font-semibold' : 'text-gray-400 font-normal' }} truncate"
-                                                    title="{{ $spam_item['from'] }}"> {{ $spam_item['from'] }}
-                                                </td>
-                                                <td class="py-3 px-4">
-                                                    <span
-                                                        class="{{ !$spam_item['is_read'] ? 'text-white font-bold' : 'text-gray-400 font-normal' }} block truncate"
-                                                        title="{{ $spam_item['subject'] }}">{{ $spam_item['subject'] }}</span>
-                                                </td>
-                                                <td class="py-3 px-4">
-                                                    <span
-                                                        class="px-2 py-1 rounded text-xs font-medium {{ $spam['status'] == 'Spam' ? 'bg-red-500/20 text-red-400' : 'bg-gray-500/20 text-gray-400' }}">
-                                                        {{ $spam['status'] }}
-                                                    </span>
-                                                </td>
-                                                <td
-                                                    class="py-3 px-4 {{ !$spam['is_read'] ? 'text-gray-300' : 'text-gray-500' }}">
-                                                    {{ $spam['date'] }}
-                                                </td>
-                                                <td class="py-3 px-4 text-centerrelative" x-data="{ open: false }">
-                                                    <button @click="open = !open" @click.away="open = false"
-                                                        class="text-gray-400 hover:text-blue-400 transition-colors">
-                                                        <i class="bx bx-dots-vertical-rounded text-xl"></i>
-                                                    </button>
-                                                    <div x-show="open"
-                                                        class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-xl shadow-2xl z-50 border border-white/10 py-2 text-left"
-                                                        style="display: none;"
-                                                        x-transition:enter="transition ease-out duration-100"
-                                                        x-transition:enter-start="transform opacity-0 scale-95"
-                                                        x-transition:enter-end="transform opacity-100 scale-100"
-                                                        x-transition:leave="transition ease-in duration-75"
-                                                        x-transition:leave-start="transform opacity-100 scale-100"
-                                                        x-transition:leave-end="transform opacity-0 scale-95">
-                                                        <a href="javascript:void(0)"
-                                                            @click.stop="handleReplyAction({{ $spam['id'] }}, '{{ $spam['from'] }}'); open = false"
-                                                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors">
-                                                            <i class="bx bx-reply text-lg"></i> Reply
-                                                        </a>
-                                                        <a href="javascript:void(0)"
-                                                            @click.stop="handleForwardAction({{ $spam['id'] }}); open = false"
-                                                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors">
-                                                            <i class="bx bx-share text-lg"></i> Forward
-                                                        </a>
-                                                        <a href="#"
-                                                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors opacity-50 cursor-not-allowed">
-                                                            <i class="bx bx-show-alt text-lg"></i> Preview
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                        </tr> @empty
-                                            <tr>
-                                                <td colspan="7"
-                                                    class="py-12 text-center text-gray-500 bg-gray-900/50 rounded-lg"> No
-                                                    spam emails
-                                                </td>
-                                        </tr> @endforelse
+                                    <tbody id="spamTableBody" class="text-gray-300 text-sm divide-y divide-gray-700">
+                                        <tr>
+                                            <td colspan="7" class="py-12 text-center text-gray-500 bg-gray-900/50 rounded-lg">
+                                                <i class="bx bx-loader-alt bx-spin text-2xl mb-2"></i>
+                                                <p>Loading spam emails...</p>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -839,88 +612,13 @@
                                                     class="bx bx-sort text-xs ml-1"></i></th>
                                         </tr>
                                     </thead>
-                                    <tbody class="text-gray-300 text-sm divide-y divide-gray-700">
-                                        @php $mockDepartment = [['id' => 70856, 'service' => 'hr@kanmogroup.com', 'from' => 'recruitment@talent-dept.com', 'subject' => '[Dept:HR] [TicketNumber:2026020609150055M] New hire orientation - Week of Feb 10', 'status' => 'Unread', 'is_read' => false, 'date' => '2/6/2026 9:15:55 AM'], ['id' => 70855, 'service' => 'finance@kanmogroup.com', 'from' => 'accounting@finance-dept.com', 'subject' => '[Dept:Finance] [TicketNumber:2026020508300042N] Q1 2026 budget allocation review', 'status' => 'Read', 'is_read' => true, 'date' => '2/5/2026 8:30:42 AM'], ['id' => 70854, 'service' => 'it@kanmogroup.com', 'from' => 'sysadmin@it-dept.com', 'subject' => '[Dept:IT] [TicketNumber:2026020417450028O] Server maintenance window - Feb 8-9, 2026', 'status' => 'Unread', 'is_read' => false, 'date' => '2/4/2026 5:45:28 PM'], ['id' => 70853, 'service' => 'marketing@kanmogroup.com', 'from' => 'campaigns@marketing-dept.com', 'subject' => '[Dept:Marketing] [TicketNumber:2026020314200019P] January campaign analytics report', 'status' => 'Read', 'is_read' => true, 'date' => '2/3/2026 2:20:19 PM'], ['id' => 70852, 'service' => 'sales@kanmogroup.com', 'from' => 'manager@sales-dept.com', 'subject' => '[Dept:Sales] [TicketNumber:2026020211000036Q] Monthly sales performance review', 'status' => 'Unread', 'is_read' => false, 'date' => '2/2/2026 11:00:36 AM'], ['id' => 70851, 'service' => 'legal@kanmogroup.com', 'from' => 'counsel@legal-dept.com', 'subject' => '[Dept:Legal] [TicketNumber:2026020116300052R] Contract approval request #CA-2026-089', 'status' => 'Read', 'is_read' => true, 'date' => '2/1/2026 4:30:52 PM'], ['id' => 70850, 'service' => 'operations@kanmogroup.com', 'from' => 'logistics@ops-dept.com', 'subject' => '[Dept:Operations] [TicketNumber:2026013110150044S] Warehouse inventory audit results', 'status' => 'Unread', 'is_read' => false, 'date' => '1/31/2026 10:15:44 AM'],];                                        @endphp
-                                        @forelse($mockDepartment as $dept)
-                                            <tr class="email-row group/row {{ !$dept['is_read'] ? 'unread font-semibold' : 'read font-normal' }} {{ $loop->even ? 'bg-gray-700/50' : '' }} hover:bg-gray-700/30 transition-colors cursor-pointer"
-                                                data-email-id="{{ $dept['id'] }}" data-email-name="{{ $dept['from'] }}"
-                                                @click="markAsRead($el, {{ $dept['id'] }}); selectedEmail = { from: $el.dataset.emailName }">
-                                                <td class="py-3 px-4">
-                                                    <span
-                                                        class="{{ !$dept['is_read'] ? 'text-blue-300 font-bold' : 'text-blue-400/60 font-medium' }}">
-                                                        #{{ $dept['id'] }}
-                                                    </span>
-                                                </td>
-                                                <td class="py-3 px-4">
-                                                    <span
-                                                        class="{{ !$dept['is_read'] ? 'text-blue-300 font-semibold' : 'text-blue-400/50 font-normal' }} hover:text-blue-300 transition-colors cursor-pointer block truncate"
-                                                        title="{{ $dept['service'] }}">{{ $dept['service'] }}</span>
-                                                </td>
-                                                <td class="py-3 px-4 {{ !$dept['is_read'] ? 'text-gray-100 font-semibold' : 'text-gray-400 font-normal' }} truncate"
-                                                    title="{{ $dept['from'] }}"> {{ $dept['from'] }}
-                                                </td>
-                                                <td class="py-3 px-4">
-                                                    <span
-                                                        class="{{ !$dept['is_read'] ? 'text-white font-bold' : 'text-gray-400 font-normal' }} block truncate"
-                                                        title="{{ $dept['subject'] }}">{{ $dept['subject'] }}</span>
-                                                </td>
-                                                <td class="py-3 px-4">
-                                                    <span
-                                                        class="px-2 py-1 rounded text-xs font-medium {{ $dept['status'] == 'Unread' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-gray-500/20 text-gray-400' }}">
-                                                        {{ $dept['status'] }}
-                                                    </span>
-                                                </td>
-                                                <td
-                                                    class="py-3 px-4 {{ !$dept['is_read'] ? 'text-gray-300' : 'text-gray-500' }}">
-                                                    {{ $dept['date'] }}
-                                                </td>
-                                                <td class="py-3 px-4 text-center relative" x-data="{ open: false }">
-                                                    <button @click.stop="open = !open" @click.away="open = false"
-                                                        class="text-gray-400 hover:text-blue-400 transition-colors">
-                                                        <i class="bx bx-dots-vertical-rounded text-xl"></i>
-                                                    </button>
-                                                    <div x-show="open"
-                                                        class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-xl shadow-2xl z-50 border border-white/10 py-2 text-left"
-                                                        style="display: none;"
-                                                        x-transition:enter="transition ease-out duration-100"
-                                                        x-transition:enter-start="transform opacity-0 scale-95"
-                                                        x-transition:enter-end="transform opacity-100 scale-100"
-                                                        x-transition:leave="transition ease-in duration-75"
-                                                        x-transition:leave-start="transform opacity-100 scale-100"
-                                                        x-transition:leave-end="transform opacity-0 scale-95">
-                                                        <a href="javascript:void(0)"
-                                                            @click.stop="handleReplyAction({{ $dept['id'] }}, '{{ $dept['from'] }}'); open = false"
-                                                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors">
-                                                            <i class="bx bx-reply text-lg"></i> Reply
-                                                        </a>
-                                                        <a href="javascript:void(0)"
-                                                            @click.stop="handleForwardAction({{ $dept['id'] }}); open = false"
-                                                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors">
-                                                            <i class="bx bx-share text-lg"></i> Forward
-                                                        </a>
-                                                        <a href="#"
-                                                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors opacity-50 cursor-not-allowed">
-                                                            <i class="bx bx-show-alt text-lg"></i> Preview
-                                                        </a>
-                                                        <a href="javascript:void(0)"
-                                                            @click.stop="handleConversationAction({{ $dept['id'] }}); open = false"
-                                                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors">
-                                                            <i class="bx bx-chat text-lg"></i> Conversation
-                                                        </a>
-                                                        <a href="javascript:void(0)"
-                                                            @click.stop="handlePreviewJourneyAction({{ $dept['id'] }}); open = false"
-                                                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors">
-                                                            <i class="bx bx-map-alt text-lg"></i> Preview Journey
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                        </tr> @empty
-                                            <tr>
-                                                <td colspan="7"
-                                                    class="py-12 text-center text-gray-500 bg-gray-900/50 rounded-lg"> No
-                                                    department emails
-                                                </td>
-                                        </tr> @endforelse
+                                    <tbody id="departmentTableBody" class="text-gray-300 text-sm divide-y divide-gray-700">
+                                        <tr>
+                                            <td colspan="7" class="py-12 text-center text-gray-500 bg-gray-900/50 rounded-lg">
+                                                <i class="bx bx-loader-alt bx-spin text-2xl mb-2"></i>
+                                                <p>Loading department emails...</p>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -948,69 +646,13 @@
                                                     class="bx bx-sort text-xs ml-1"></i></th>
                                         </tr>
                                     </thead>
-                                    <tbody class="text-gray-300 text-sm divide-y divide-gray-700">
-                                        @php $mockSent = [['id' => 80512, 'service' => 'sent@kanmogroup.com', 'to' => 'newclient@prospect.com', 'subject' => 'RE: [TicketNumber:2026020608300066T] Project proposal with pricing details', 'status' => 'Sent', 'is_read' => false, 'date' => '2/6/2026 8:30:66 AM'], ['id' => 80511, 'service' => 'outbox@techcorp.com', 'to' => 'team@internal.com', 'subject' => 'FW: [TicketNumber:2026020516450053U] Weekly team sync - Action items', 'status' => 'Delivered', 'is_read' => true, 'date' => '2/5/2026 4:45:53 PM'], ['id' => 80510, 'service' => 'sent@services.io', 'to' => 'billing@vendor.biz', 'subject' => 'RE: [TicketNumber:2026020414200041V] Payment confirmation #PAY-2026-1145', 'status' => 'Sent', 'is_read' => false, 'date' => '2/4/2026 2:20:41 PM'], ['id' => 80509, 'service' => 'outbox@agency.com', 'to' => 'partnership@business.net', 'subject' => '[TicketNumber:2026020311000028W] Partnership proposal discussion request', 'status' => 'Delivered', 'is_read' => true, 'date' => '2/3/2026 11:00:28 AM'], ['id' => 80508, 'service' => 'sent@company.biz', 'to' => 'manager@leadership.org', 'subject' => 'RE: [TicketNumber:2026020218300037X] Monthly progress report - January 2026', 'status' => 'Sent', 'is_read' => false, 'date' => '2/2/2026 6:30:37 PM'], ['id' => 80507, 'service' => 'outbox@business.com', 'to' => 'hr@corporate.com', 'subject' => '[TicketNumber:2026020109150045Y] Annual leave request - Feb 15-20, 2026', 'status' => 'Delivered', 'is_read' => true, 'date' => '2/1/2026 9:15:45 AM'], ['id' => 80506, 'service' => 'sent@sales.io', 'to' => 'contact@customer.net', 'subject' => 'FW: [TicketNumber:2026013115400059Z] Product demo follow-up and next steps', 'status' => 'Sent', 'is_read' => false, 'date' => '1/31/2026 3:40:59 PM'],];                                        @endphp
-                                        @forelse($mockSent as $sent)
-                                            <tr class="email-row group/row {{ !$sent['is_read'] ? 'unread font-semibold' : 'read font-normal' }} {{ $loop->even ? 'bg-gray-700/50' : '' }} hover:bg-gray-700/30 transition-colors cursor-pointer"
-                                                data-email-id="{{ $sent['id'] }}" data-email-name="{{ $sent['to'] }}"
-                                                @click="markAsRead($el, {{ $sent['id'] }}); selectedEmail = { from: $el.dataset.emailName }">
-                                                <td class="py-3 px-4">
-                                                    <span
-                                                        class="{{ !$sent['is_read'] ? 'text-blue-300 font-bold' : 'text-blue-400/60 font-medium' }}">
-                                                        #{{ $sent['id'] }}
-                                                    </span>
-                                                </td>
-                                                <td class="py-3 px-4">
-                                                    <span
-                                                        class="{{ !$sent['is_read'] ? 'text-blue-300 font-semibold' : 'text-blue-400/50 font-normal' }} hover:text-blue-300 transition-colors cursor-pointer block truncate"
-                                                        title="{{ $sent['service'] }}">{{ $sent['service'] }}</span>
-                                                </td>
-                                                <td class="py-3 px-4 {{ !$sent['is_read'] ? 'text-gray-100 font-semibold' : 'text-gray-400 font-normal' }} truncate"
-                                                    title="{{ $sent['to'] }}"> {{ $sent['to'] }}
-                                                </td>
-                                                <td class="py-3 px-4">
-                                                    <span
-                                                        class="{{ !$sent['is_read'] ? 'text-white font-bold' : 'text-gray-400 font-normal' }} block truncate"
-                                                        title="{{ $sent['subject'] }}">{{ $sent['subject'] }}</span>
-                                                </td>
-                                                <td class="py-3 px-4">
-                                                    <span
-                                                        class="px-2 py-1 rounded text-xs font-medium {{ $sent['status'] == 'Sent' ? 'bg-blue-500/20 text-blue-400' : 'bg-green-500/20 text-green-400' }}">
-                                                        {{ $sent['status'] }}
-                                                    </span>
-                                                </td>
-                                                <td
-                                                    class="py-3 px-4 {{ !$sent['is_read'] ? 'text-gray-300' : 'text-gray-500' }}">
-                                                    {{ $sent['date'] }}
-                                                </td>
-                                                <td class="py-3 px-4 text-center relative" x-data="{ open: false }">
-                                                    <button @click="open = !open" @click.away="open = false"
-                                                        class="text-gray-400 hover:text-blue-400 transition-colors">
-                                                        <i class="bx bx-dots-vertical-rounded text-xl"></i>
-                                                    </button>
-                                                    <div x-show="open"
-                                                        class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-xl shadow-2xl z-50 border border-white/10 py-2 text-left"
-                                                        style="display: none;"
-                                                        x-transition:enter="transition ease-out duration-100"
-                                                        x-transition:enter-start="transform opacity-0 scale-95"
-                                                        x-transition:enter-end="transform opacity-100 scale-100"
-                                                        x-transition:leave="transition ease-in duration-75"
-                                                        x-transition:leave-start="transform opacity-100 scale-100"
-                                                        x-transition:leave-end="transform opacity-0 scale-95">
-                                                        <a href="#"
-                                                            @click.stop="open = false"
-                                                            class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors opacity-50 cursor-not-allowed">
-                                                            <i class="bx bx-show-alt text-lg"></i> Preview
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                        </tr> @empty
-                                            <tr>
-                                                <td colspan="7"
-                                                    class="py-12 text-center text-gray-500 bg-gray-900/50 rounded-lg"> No
-                                                    sent emails
-                                                </td>
-                                        </tr> @endforelse
+                                    <tbody id="sentTableBody" class="text-gray-300 text-sm divide-y divide-gray-700">
+                                        <tr>
+                                            <td colspan="7" class="py-12 text-center text-gray-500 bg-gray-900/50 rounded-lg">
+                                                <i class="bx bx-loader-alt bx-spin text-2xl mb-2"></i>
+                                                <p>Loading sent emails...</p>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -1018,23 +660,10 @@
                     </div>
                     <!-- Footer / Pagination -->
                     <!-- Footer / Pagination -->
-                    <div
-                        class="px-6 py-4 border-t border-gray-700 flex justify-between items-center text-sm text-gray-400 bg-gray-800">
-                        <span>Showing 1 to 10 of 50 entries</span>
-                        <div class="flex gap-1">
-                            <button
-                                class="px-3 py-1 rounded bg-gray-700 text-gray-300 hover:bg-gray-600 disabled:opacity-50 transition-colors">Previous</button>
-                            <button
-                                class="px-3 py-1 rounded bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors">1</button>
-                            <button
-                                class="px-3 py-1 rounded hover:bg-gray-700 text-gray-300 transition-colors">2</button>
-                            <button
-                                class="px-3 py-1 rounded hover:bg-gray-700 text-gray-300 transition-colors">3</button>
-                            <span class="px-2 py-1 text-gray-500">...</span>
-                            <button
-                                class="px-3 py-1 rounded hover:bg-gray-700 text-gray-300 transition-colors">5</button>
-                            <button
-                                class="px-3 py-1 rounded bg-gray-700 text-gray-300 hover:bg-gray-600 disabled:opacity-50 transition-colors">Next</button>
+                    <div class="px-6 py-4 border-t border-gray-700 flex justify-between items-center text-sm text-gray-400 bg-gray-800">
+                        <span id="tableInfo">Showing 0 to 0 of 0 entries</span>
+                        <div class="flex gap-1" id="paginationContainer">
+                            <!-- Pagination will be rendered here via JS -->
                         </div>
                     </div>
                 </div>
@@ -1750,6 +1379,317 @@
         <x-slot name="js">
             <script src="{{ asset('assets/libs/@ckeditor/ckeditor5-build-classic/build/ckeditor.js') }}"></script>
             <script>            console.log('Inbox Email Page - Script loaded via Slot'); let editorInstance; let ccBccVisible = false;            // Handle File Upload Preview            window.handleFileUpload = function (event) {                const preview = document.getElementById('attachment-preview');                const files = event.target.files;                if (files.length > 0) {                    preview.classList.remove('hidden');                    // Normally you would loop through files and append generic template logic here                    // For UI demo, we just show the container which has 1 static item example                }            }            // Define modal functions FIRST            window.toggleComposeModal = function (event) {                console.log('toggleComposeModal called');                if (event) event.preventDefault();                const modal = document.getElementById('compose-modal');                const backdrop = document.getElementById('compose-backdrop');                const modalContent = document.getElementById('compose-content');                if (!modal) {                    console.error('Modal element not found!');                    return;                }                if (modal.classList.contains('hidden')) {                    // Show                    modal.classList.remove('hidden');                    backdrop.classList.remove('hidden');                    // Trigger reflow                    void modal.offsetWidth;                    requestAnimationFrame(() => {                        backdrop.classList.remove('opacity-0');                        backdrop.classList.add('opacity-100');                        // Add bounce class and show                        modalContent.classList.add('ease-bounce');                        modalContent.classList.remove('scale-75', 'opacity-0');                        modalContent.classList.add('scale-100', 'opacity-100');                    });                } else {                    // Hide                    closeComposeModal();                }            }            window.closeComposeModal = function () {                const modal = document.getElementById('compose-modal');                const backdrop = document.getElementById('compose-backdrop');                const modalContent = document.getElementById('compose-content');                backdrop.classList.remove('opacity-100');                backdrop.classList.add('opacity-0');                // Scale down                modalContent.classList.remove('scale-100', 'opacity-100', 'ease-bounce'); // Remove bounce for exit can be smoother/faster                modalContent.classList.add('scale-75', 'opacity-0');                // Reset minimize state if closed                if (isMinimized) {                    toggleMinimizeModal(null, true);                }                setTimeout(() => {                    modal.classList.add('hidden');                    backdrop.classList.add('hidden');                }, 300);            }            window.toggleCcBcc = function () {                ccBccVisible = !ccBccVisible;                const ccField = document.getElementById('cc-field');                const bccField = document.getElementById('bcc-field');                if (ccBccVisible) {                    ccField.classList.remove('hidden');                    ccField.classList.add('flex');                    bccField.classList.remove('hidden');                    bccField.classList.add('flex');                } else {                    ccField.classList.add('hidden');                    ccField.classList.remove('flex');                    bccField.classList.add('hidden');                    bccField.classList.remove('flex');                }            }            let isMinimized = false;            window.toggleMinimizeModal = function (event, forceReset = false) {                if (event) event.stopPropagation();                const modal = document.getElementById('compose-modal');                const modalContent = document.getElementById('compose-content');                const body = document.getElementById('compose-body');                const backdrop = document.getElementById('compose-backdrop');                // Get the minimize button icon                const minBtn = event ? event.currentTarget : document.querySelector('button[onclick="toggleMinimizeModal(event)"]');                const icon = minBtn ? minBtn.querySelector('i') : null;                if (forceReset || isMinimized) {                    // RESTORE/MAXIMIZE                    body.style.display = 'flex';                    // Remove custom minimize styles                    modal.classList.remove('pointer-events-none');                    modalContent.classList.remove('modal-minimized');                    // Restore backdrop                    backdrop.classList.remove('hidden');                    // Change icon back to minus                    if (icon) {                        icon.classList.remove('bx-expand');                        icon.classList.add('bx-minus');                    }                    isMinimized = false;                } else {                    // MINIMIZE                    body.style.display = 'none';                    // Hide backdrop                    backdrop.classList.add('hidden');                    // Allow clicking through the container, but keep content clickable                    modal.classList.add('pointer-events-none');                    // modalContent.classList.remove('pointer-events-none'); // Handled by CSS now                    // Move to bottom right                    modalContent.classList.add('modal-minimized');                    // Change icon to expand                    if (icon) {                        icon.classList.remove('bx-minus');                        icon.classList.add('bx-expand');                    }                    isMinimized = true;                }            }            // Inbox Actions Logic            window.executeSpamAction = function () {                const id = Alpine.store('selectedEmailId') || document.querySelector('[x-data]').__x.$data.selectedEmailId;                if (!id) return;                fetch(`/channel/email/inbox/${id}/spam`, {                    method: 'POST',                    headers: {                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',                        'Accept': 'application/json',                        'Content-Type': 'application/json'                    }                })                    .then(response => response.json())                    .then(data => {                        const row = document.querySelector(`tr[data-email-id="${id}"]`);                        if (row) {                            row.style.transition = 'all 0.5s ease';                            row.style.opacity = '0';                            row.style.transform = 'translateX(20px)';                            setTimeout(() => row.remove(), 500);                        }                        // Reset Alpine state                        const alpineData = document.querySelector('[x-data]').__x.$data;                        alpineData.showSpamModal = false;                        alpineData.selectedEmailId = null;                        Swal.fire({                            title: 'Success!',                            text: 'Message successfully moved to Spam folder.',                            icon: 'success',                            background: '#1f2937',                            color: '#fff',                            toast: true,                            position: 'top-end',                            showConfirmButton: false,                            timer: 3000                        });                    })                    .catch(error => {                        console.error('Error moving to spam:', error);                        Swal.fire({                            title: 'Error!',                            text: 'An error occurred while moving the message to the Spam folder.',                            icon: 'error',                            background: '#1f2937',                            color: '#fff'                        });                    });            }            window.handleSpamAction = function (id) {                // This legacy function is now replaced by Alpine.js trigger                console.warn('handleSpamAction called directly. Use Alpine.js instead.');            }            window.handleReplyAction = function (id, sender) {                // Change title                const title = document.getElementById('compose-title');                if (title) title.style.display = 'none'; // Hide title as requested                // Set recipient                const toInput = document.getElementById('compose-to');                if (toInput) toInput.value = sender;                // Open modal                toggleComposeModal();            }            // Patch existing closeComposeModal to restore title            const originalCloseComposeModal = window.closeComposeModal;            window.closeComposeModal = function () {                const title = document.getElementById('compose-title');                if (title) title.style.display = 'block';                originalCloseComposeModal();            }            // Assign Modal Logic            window.handleAssignAction = function (id) {                const modal = document.getElementById('assign-modal');                const content = document.getElementById('assign-content');                const backdrop = document.getElementById('assign-backdrop');                modal.classList.remove('hidden');                modal.classList.add('flex');                setTimeout(() => {                    if (backdrop) backdrop.classList.add('opacity-100');                    content.classList.remove('scale-75', 'opacity-0');                    content.classList.add('scale-100', 'opacity-100');                }, 10);            }            window.closeAssignModal = function () {                const modal = document.getElementById('assign-modal');                const content = document.getElementById('assign-content');                const backdrop = document.getElementById('assign-backdrop');                if (backdrop) backdrop.classList.remove('opacity-100');                content.classList.remove('scale-100', 'opacity-100');                content.classList.add('scale-75', 'opacity-0');                setTimeout(() => {                    modal.classList.add('hidden');                    modal.classList.remove('flex');                }, 300);            }            window.submitAssignAction = function () {                const agent = document.getElementById('assign-agent').value;                const reason = document.getElementById('assign-reason').value;                if (!agent) {                    Swal.fire({                        title: 'Error!',                        text: 'Please select a User Agent.',                        icon: 'error',                        background: '#1f2937',                        color: '#fff'                    });                    return;                }                Swal.fire({                    title: 'Success!',                    text: `Assigned to ${agent} successfully.`,                    icon: 'success',                    background: '#1f2937',                    color: '#fff'                });                closeAssignModal();            }            window.handleForwardAction = function (id) {                // Similar to reply                const title = document.getElementById('compose-title');                if (title) title.style.display = 'none';                // Set recipient dummy for forward                const toInput = document.getElementById('compose-to');                if (toInput) toInput.value = ''; // Clear or set placeholder                toggleComposeModal();            }            // Conversation Modal Functions            window.handleConversationAction = function (id) {                const modal = document.getElementById('conversation-modal');                const content = document.getElementById('conversation-content');                modal.classList.remove('hidden');                modal.classList.add('flex');                setTimeout(() => {                    content.classList.remove('scale-75', 'opacity-0');                    content.classList.add('scale-100', 'opacity-100');                }, 10);            }            window.closeConversationModal = function () {                const modal = document.getElementById('conversation-modal');                const content = document.getElementById('conversation-content');                content.classList.remove('scale-100', 'opacity-100');                content.classList.add('scale-75', 'opacity-0');                setTimeout(() => {                    modal.classList.add('hidden');                    modal.classList.remove('flex');                }, 300);            }            // Preview Journey Modal Functions            let pjEditorInstance;            let reminderEditorInstance;            window.handlePreviewJourneyAction = function (id) {                const modal = document.getElementById('preview-journey-modal');                const content = document.getElementById('pj-content');                modal.classList.remove('hidden');                modal.classList.add('flex');                // Initialize Editors if not already done                initPJEditors();                setTimeout(() => {                    content.classList.remove('scale-95', 'opacity-0');                    content.classList.add('scale-100', 'opacity-100');                }, 10);            }            window.closePreviewJourneyModal = function () {                const modal = document.getElementById('preview-journey-modal');                const content = document.getElementById('pj-content');                content.classList.remove('scale-100', 'opacity-100');                content.classList.add('scale-95', 'opacity-0');                setTimeout(() => {                    modal.classList.add('hidden');                    modal.classList.remove('flex');                }, 300);            }            window.previewCustomerAvatar = function (event) {                const input = event.target;                const preview = document.getElementById('customer-avatar-preview');                if (input.files && input.files[0]) {                    const reader = new FileReader();                    reader.onload = function (e) {                        preview.src = e.target.result;                        Swal.fire({                            title: 'Photo updated!',                            text: 'Customer profile photo has been updated locally.',                            icon: 'success',                            toast: true,                            position: 'top-end',                            showConfirmButton: false,                            timer: 3000,                            background: '#1f2937',                            color: '#fff'                        });                    }                    reader.readAsDataURL(input.files[0]);                }            }            function initPJEditors() {                if (typeof ClassicEditor === 'undefined') return;                // Data Ticket Editor                if (!pjEditorInstance && document.querySelector('#pj-editor')) {                    ClassicEditor                        .create(document.querySelector('#pj-editor'), {                            toolbar: ['bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'],                            placeholder: 'Type response to customer here...'                        })                        .then(editor => {                            pjEditorInstance = editor;                        })                        .catch(error => console.error(error));                }                // Reminder Editor                if (!reminderEditorInstance && document.querySelector('#reminder-editor')) {                    ClassicEditor                        .create(document.querySelector('#reminder-editor'), {                            toolbar: ['bold', 'italic', 'bulletedList', 'numberedList', 'undo', 'redo'],                            placeholder: 'Add reminder details...'                        })                        .then(editor => {                            reminderEditorInstance = editor;                        })                        .catch(error => console.error(error));                }            }            // Close modal when clicking backdrop            document.addEventListener('click', function (e) {                const backdrop = document.getElementById('compose-backdrop');                if (e.target === backdrop) {                    closeComposeModal();                }                const assignBackdrop = document.getElementById('assign-backdrop');                if (e.target === assignBackdrop) {                    closeAssignModal();                }                const conversationBackdrop = document.getElementById('conversation-backdrop');                if (e.target === conversationBackdrop) {                    closeConversationModal();                }                const pjBackdrop = document.getElementById('pj-backdrop');                if (e.target === pjBackdrop) {                    closePreviewJourneyModal();                }            });            // Initialize CKEditor            document.addEventListener('DOMContentLoaded', function () {                if (typeof ClassicEditor === 'undefined') return;                try {                    ClassicEditor                        .create(document.querySelector('#editor'), {                            toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'blockQuote', 'undo', 'redo'],                            placeholder: 'Type your message here...'                        })                        .then(editor => {                            editorInstance = editor;                            console.log('CKEditor initialized successfully');                        })                        .catch(error => {                            console.error('CKEditor initialization error:', error);                        });                } catch (error) {                    console.error('CKEditor creation failed:', error);                }            });            // Mark email as read function            window.markAsRead = function (rowElement, emailId) {                // Check if already read                if (rowElement.classList.contains('read')) {                    return; // Already read, do nothing                }                console.log('Marking email ' + emailId + ' as read...');                fetch(`/channel/email/inbox/${emailId}/mark-read`, {                    method: 'POST',                    headers: {                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',                        'Accept': 'application/json',                        'Content-Type': 'application/json'                    }                })                    .then(response => response.json())                    .then(data => {                        // Update row styling                        rowElement.classList.remove('unread', 'font-semibold');                        rowElement.classList.add('read', 'font-normal');                        // Update individual cells for visual consistency                        const cells = rowElement.querySelectorAll('td');                        // ID column (index 0)                        const idSpan = cells[0].querySelector('span');                        if (idSpan) {                            idSpan.classList.remove('text-blue-300', 'font-bold');                            idSpan.classList.add('text-blue-400/60', 'font-medium');                        }                        // Email Service (index 1)                        const serviceSpan = cells[1].querySelector('span');                        if (serviceSpan) {                            serviceSpan.classList.remove('text-blue-300', 'font-semibold');                            serviceSpan.classList.add('text-blue-400/50', 'font-normal');                        }                        // From/To column (index 2)                        cells[2].classList.remove('text-gray-100', 'font-semibold');                        cells[2].classList.add('text-gray-400', 'font-normal');                        // Subject (index 3)                        const subjectSpan = cells[3].querySelector('span');                        if (subjectSpan) {                            subjectSpan.classList.remove('text-white', 'font-bold');                            subjectSpan.classList.add('text-gray-400', 'font-normal');                        }                        // Date (index 5)                        cells[5].classList.remove('text-gray-300');                        cells[5].classList.add('text-gray-500');                        // Update status badge (index 4)                        const statusBadge = cells[4].querySelector('span');                        if (statusBadge && statusBadge.classList.contains('bg-yellow-500/20')) {                            statusBadge.classList.remove('bg-yellow-500/20', 'text-yellow-400');                            statusBadge.classList.add('bg-gray-500/20', 'text-gray-400');                            statusBadge.textContent = 'Read';                        }                    })                    .catch(error => {                        console.error('Error marking as read:', error);                    });            }    
+
+            // AJAX Data Loading Logic
+            let currentPage = 1;
+            let currentSearch = '';
+            let currentPerPage = 10;
+            // Observe Alpine activeView changes to trigger data reload
+            document.addEventListener('alpine:init', () => {
+                Alpine.effect(() => {
+                    const activeView = Alpine.store('activeView') || document.querySelector('[x-data]').__x.$data.activeView;
+                    if (activeView) {
+                        currentPage = 1; // Reset to page 1 on tab change
+                        loadEmailData(activeView);
+                    }
+                });
+            });
+
+            function loadEmailData(view = null) {
+                const activeView = view || document.querySelector('[x-data]').__x.$data.activeView || 'inbox';
+                let endpoint = '';
+                let tableBodyId = '';
+
+                switch(activeView) {
+                    case 'inbox':
+                        endpoint = `/channel/email/inbox/get-inbox-data`;
+                        tableBodyId = 'inboxTableBody';
+                        break;
+                    case 'drafts':
+                        endpoint = `/channel/email/inbox/get-drafts-data`;
+                        tableBodyId = 'draftsTableBody';
+                        break;
+                    case 'spam':
+                        endpoint = `/channel/email/inbox/get-spam-data`;
+                        tableBodyId = 'spamTableBody';
+                        break;
+                    case 'department':
+                        // Placeholder if department has an endpoint or re-use inbox
+                        endpoint = `/channel/email/inbox/get-inbox-data`;
+                        tableBodyId = 'departmentTableBody';
+                        break;
+                    case 'sent':
+                        // Placeholder if sent has an endpoint or re-use inbox
+                        endpoint = `/channel/email/inbox/get-inbox-data`;
+                        tableBodyId = 'sentTableBody';
+                        break;
+                    default:
+                        endpoint = `/channel/email/inbox/get-inbox-data`;
+                        tableBodyId = 'inboxTableBody';
+                }
+
+                const tbody = document.getElementById(tableBodyId);
+                if (tbody) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="py-12 text-center text-gray-500 bg-gray-900/50 rounded-lg">
+                                <i class="bx bx-loader-alt bx-spin text-3xl mb-3 text-blue-500"></i>
+                                <p class="animate-pulse">Loading data...</p>
+                            </td>
+                        </tr>
+                    `;
+                }
+
+                const url = new URL(endpoint, window.location.origin);
+                url.searchParams.append('page', currentPage);
+                url.searchParams.append('search', currentSearch);
+                url.searchParams.append('per_page', currentPerPage);
+
+                fetch(url, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    renderTable(data.data, tableBodyId, activeView);
+                    updatePagination(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    if (tbody) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="7" class="py-12 text-center text-red-400 bg-red-900/20 rounded-lg border border-red-500/20">
+                                    <i class="bx bx-error-circle text-3xl mb-2"></i>
+                                    <p>Failed to load data. Please try again.</p>
+                                </td>
+                            </tr>
+                        `;
+                    }
+                });
+            }
+
+            function renderTable(items, tbodyId, activeView) {
+                const tbody = document.getElementById(tbodyId);
+                if (!tbody) return;
+
+                if (!items || items.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="py-12 text-center text-gray-500 bg-gray-900/50 rounded-lg">
+                                <i class="bx bx-inbox text-4xl mb-3 opacity-50"></i>
+                                <p>No emails found</p>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                items.forEach((item, index) => {
+                    const isEven = index % 2 === 1; // 0-indexed, so 1 is even row in UI
+                    const bgClass = isEven ? 'bg-gray-700/50' : '';
+                    // Handle status variations
+                    let isRead = item.status?.toLowerCase() === 'read' || item.status?.toLowerCase() === 'closed';
+                    const isUnread = !isRead;
+                    const readClass = isUnread ? 'unread font-semibold' : 'read font-normal';
+                    
+                    // Fallbacks for data properties
+                    const emailId = item.id || '-';
+                    const service = item.source_type || 'email';
+                    // Depending on view, from or to might be relevant. We'll use ticket_number/subject generally
+                    const fromOrTo = item.ticket_number || 'System';
+                    const subject = item.subject || 'No Subject';
+                    const statusText = item.status || 'Unknown';
+                    const dateStr = item.created_at ? new Date(item.created_at).toLocaleString() : '-';
+
+                    let statusBadgeClass = 'bg-gray-500/20 text-gray-400';
+                    if (statusText.toLowerCase() === 'open' || statusText.toLowerCase() === 'unread') statusBadgeClass = 'bg-yellow-500/20 text-yellow-400';
+                    if (statusText.toLowerCase() === 'spam') statusBadgeClass = 'bg-red-500/20 text-red-400';
+                    if (statusText.toLowerCase() === 'sent') statusBadgeClass = 'bg-blue-500/20 text-blue-400';
+                    if (statusText.toLowerCase() === 'delivered') statusBadgeClass = 'bg-green-500/20 text-green-400';
+
+                    html += \`
+                        <tr class="email-row group/row \${readClass} \${bgClass} hover:bg-gray-700/30 transition-colors cursor-pointer"
+                            data-email-id="\${emailId}" data-email-name="\${fromOrTo}"
+                            @click="markAsRead($el, \${emailId}); selectedEmail = { from: $el.dataset.emailName }">
+                            <td class="py-3 px-4">
+                                <span class="\${isUnread ? 'text-blue-300 font-bold' : 'text-blue-400/60 font-medium'}">
+                                    #\${emailId}
+                                </span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="\${isUnread ? 'text-blue-300 font-semibold' : 'text-blue-400/50 font-normal'} hover:text-blue-300 transition-colors cursor-pointer block truncate"
+                                    title="\${service}">\${service}</span>
+                            </td>
+                            <td class="py-3 px-4 \${isUnread ? 'text-gray-100 font-semibold' : 'text-gray-400 font-normal'} truncate"
+                                title="\${fromOrTo}"> \${fromOrTo}
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="\${isUnread ? 'text-white font-bold' : 'text-gray-400 font-normal'} block truncate"
+                                    title="\${subject}">\${subject}</span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="px-2 py-1 rounded text-xs font-medium \${statusBadgeClass}">
+                                    \${statusText}
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 \${isUnread ? 'text-gray-300' : 'text-gray-500'}">
+                                \${dateStr}
+                            </td>
+                            <td class="py-3 px-4 text-center relative" x-data="{ open: false }">
+                                <button @click.stop="open = !open" @click.away="open = false"
+                                    class="text-gray-400 hover:text-blue-400 transition-colors">
+                                    <i class="bx bx-dots-vertical-rounded text-xl"></i>
+                                </button>
+                                <div x-show="open"
+                                    class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-xl shadow-2xl z-50 border border-white/10 py-2 text-left"
+                                    style="display: none;"
+                                    x-transition:enter="transition ease-out duration-100"
+                                    x-transition:enter-start="transform opacity-0 scale-95"
+                                    x-transition:enter-end="transform opacity-100 scale-100"
+                                    x-transition:leave="transition ease-in duration-75"
+                                    x-transition:leave-start="transform opacity-100 scale-100"
+                                    x-transition:leave-end="transform opacity-0 scale-95">
+                                    <a href="javascript:void(0)"
+                                        @click.stop="selectedEmailId = \${emailId}; showSpamModal = true; open = false"
+                                        class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors \${activeView === 'spam' || activeView === 'sent' ? 'hidden' : ''}">
+                                        <i class="bx bx-error-circle text-lg"></i> Spam
+                                    </a>
+                                    <a href="javascript:void(0)"
+                                        @click.stop="handleReplyAction(\${emailId}, '\${fromOrTo}'); open = false"
+                                        class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors">
+                                        <i class="bx bx-reply text-lg"></i> Reply
+                                    </a>
+                                    <a href="javascript:void(0)"
+                                        @click.stop="handleAssignAction(\${emailId}); open = false"
+                                        class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors \${activeView === 'sent' ? 'hidden' : ''}">
+                                        <i class="bx bx-user-plus text-lg"></i> Assign
+                                    </a>
+                                    <a href="javascript:void(0)"
+                                        @click.stop="handleForwardAction(\${emailId}); open = false"
+                                        class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors">
+                                        <i class="bx bx-share text-lg"></i> Forward
+                                    </a>
+                                    <a href="#"
+                                        class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors opacity-50 cursor-not-allowed">
+                                        <i class="bx bx-show-alt text-lg"></i> Preview
+                                    </a>
+                                    <a href="javascript:void(0)"
+                                        @click.stop="handleConversationAction(\${emailId}); open = false"
+                                        class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors">
+                                        <i class="bx bx-chat text-lg"></i> Conversation
+                                    </a>
+                                    <a href="javascript:void(0)"
+                                        @click.stop="handlePreviewJourneyAction(\${emailId}); open = false"
+                                        class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2 transition-colors">
+                                        <i class="bx bx-map-alt text-lg"></i> Preview Journey
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    \`;
+                });
+                tbody.innerHTML = html;
+            }
+
+            function updatePagination(data) {
+                const info = document.getElementById('tableInfo');
+                const container = document.getElementById('paginationContainer');
+                
+                if (!data || !data.total) {
+                    if (info) info.textContent = 'Showing 0 to 0 of 0 entries';
+                    if (container) container.innerHTML = '';
+                    return;
+                }
+
+                if (info) {
+                    info.textContent = \`Showing \${data.from || 0} to \${data.to || 0} of \${data.total} entries\`;
+                }
+
+                if (container) {
+                    let html = '';
+                    
+                    // Previous button
+                    html += \`<button 
+                        onclick="if(${data.current_page > 1}) { currentPage--; loadEmailData(); }"
+                        class="px-3 py-1 rounded \${data.current_page > 1 ? 'bg-gray-700 hover:bg-gray-600 cursor-pointer' : 'bg-gray-800 opacity-50 cursor-not-allowed'} text-gray-300 transition-colors">
+                        Previous
+                    </button>\`;
+
+                    // Page numbers (simplified version for UI demo)
+                    const totalPages = data.last_page;
+                    let startPage = Math.max(1, data.current_page - 2);
+                    let endPage = Math.min(totalPages, startPage + 4);
+                    
+                    if (endPage - startPage < 4) {
+                        startPage = Math.max(1, endPage - 4);
+                    }
+
+                    if (startPage > 1) {
+                        html += \`<button onclick="currentPage=1; loadEmailData();" class="px-3 py-1 rounded hover:bg-gray-700 text-gray-300 transition-colors">1</button>\`;
+                        if (startPage > 2) html += \`<span class="px-2 py-1 text-gray-500">...</span>\`;
+                    }
+
+                    for (let i = startPage; i <= endPage; i++) {
+                        if (i === data.current_page) {
+                            html += \`<button class="px-3 py-1 rounded bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors">\${i}</button>\`;
+                        } else {
+                            html += \`<button onclick="currentPage=\${i}; loadEmailData();" class="px-3 py-1 rounded hover:bg-gray-700 text-gray-300 transition-colors">\${i}</button>\`;
+                        }
+                    }
+
+                    if (endPage < totalPages) {
+                        if (endPage < totalPages - 1) html += \`<span class="px-2 py-1 text-gray-500">...</span>\`;
+                        html += \`<button onclick="currentPage=\${totalPages}; loadEmailData();" class="px-3 py-1 rounded hover:bg-gray-700 text-gray-300 transition-colors">\${totalPages}</button>\`;
+                    }
+
+                    // Next button
+                    html += \`<button 
+                        onclick="if(${data.current_page < data.last_page}) { currentPage++; loadEmailData(); }"
+                        class="px-3 py-1 rounded \${data.current_page < data.last_page ? 'bg-gray-700 hover:bg-gray-600 cursor-pointer' : 'bg-gray-800 opacity-50 cursor-not-allowed'} text-gray-300 transition-colors">
+                        Next
+                    </button>\`;
+
+                    container.innerHTML = html;
+                }
+            }
+
+            // Event Listeners for Search and Entries
+            document.addEventListener('DOMContentLoaded', () => {
+                const searchInput = document.getElementById('searchInput');
+                const entriesSelect = document.getElementById('entriesInfo');
+
+                if (searchInput) {
+                    let searchTimeout;
+                    searchInput.addEventListener('input', (e) => {
+                        clearTimeout(searchTimeout);
+                        searchTimeout = setTimeout(() => {
+                            currentSearch = e.target.value;
+                            currentPage = 1;
+                            loadEmailData();
+                        }, 500);
+                    });
+                }
+
+                if (entriesSelect) {
+                    entriesSelect.addEventListener('change', (e) => {
+                        currentPerPage = parseInt(e.target.value);
+                        currentPage = 1;
+                        loadEmailData();
+                    });
+                }
+                
+                // Initial load
+                setTimeout(() => {
+                    loadEmailData();
+                }, 100);
+            });
             </script>
     </div>
     </x-slot>

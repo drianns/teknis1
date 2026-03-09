@@ -57,9 +57,8 @@
             <!-- Data Table Container -->
             <div
                 class="table-container bg-gray-800/80 backdrop-blur-md rounded-2xl border border-gray-700/50 shadow-2xl ring-1 ring-white/5 flex-1 flex flex-col min-h-0 overflow-hidden">
-                <div class="table-wrapper flex-1 overflow-auto w-full custom-scrollbar">
-                    <table class="data-table w-full text-left border-collapse table-fixed min-w-[1000px]"
-                        x-data="exportTableData()">
+                <div class="table-wrapper flex-1 overflow-auto w-full custom-scrollbar" x-data="exportTableData()" x-init="init()">
+                    <table class="data-table w-full text-left border-collapse table-fixed min-w-[1000px]">
                         <thead class="bg-gray-900/50 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                             <tr>
                                 <th draggable="true" @dragstart="handleDragStart($event, 'User Name')"
@@ -67,8 +66,7 @@
                                     class="sticky top-0 z-10 bg-gray-900 draggable-header px-3 py-3 w-40 hover:bg-gray-700/50 transition-colors group cursor-grab active:cursor-grabbing border-r border-gray-700/50 whitespace-nowrap">
                                     <div class="header-content flex items-center justify-between">
                                         <span>User Name</span>
-                                        <i
-                                            class='bx bx-grid-vertical text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity'></i>
+                                        <i class='bx bx-grid-vertical text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity'></i>
                                     </div>
                                 </th>
                                 <th draggable="true" @dragstart="handleDragStart($event, 'Name')"
@@ -76,8 +74,7 @@
                                     class="sticky top-0 z-10 bg-gray-900 draggable-header px-3 py-3 w-48 hover:bg-gray-700/50 transition-colors group cursor-grab active:cursor-grabbing border-r border-gray-700/50 whitespace-nowrap">
                                     <div class="header-content flex items-center justify-between">
                                         <span>Name</span>
-                                        <i
-                                            class='bx bx-grid-vertical text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity'></i>
+                                        <i class='bx bx-grid-vertical text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity'></i>
                                     </div>
                                 </th>
                                 <th draggable="true" @dragstart="handleDragStart($event, 'Level User')"
@@ -85,8 +82,7 @@
                                     class="sticky top-0 z-10 bg-gray-900 draggable-header px-3 py-3 w-32 hover:bg-gray-700/50 transition-colors group cursor-grab active:cursor-grabbing border-r border-gray-700/50 whitespace-nowrap">
                                     <div class="header-content flex items-center justify-between">
                                         <span>Level User</span>
-                                        <i
-                                            class='bx bx-grid-vertical text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity'></i>
+                                        <i class='bx bx-grid-vertical text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity'></i>
                                     </div>
                                 </th>
                                 <th draggable="true" @dragstart="handleDragStart($event, 'Email Address')"
@@ -94,8 +90,7 @@
                                     class="sticky top-0 z-10 bg-gray-900 draggable-header px-3 py-3 w-64 hover:bg-gray-700/50 transition-colors group cursor-grab active:cursor-grabbing border-r border-gray-700/50 whitespace-nowrap">
                                     <div class="header-content flex items-center justify-between">
                                         <span>Email Address</span>
-                                        <i
-                                            class='bx bx-grid-vertical text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity'></i>
+                                        <i class='bx bx-grid-vertical text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity'></i>
                                     </div>
                                 </th>
                                 <th draggable="true" @dragstart="handleDragStart($event, 'Department')"
@@ -103,8 +98,7 @@
                                     class="sticky top-0 z-10 bg-gray-900 draggable-header px-3 py-3 w-48 hover:bg-gray-700/50 transition-colors group cursor-grab active:cursor-grabbing border-r border-gray-700/50 whitespace-nowrap">
                                     <div class="header-content flex items-center justify-between">
                                         <span>Department</span>
-                                        <i
-                                            class='bx bx-grid-vertical text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity'></i>
+                                        <i class='bx bx-grid-vertical text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity'></i>
                                     </div>
                                 </th>
                                 <th draggable="true" @dragstart="handleDragStart($event, 'Group')"
@@ -112,8 +106,7 @@
                                     class="sticky top-0 z-10 bg-gray-900 draggable-header px-3 py-3 w-32 hover:bg-gray-700/50 transition-colors group cursor-grab active:cursor-grabbing border-r border-gray-700/50 whitespace-nowrap">
                                     <div class="header-content flex items-center justify-between">
                                         <span>Group</span>
-                                        <i
-                                            class='bx bx-grid-vertical text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity'></i>
+                                        <i class='bx bx-grid-vertical text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity'></i>
                                     </div>
                                 </th>
                                 <th draggable="true" @dragstart="handleDragStart($event, 'Status')"
@@ -121,49 +114,34 @@
                                     class="sticky top-0 z-10 bg-gray-900 draggable-header px-3 py-3 w-24 hover:bg-gray-700/50 transition-colors group cursor-grab active:cursor-grabbing border-l border-gray-700/50 whitespace-nowrap">
                                     <div class="header-content flex items-center justify-between">
                                         <span>Status</span>
-                                        <i
-                                            class='bx bx-grid-vertical text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity'></i>
+                                        <i class='bx bx-grid-vertical text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity'></i>
                                     </div>
                                 </th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-700/50 text-sm text-gray-300">
-                            @forelse($users as $user)
+                            <template x-for="user in users" :key="user.id">
                                 <tr class="hover:bg-blue-500/[0.03] transition-colors group/row">
-                                    <td class="px-3 py-3 whitespace-nowrap truncate">{{ $user->name }}</td>
-                                    <td class="px-3 py-3 whitespace-nowrap truncate">{{ $user->name }}</td>
+                                    <td class="px-3 py-3 whitespace-nowrap truncate" x-text="user.name"></td>
+                                    <td class="px-3 py-3 whitespace-nowrap truncate" x-text="user.name"></td>
                                     <td class="px-3 py-3 whitespace-nowrap truncate">
-                                        @php
-                                            $levelClass = 'bg-gray-500/20 text-gray-400 border border-gray-500/30';
-                                            $roleName = strtolower($user->role->name ?? '');
-                                            if (str_contains($roleName, 'admin')) {
-                                                $levelClass = 'bg-blue-500/20 text-blue-400 border border-blue-500/30';
-                                                $levelName = 'Administrator';
-                                            } elseif (str_contains($roleName, 'spv') || str_contains($roleName, 'supervisor')) {
-                                                $levelClass = 'bg-purple-500/20 text-purple-400 border border-purple-500/30';
-                                                $levelName = 'Supervisor';
-                                            } else {
-                                                $levelClass = 'bg-teal-500/20 text-teal-400 border border-teal-500/30';
-                                                $levelName = 'Layer 1';
-                                            }
-                                        @endphp
-                                        <span class="px-3 py-1 text-xs font-semibold rounded-full {{ $levelClass }}">
-                                            {{ $levelName }}
+                                        <span class="px-3 py-1 text-xs font-semibold rounded-full" 
+                                              :class="user.role && user.role.name.toLowerCase().includes('admin') ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : (user.role && (user.role.name.toLowerCase().includes('spv') || user.role.name.toLowerCase().includes('supervisor')) ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30' : 'bg-teal-500/20 text-teal-400 border border-teal-500/30')"
+                                              x-text="user.role ? (user.role.name.toLowerCase().includes('admin') ? 'Administrator' : (user.role.name.toLowerCase().includes('spv') || user.role.name.toLowerCase().includes('supervisor') ? 'Supervisor' : 'Layer 1')) : 'Layer 1'">
                                         </span>
                                     </td>
-                                    <td class="px-3 py-3 whitespace-nowrap truncate">{{ $user->email }}</td>
-                                    <td class="px-3 py-3 whitespace-nowrap truncate">{{ $user->company->name ?? 'N/A' }}
-                                    </td>
-                                    <td class="px-3 py-3 whitespace-nowrap truncate"></td>
+                                    <td class="px-3 py-3 whitespace-nowrap truncate" x-text="user.email"></td>
+                                    <td class="px-3 py-3 whitespace-nowrap truncate" x-text="user.company ? user.company.name : 'N/A'"></td>
+                                    <td class="px-3 py-3 whitespace-nowrap truncate">-</td>
                                     <td class="px-3 py-3 whitespace-nowrap">
-                                        <span
-                                            class="px-3 py-1 text-xs font-semibold rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 w-fit">
+                                        <span class="px-3 py-1 text-xs font-semibold rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 w-fit">
                                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                             Aktif
                                         </span>
                                     </td>
                                 </tr>
-                            @empty
+                            </template>
+                            <template x-if="users.length === 0">
                                 <tr>
                                     <td colspan="7" class="p-8 text-center text-gray-500 border-b border-gray-800">
                                         <div class="flex flex-col items-center gap-3">
@@ -172,25 +150,26 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @endforelse
+                            </template>
                         </tbody>
                     </table>
                 </div>
 
                 <!-- Pagination & Controls Footer -->
-                <div
-                    class="px-6 py-4 border-t border-gray-700/50 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-800/30 shrink-0">
-                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="px-6 py-4 border-t border-gray-700/50 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-800/30 shrink-0" x-data="{}" x-init="">
+                    <template x-if="true">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 w-full">
                         <!-- Left: Info -->
                         <div class="text-sm font-medium text-gray-400 hidden lg:block">
-                            Showing <span class="text-white">{{ $users->firstItem() ?? 0 }}</span> to <span
-                                class="text-white">{{ $users->lastItem() ?? 0 }}</span> of <span
-                                class="text-white">{{ $users->total() }}</span> results
+                            Showing <span class="text-white" x-text="pagination.from || 0"></span> to <span
+                                class="text-white" x-text="pagination.to || 0"></span> of <span
+                                class="text-white" x-text="pagination.total"></span> results
                         </div>
 
                         <!-- Center: Pagination Links -->
                         <div class="flex items-center gap-1 bg-gray-900 rounded-lg p-1 border border-gray-700">
-                            {{ $users->links() }}
+                             <button @click="loadTable(pagination.prev_page_url)" :disabled="!pagination.prev_page_url" class="px-3 py-1 text-xs font-medium text-gray-400 hover:text-white disabled:opacity-50 transition-colors">Prev</button>
+                             <button @click="loadTable(pagination.next_page_url)" :disabled="!pagination.next_page_url" class="px-3 py-1 text-xs font-medium text-gray-400 hover:text-white disabled:opacity-50 transition-colors">Next</button>
                         </div>
 
                         <!-- Right: Page Size & Export Actions -->
@@ -198,13 +177,12 @@
                             <!-- Page Size -->
                             <div class="flex items-center gap-2">
                                 <label class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Show</label>
-                                <select id="per-page-select"
-                                    class="bg-gray-900 border border-gray-700 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 appearance-none py-1.5 pl-3 pr-8 cursor-pointer outline-none transition-colors hover:border-gray-600"
-                                    onchange="window.location.href='?per_page='+this.value">
-                                    <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
-                                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                                    <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
+                                <select x-model="limit" @change="loadTable()"
+                                    class="bg-gray-900 border border-gray-700 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 appearance-none py-1.5 pl-3 pr-8 cursor-pointer outline-none transition-colors hover:border-gray-600">
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
                                 </select>
                             </div>
 
@@ -229,6 +207,7 @@
                             </div>
                         </div>
                     </div>
+                    </template>
                 </div>
             </div>
 
@@ -318,7 +297,6 @@
                     isDraggingOver: false,
 
                     init() {
-                        // Sync Alpine array with global window variable for export function
                         this.$watch('groupedColumns', value => {
                             window.exportGroupedColumns = value;
                             this.applyGrouping();
@@ -333,7 +311,6 @@
                             this.groupedColumns.push(columnName);
                         }
 
-                        // Reset styling on all headers
                         document.querySelectorAll('.draggable-header').forEach(el => {
                             el.classList.remove('dragging');
                         });
@@ -344,10 +321,7 @@
                     },
 
                     applyGrouping() {
-                        // In a full implementation, this would trigger an AJAX reload 
-                        // or client-side sort of the table to visually group rows.
                         console.log('Currently grouped by:', this.groupedColumns);
-                        // Mocking visual reaction to grouping
                         if (this.groupedColumns.length > 0) {
                             const tableBody = document.querySelector('tbody');
                             tableBody.style.opacity = '0.5';
@@ -359,6 +333,49 @@
 
             function exportTableData() {
                 return {
+                    users: [],
+                    pagination: {},
+                    limit: 10,
+                    search: '',
+
+                    init() {
+                        this.loadTable();
+                    },
+
+                    async loadTable(url = '{{ route('management-user.export.user.application.getData') }}') {
+                        try {
+                            const params = new URLSearchParams({
+                                limit: this.limit,
+                                search: this.search
+                            });
+
+                            const fetchUrl = url.includes('?') ? `${url}&${params.toString()}` : `${url}?${params.toString()}`;
+
+                            const response = await fetch(fetchUrl, {
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                                }
+                            });
+
+                            if (!response.ok) throw new Error('Failed to fetch data');
+
+                            const data = await response.json();
+                            this.users = data.data;
+                            this.pagination = {
+                                current_page: data.current_page,
+                                last_page: data.last_page,
+                                prev_page_url: data.prev_page_url,
+                                next_page_url: data.next_page_url,
+                                from: data.from,
+                                to: data.to,
+                                total: data.total
+                            };
+                        } catch (error) {
+                            console.error('Error loading table:', error);
+                        }
+                    },
+
                     handleDragStart(event, columnName) {
                         event.dataTransfer.effectAllowed = 'move';
                         event.dataTransfer.setData('text/plain', columnName);

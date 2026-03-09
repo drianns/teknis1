@@ -8,8 +8,25 @@ class HistoryTicketingController extends Controller
 {
     public function index()
     {
-        $histories = \App\Models\ChatHeaderTicket::where('status', 'closed')->paginate(10);
+        return view('pages.apps.history-ticketing.index');
+    }
 
-        return view('pages.apps.history-ticketing.index', compact('histories'));
+    public function getData(Request $request)
+    {
+        $query = \App\Models\ChatHeaderTicket::where('status', 'closed')
+            ->orderBy('created_at', 'desc');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('ticket_number', 'like', "%{$search}%")
+                  ->orWhere('subject', 'like', "%{$search}%");
+            });
+        }
+
+        $perPage = $request->get('per_page', 10);
+        $data = $query->paginate($perPage);
+
+        return response()->json($data);
     }
 }

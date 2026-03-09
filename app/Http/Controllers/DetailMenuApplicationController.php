@@ -10,12 +10,20 @@ class DetailMenuApplicationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
+    {
+        return view('pages.setting-application.detail-menu-application.index');
+    }
+
+    /**
+     * Get data for AJAX table
+     */
+    public function getData(Request $request)
     {
         $query = DetailMenuApplication::query();
 
         // Search
-        if ($request->has('search') && $request->search != '') {
+        if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('menu_name', 'like', "%{$search}%")
@@ -29,7 +37,7 @@ class DetailMenuApplicationController extends Controller
         $perPage = $request->get('per_page', 10);
         $detailMenus = $query->orderBy('id', 'desc')->paginate($perPage);
 
-        return view('pages.setting-application.detail-menu-application.index', compact('detailMenus'));
+        return response()->json($detailMenus);
     }
 
     /**

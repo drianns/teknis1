@@ -8,8 +8,22 @@ class TicketingDepartmentController extends Controller
 {
     public function index(Request $request)
     {
-        $tickets = \App\Models\ChatHeaderTicket::where('status', 'open')->paginate(10);
+        return view('pages.apps.ticketing-department.index');
+    }
 
-        return view('pages.apps.ticketing-department.index', compact('tickets'));
+    public function getData(Request $request)
+    {
+        $query = \App\Models\ChatHeaderTicket::where('status', 'open');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where('ticket_number', 'like', "%{$search}%")
+                  ->orWhere('subject', 'like', "%{$search}%");
+        }
+
+        $perPage = $request->get('per_page', 10);
+        $data = $query->orderBy('created_at', 'desc')->paginate($perPage);
+
+        return response()->json($data);
     }
 }

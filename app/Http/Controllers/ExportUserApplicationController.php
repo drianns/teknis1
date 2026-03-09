@@ -13,14 +13,26 @@ class ExportUserApplicationController extends Controller
 {
     public function index(Request $request)
     {
-        // Query users with their roles and company
+        return view('pages.management-user.export-user-application.index');
+    }
+
+    public function getData(Request $request)
+    {
+        $search = $request->input('search');
+        $limit = $request->input('limit', 10);
+
         $query = User::with(['role', 'company']);
 
-        // Pagination
-        $perPage = $request->get('per_page', 10);
-        $users = $query->paginate($perPage);
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%")
+                    ->orWhere('email', 'LIKE', "%{$search}%");
+            });
+        }
 
-        return view('pages.management-user.export-user-application.index', compact('users'));
+        $users = $query->paginate($limit);
+
+        return response()->json($users);
     }
 
     public function export(Request $request)

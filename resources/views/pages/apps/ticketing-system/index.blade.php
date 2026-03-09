@@ -426,7 +426,7 @@
                     <div class="tab-content" id="ticketTabContent">
                         <!-- Data Ticketing Tab -->
                         <div x-show="activeTab === 'data-content'" x-transition id="data-content" role="tabpanel">
-                            <form action="#" method="POST" id="form-ticketing">
+                            <form id="form-ticketing" onsubmit="return false;">
                                 @csrf
                                 <div class="space-y-8">
                                     <!-- Section 1: Reporter Information -->
@@ -502,7 +502,7 @@
                                             <div>
                                                 <label
                                                     class="block text-gray-400 text-xs mb-1 font-medium">Channel</label>
-                                                <select
+                                                <select name="channel"
                                                     class="form-select bg-gray-800 border-gray-700 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full hover:border-gray-600 transition-colors">
                                                     <option value="" selected disabled>Select</option>
                                                     @foreach($channels as $channel)
@@ -514,7 +514,7 @@
                                             <div>
                                                 <label
                                                     class="block text-gray-400 text-xs mb-1 font-medium">Source</label>
-                                                <select
+                                                <select name="source"
                                                     class="form-select bg-gray-800 border-gray-700 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full hover:border-gray-600 transition-colors">
                                                     <option value="" selected>Select</option>
                                                     @foreach($sources as $source)
@@ -572,7 +572,7 @@
                                             <div class="lg:col-span-2">
                                                 <label
                                                     class="block text-gray-400 text-xs mb-1 font-medium">Activity</label>
-                                                <select
+                                                <select name="activity"
                                                     class="form-select bg-gray-800 border-gray-700 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full hover:border-gray-600 transition-colors">
                                                     <option value="" selected>Select</option>
                                                     @foreach($activities as $activity)
@@ -583,7 +583,7 @@
                                             <!-- Type -->
                                             <div>
                                                 <label class="block text-gray-400 text-xs mb-1 font-medium">Type</label>
-                                                <select
+                                                <select name="type"
                                                     class="form-select bg-gray-800 border-gray-700 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full hover:border-gray-600 transition-colors">
                                                     <option value="" selected>Select</option>
                                                     @foreach($types as $type)
@@ -595,7 +595,7 @@
                                             <div>
                                                 <label class="block text-gray-400 text-xs mb-1 font-medium">Ticket
                                                     Status</label>
-                                                <select
+                                                <select name="ticket_status"
                                                     class="form-select bg-gray-800 border-gray-700 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full hover:border-gray-600 transition-colors">
                                                     <option value="" selected>Select</option>
                                                     @foreach($chat_ticket_statuses as $status)
@@ -759,10 +759,10 @@
 
                                     <!-- Right Section: Form Actions -->
                                     <div class="flex gap-3">
-                                        <button type="button"
+                                        <button type="button" onclick="document.getElementById('form-ticketing').reset()"
                                             class="btn bg-gray-700 text-white hover:bg-gray-600 border-0 rounded-lg px-6 py-2">Reset</button>
-                                        <button type="submit"
-                                            class="btn bg-blue-600 text-white hover:bg-blue-700 border-0 rounded-lg px-8 py-2 font-semibold shadow-lg shadow-blue-500/30">
+                                        <button type="button" onclick="saveTicketAjax()"
+                                            class="btn bg-blue-600 text-white hover:bg-blue-700 border-0 rounded-lg px-8 py-2 font-semibold shadow-lg shadow-blue-500/30" id="btnSaveTicket">
                                             <i class="bx bx-save mr-2"></i> Save Ticket
                                         </button>
                                     </div>
@@ -782,32 +782,25 @@
                                     <div class="flex items-center gap-2">
                                         <span class="text-gray-400 text-sm">Show</span>
                                         <select
-                                            onchange="window.location.href='?per_page='+this.value+'&search={{ request('search') }}#history-content'"
+                                            id="historyPerPage"
                                             class="form-select bg-gray-800 border-gray-700 text-white text-sm rounded-lg py-1 pr-8 focus:ring-blue-500 focus:border-blue-500">
-                                            <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10
-                                            </option>
-                                            <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25
-                                            </option>
-                                            <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50
-                                            </option>
-                                            <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100
-                                            </option>
+                                            <option value="10">10</option>
+                                            <option value="25">25</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
                                         </select>
                                         <span class="text-gray-400 text-sm">entries</span>
                                     </div>
 
                                     <!-- Search -->
                                     <div class="relative">
-                                        <form action="" method="GET">
-                                            <input type="hidden" name="per_page" value="{{ request('per_page', 10) }}">
-                                            <input type="text" name="search" value="{{ request('search') }}"
-                                                class="form-control bg-gray-800 border-gray-700 text-white text-sm rounded-lg pl-3 pr-10 py-1.5 focus:ring-blue-500 focus:border-blue-500 w-48 md:w-64"
-                                                placeholder="Search tickets...">
-                                            <button type="submit"
-                                                class="absolute right-2 top-1.5 text-gray-400 hover:text-white">
-                                                <i class="bx bx-search"></i>
-                                            </button>
-                                        </form>
+                                        <input type="text" id="historySearch"
+                                            class="form-control bg-gray-800 border-gray-700 text-white text-sm rounded-lg pl-3 pr-10 py-1.5 focus:ring-blue-500 focus:border-blue-500 w-48 md:w-64"
+                                            placeholder="Search tickets...">
+                                        <button type="button"
+                                            class="absolute right-2 top-1.5 text-gray-400 hover:text-white pointer-events-none">
+                                            <i class="bx bx-search"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -816,84 +809,26 @@
                                 <table class="w-full text-left border-collapse">
                                     <thead class="bg-gray-800 text-gray-400 text-xs uppercase">
                                         <tr>
-                                            <th class="px-4 py-3">Ticket Number <i
-                                                    class="bx bx-sort text-gray-600 ml-1"></i></th>
-                                            <th class="px-4 py-3">Category <i class="bx bx-sort text-gray-600 ml-1"></i>
-                                            </th>
-                                            <th class="px-4 py-3">Status <i class="bx bx-sort text-gray-600 ml-1"></i>
-                                            </th>
-                                            <th class="px-4 py-3">User Create <i
-                                                    class="bx bx-sort text-gray-600 ml-1"></i></th>
-                                            <th class="px-4 py-3">Date Create <i
-                                                    class="bx bx-sort text-gray-600 ml-1"></i></th>
-                                            <th class="px-4 py-3 text-center">Action <i
-                                                    class="bx bx-sort text-gray-600 ml-1"></i></th>
+                                            <th class="px-4 py-3">Ticket Number <i class="bx bx-sort text-gray-600 ml-1"></i></th>
+                                            <th class="px-4 py-3">Category <i class="bx bx-sort text-gray-600 ml-1"></i></th>
+                                            <th class="px-4 py-3">Status <i class="bx bx-sort text-gray-600 ml-1"></i></th>
+                                            <th class="px-4 py-3">User Create <i class="bx bx-sort text-gray-600 ml-1"></i></th>
+                                            <th class="px-4 py-3">Date Create <i class="bx bx-sort text-gray-600 ml-1"></i></th>
+                                            <th class="px-4 py-3 text-center">Action <i class="bx bx-sort text-gray-600 ml-1"></i></th>
                                         </tr>
                                     </thead>
-                                    <tbody class="text-sm text-gray-300 divide-y divide-gray-800 bg-transparent">
-                                        @forelse($ticket_history as $index => $ticket)
-                                            <tr class="hover:bg-gray-800/50 transition-colors even:bg-gray-800/20">
-                                                <td class="px-4 py-3 font-medium text-blue-400">
-                                                    {{ $ticket->ticket_number ?? '-' }}
-                                                </td>
-                                                <td class="px-4 py-3">
-                                                    {{ $ticket->category ?? '-' }}
-                                                </td>
-                                                <td class="px-4 py-3">
-                                                    @php
-                                                        $statusColor = 'bg-gray-700 text-gray-300';
-                                                        if (strtolower($ticket->status) == 'open')
-                                                            $statusColor = 'bg-blue-900/50 text-blue-300 border border-blue-800';
-                                                        if (strtolower($ticket->status) == 'closed')
-                                                            $statusColor = 'bg-green-900/50 text-green-300 border border-green-800';
-                                                        if (strtolower($ticket->status) == 'pending')
-                                                            $statusColor = 'bg-yellow-900/50 text-yellow-300 border border-yellow-800';
-                                                    @endphp
-                                                    <span class="px-2 py-1 rounded text-xs {{ $statusColor }}">
-                                                        {{ $ticket->status ?? 'N/A' }}
-                                                    </span>
-                                                </td>
-                                                <td class="px-4 py-3">
-                                                    <div class="flex items-center gap-2">
-                                                        @if($ticket->chat_ticket_user && $ticket->chat_ticket_user->photo_src)
-                                                            <img src="{{ $ticket->chat_ticket_user->photo_src }}"
-                                                                class="w-6 h-6 rounded-full">
-                                                        @else
-                                                            <div
-                                                                class="w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center text-xs">
-                                                                {{ substr($ticket->chat_ticket_user->name ?? 'U', 0, 1) }}
-                                                            </div>
-                                                        @endif
-                                                        <span>{{ $ticket->chat_ticket_user->name ?? 'Unknown' }}</span>
-                                                    </div>
-                                                </td>
-                                                <td class="px-4 py-3">
-                                                    {{ $ticket->created_at->format('d M Y H:i') }}
-                                                </td>
-                                                <td class="px-4 py-3 text-center">
-                                                    <a href="#"
-                                                        class="btn btn-sm bg-gray-700 hover:bg-gray-600 text-white rounded px-2 py-1"
-                                                        title="View Details">
-                                                        <i class="bx bx-show"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="6" class="px-4 py-8 text-center text-gray-500">
-                                                    <i class="bx bx-folder-open text-4xl mb-2"></i>
-                                                    <p>No data available in table</p>
-                                                </td>
-                                            </tr>
-                                        @endforelse
+                                    <tbody id="historyTableBody" class="text-sm text-gray-300 divide-y divide-gray-800 bg-transparent">
+                                        <!-- Populated via AJAX -->
                                     </tbody>
                                 </table>
                             </div>
 
                             <!-- Pagination -->
-                            <div class="mt-4">
-                                {{ $ticket_history->links('pagination::bootstrap-5') }}
-                                <!-- Using standard pagination view for now -->
+                            <div class="mt-4 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
+                                <span id="historyTableInfo">Showing 0 to 0 of 0 entries</span>
+                                <div class="mt-2 md:mt-0" id="historyPaginationContainer">
+                                    <!-- Pagination buttons populated by JS -->
+                                </div>
                             </div>
                         </div>
 
@@ -909,15 +844,12 @@
                                     <div class="flex items-center gap-2">
                                         <span class="text-gray-400 text-sm">Show</span>
                                         <select
-                                            onchange="window.location.href='?per_page_customer='+this.value+'&search_customer={{ request('search_customer') }}#customer-content'"
+                                            id="customerPerPage"
                                             class="form-select bg-gray-800 border-gray-700 text-white text-sm rounded-lg py-1 pr-8 focus:ring-blue-500 focus:border-blue-500">
-                                            <option value="10" {{ request('per_page_customer') == 10 ? 'selected' : '' }}>
-                                                10</option>
-                                            <option value="25" {{ request('per_page_customer') == 25 ? 'selected' : '' }}>
-                                                25</option>
-                                            <option value="50" {{ request('per_page_customer') == 50 ? 'selected' : '' }}>
-                                                50</option>
-                                            <option value="100" {{ request('per_page_customer') == 100 ? 'selected' : '' }}>100</option>
+                                            <option value="10">10</option>
+                                            <option value="25">25</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
                                         </select>
                                         <span class="text-gray-400 text-sm">entries</span>
                                     </div>
@@ -925,18 +857,13 @@
                                     <!-- Search & Add -->
                                     <div class="flex items-center gap-2">
                                         <div class="relative">
-                                            <form action="" method="GET">
-                                                <input type="hidden" name="per_page_customer"
-                                                    value="{{ request('per_page_customer', 10) }}">
-                                                <input type="text" name="search_customer"
-                                                    value="{{ request('search_customer') }}"
-                                                    class="form-control bg-gray-800 border-gray-700 text-white text-sm rounded-lg pl-3 pr-10 py-1.5 focus:ring-blue-500 focus:border-blue-500 w-48 md:w-64"
-                                                    placeholder="Search customers...">
-                                                <button type="submit"
-                                                    class="absolute right-2 top-1.5 text-gray-400 hover:text-white">
-                                                    <i class="bx bx-search"></i>
-                                                </button>
-                                            </form>
+                                            <input type="text" id="customerSearch"
+                                                class="form-control bg-gray-800 border-gray-700 text-white text-sm rounded-lg pl-3 pr-10 py-1.5 focus:ring-blue-500 focus:border-blue-500 w-48 md:w-64"
+                                                placeholder="Search customers...">
+                                            <button type="button"
+                                                class="absolute right-2 top-1.5 text-gray-400 hover:text-white pointer-events-none">
+                                                <i class="bx bx-search"></i>
+                                            </button>
                                         </div>
                                         <button onclick="togglePopup('popup-add-channel-customer')"
                                             class="btn btn-sm bg-gray-700 hover:bg-gray-600 text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors shadow-lg"
@@ -951,68 +878,25 @@
                                 <table class="w-full text-left border-collapse">
                                     <thead class="bg-gray-800 text-gray-400 text-xs uppercase">
                                         <tr>
-                                            <th class="px-4 py-3">Channel <i class="bx bx-sort text-gray-600 ml-1"></i>
-                                            </th>
-                                            <th class="px-4 py-3">Account <i class="bx bx-sort text-gray-600 ml-1"></i>
-                                            </th>
-                                            <th class="px-4 py-3">Status <i class="bx bx-sort text-gray-600 ml-1"></i>
-                                            </th>
-                                            <th class="px-4 py-3">User Create <i
-                                                    class="bx bx-sort text-gray-600 ml-1"></i></th>
-                                            <th class="px-4 py-3 text-center">Action <i
-                                                    class="bx bx-sort text-gray-600 ml-1"></i></th>
+                                            <th class="px-4 py-3">Channel <i class="bx bx-sort text-gray-600 ml-1"></i></th>
+                                            <th class="px-4 py-3">Account <i class="bx bx-sort text-gray-600 ml-1"></i></th>
+                                            <th class="px-4 py-3">Status <i class="bx bx-sort text-gray-600 ml-1"></i></th>
+                                            <th class="px-4 py-3">User Create <i class="bx bx-sort text-gray-600 ml-1"></i></th>
+                                            <th class="px-4 py-3 text-center">Action <i class="bx bx-sort text-gray-600 ml-1"></i></th>
                                         </tr>
                                     </thead>
-                                    <tbody class="text-sm text-gray-300 divide-y divide-gray-800 bg-transparent">
-                                        @forelse($customers as $index => $customer)
-                                            <tr class="hover:bg-gray-800/50 transition-colors even:bg-gray-800/20">
-                                                <td class="px-4 py-3">
-                                                    <div class="flex items-center gap-2">
-                                                        @if($customer->channel && $customer->channel->logo)
-                                                            <img src="{{ $customer->channel->logo }}"
-                                                                class="w-5 h-5 object-contain">
-                                                        @endif
-                                                        <span>{{ $customer->channel->name ?? '-' }}</span>
-                                                    </div>
-                                                </td>
-                                                <td class="px-4 py-3 font-medium text-white">
-                                                    {{ $customer->account_id ?? $customer->name ?? '-' }}
-                                                </td>
-                                                <td class="px-4 py-3">
-                                                    <span
-                                                        class="px-2 py-1 rounded text-xs bg-green-900/50 text-green-300 border border-green-800">Active</span>
-                                                </td>
-                                                <td class="px-4 py-3">
-                                                    <div class="flex items-center gap-2">
-                                                        @if($customer->chat_ticket_user && $customer->chat_ticket_user->photo_src)
-                                                            <img src="{{ $customer->chat_ticket_user->photo_src }}"
-                                                                class="w-6 h-6 rounded-full">
-                                                        @endif
-                                                        <span>{{ $customer->chat_ticket_user->name ?? 'Unknown' }}</span>
-                                                    </div>
-                                                </td>
-                                                <td class="px-4 py-3 text-center">
-                                                    <button class="text-gray-400 hover:text-white transition-colors"
-                                                        title="View Details">
-                                                        <i class="bx bx-show text-lg"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="5" class="px-4 py-8 text-center text-gray-500">
-                                                    <i class="bx bx-user-x text-4xl mb-2"></i>
-                                                    <p>No customer data found.</p>
-                                                </td>
-                                            </tr>
-                                        @endforelse
+                                    <tbody id="customerTableBody" class="text-sm text-gray-300 divide-y divide-gray-800 bg-transparent">
+                                        <!-- Populated via AJAX -->
                                     </tbody>
                                 </table>
                             </div>
 
                             <!-- Pagination -->
-                            <div class="mt-4">
-                                {{ $customers->appends(['customer_page' => $customers->currentPage()])->links('pagination::bootstrap-5') }}
+                            <div class="mt-4 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
+                                <span id="customerTableInfo">Showing 0 to 0 of 0 entries</span>
+                                <div class="mt-2 md:mt-0" id="customerPaginationContainer">
+                                    <!-- Pagination buttons populated by JS -->
+                                </div>
                             </div>
                         </div>
 
@@ -1420,6 +1304,228 @@
                 toggleSidebarSearch();
             }
 
+            // -- Ticketing JS Fetch implementation --
+            let currentHistoryPage = 1;
+            let currentCustomerPage = 1;
+            let historyDebounceTimer;
+            let customerDebounceTimer;
+
+            document.addEventListener('DOMContentLoaded', () => {
+                loadHistoryData();
+                loadCustomerData();
+
+                // History Events
+                document.getElementById('historySearch')?.addEventListener('input', function() {
+                    clearTimeout(historyDebounceTimer);
+                    historyDebounceTimer = setTimeout(() => {
+                        currentHistoryPage = 1;
+                        loadHistoryData();
+                    }, 300);
+                });
+                document.getElementById('historyPerPage')?.addEventListener('change', function() {
+                    currentHistoryPage = 1;
+                    loadHistoryData();
+                });
+
+                // Customer Events
+                document.getElementById('customerSearch')?.addEventListener('input', function() {
+                    clearTimeout(customerDebounceTimer);
+                    customerDebounceTimer = setTimeout(() => {
+                        currentCustomerPage = 1;
+                        loadCustomerData();
+                    }, 300);
+                });
+                document.getElementById('customerPerPage')?.addEventListener('change', function() {
+                    currentCustomerPage = 1;
+                    loadCustomerData();
+                });
+            });
+
+            // --- History Ticketing ---
+            function loadHistoryData(page = 1) {
+                currentHistoryPage = page;
+                const search = document.getElementById('historySearch')?.value || '';
+                const perPage = document.getElementById('historyPerPage')?.value || 10;
+                const tbody = document.getElementById('historyTableBody');
+
+                if(!tbody) return;
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8"><i class="bx bx-loader-alt bx-spin text-3xl text-blue-500"></i><p class="mt-2 text-gray-400">Loading data...</p></td></tr>`;
+
+                const url = `{{ route('apps.ticketing.getTicketHistoryData') }}?page=${page}&search=${encodeURIComponent(search)}&per_page=${perPage}`;
+
+                fetch(url)
+                    .then(res => res.json())
+                    .then(data => {
+                        renderHistoryTable(data);
+                        renderHistoryPagination(data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching history:', error);
+                        tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-red-500"><i class="bx bx-error text-4xl mb-2"></i><p>Error loading data</p></td></tr>`;
+                    });
+            }
+
+            function renderHistoryTable(data) {
+                const tbody = document.getElementById('historyTableBody');
+                tbody.innerHTML = '';
+
+                if (!data.data || data.data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-8 text-center text-gray-500"><i class="bx bx-folder-open text-4xl mb-2"></i><p>No data available in table</p></td></tr>`;
+                    return;
+                }
+
+                data.data.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-gray-800/50 transition-colors even:bg-gray-800/20';
+
+                    const tno = item.ticket_number || '-';
+                    const cat = item.category || '-';
+                    const st = item.status ? item.status.toLowerCase() : 'closed';
+                    
+                    let statusColor = 'bg-gray-700 text-gray-300';
+                    if (st === 'open') statusColor = 'bg-blue-900/50 text-blue-300 border border-blue-800';
+                    if (st === 'closed') statusColor = 'bg-green-900/50 text-green-300 border border-green-800';
+                    if (st === 'pending') statusColor = 'bg-yellow-900/50 text-yellow-300 border border-yellow-800';
+
+                    const userName = item.chat_ticket_user && item.chat_ticket_user.name ? item.chat_ticket_user.name : 'Unknown';
+                    const photoSrc = item.chat_ticket_user && item.chat_ticket_user.photo_src ? item.chat_ticket_user.photo_src : '';
+                    let avatarHtml = '';
+                    if (photoSrc) {
+                        avatarHtml = `<img src="${photoSrc}" class="w-6 h-6 rounded-full">`;
+                    } else {
+                        avatarHtml = `<div class="w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center text-xs">${userName.charAt(0)}</div>`;
+                    }
+
+                    const dt = item.created_at ? new Date(item.created_at).toLocaleString('en-US') : '-';
+
+                    tr.innerHTML = `
+                        <td class="px-4 py-3 font-medium text-blue-400">${tno}</td>
+                        <td class="px-4 py-3">${cat}</td>
+                        <td class="px-4 py-3"><span class="px-2 py-1 rounded text-xs ${statusColor}">${item.status || 'N/A'}</span></td>
+                        <td class="px-4 py-3"><div class="flex items-center gap-2">${avatarHtml}<span>${userName}</span></div></td>
+                        <td class="px-4 py-3">${dt}</td>
+                        <td class="px-4 py-3 text-center"><a href="#" class="btn btn-sm bg-gray-700 hover:bg-gray-600 text-white rounded px-2 py-1"><i class="bx bx-show"></i></a></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            function renderHistoryPagination(data) {
+                const info = document.getElementById('historyTableInfo');
+                const container = document.getElementById('historyPaginationContainer');
+                
+                info.innerHTML = `Showing ${data.from || 0} to ${data.to || 0} of ${data.total || 0} entries`;
+                if (!data.last_page || data.last_page <= 1) {
+                    container.innerHTML = '';
+                    return;
+                }
+
+                let html = '<div class="flex gap-1">';
+                html += `<button onclick="loadHistoryData(${data.current_page - 1})" ${data.current_page === 1 ? 'disabled' : ''} class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg disabled:opacity-50 text-white">Prev</button>`;
+                
+                for (let i = 1; i <= data.last_page; i++) {
+                    if (i === 1 || i === data.last_page || (i >= data.current_page - 2 && i <= data.current_page + 2)) {
+                        if (i === data.current_page) {
+                            html += `<button class="px-3 py-1 bg-blue-600 text-white rounded-lg">${i}</button>`;
+                        } else {
+                            html += `<button onclick="loadHistoryData(${i})" class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg text-white">${i}</button>`;
+                        }
+                    } else if (i === data.current_page - 3 || i === data.current_page + 3) {
+                        html += `<span class="px-2 py-1 text-gray-500">...</span>`;
+                    }
+                }
+
+                html += `<button onclick="loadHistoryData(${data.current_page + 1})" ${data.current_page === data.last_page ? 'disabled' : ''} class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg disabled:opacity-50 text-white">Next</button></div>`;
+                container.innerHTML = html;
+            }
+
+            // --- Customer Ticketing ---
+            function loadCustomerData(page = 1) {
+                currentCustomerPage = page;
+                const search = document.getElementById('customerSearch')?.value || '';
+                const perPage = document.getElementById('customerPerPage')?.value || 10;
+                const tbody = document.getElementById('customerTableBody');
+
+                if(!tbody) return;
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8"><i class="bx bx-loader-alt bx-spin text-3xl text-blue-500"></i><p class="mt-2 text-gray-400">Loading data...</p></td></tr>`;
+
+                // Reusing standard endpoint ticketing.getCustomerData?
+                const url = `{{ route('apps.ticketing.getCustomerData') }}?page=${page}&search=${encodeURIComponent(search)}&per_page=${perPage}`;
+
+                fetch(url)
+                    .then(res => res.json())
+                    .then(data => {
+                        renderCustomerTable(data);
+                        renderCustomerPagination(data);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching customers:', error);
+                        tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-red-500"><i class="bx bx-error text-4xl mb-2"></i><p>Error loading data</p></td></tr>`;
+                    });
+            }
+
+            function renderCustomerTable(data) {
+                const tbody = document.getElementById('customerTableBody');
+                tbody.innerHTML = '';
+
+                if (!data.data || data.data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-gray-500"><i class="bx bx-user-x text-4xl mb-2"></i><p>No customer data found.</p></td></tr>`;
+                    return;
+                }
+
+                data.data.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-gray-800/50 transition-colors even:bg-gray-800/20';
+
+                    const channelName = item.channel && item.channel.name ? item.channel.name : '-';
+                    const channelLogo = item.channel && item.channel.logo ? `<img src="${item.channel.logo}" class="w-5 h-5 object-contain">` : '';
+                    const accountId = item.account_id || item.name || '-';
+                    
+                    const userName = item.chat_ticket_user && item.chat_ticket_user.name ? item.chat_ticket_user.name : 'Unknown';
+                    const photoSrc = item.chat_ticket_user && item.chat_ticket_user.photo_src ? item.chat_ticket_user.photo_src : '';
+                    let avatarHtml = '';
+                    if (photoSrc) avatarHtml = `<img src="${photoSrc}" class="w-6 h-6 rounded-full">`;
+
+                    tr.innerHTML = `
+                        <td class="px-4 py-3"><div class="flex items-center gap-2">${channelLogo}<span>${channelName}</span></div></td>
+                        <td class="px-4 py-3 font-medium text-white">${accountId}</td>
+                        <td class="px-4 py-3"><span class="px-2 py-1 rounded text-xs bg-green-900/50 text-green-300 border border-green-800">Active</span></td>
+                        <td class="px-4 py-3"><div class="flex items-center gap-2">${avatarHtml}<span>${userName}</span></div></td>
+                        <td class="px-4 py-3 text-center"><button class="text-gray-400 hover:text-white"><i class="bx bx-show text-lg"></i></button></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            function renderCustomerPagination(data) {
+                const info = document.getElementById('customerTableInfo');
+                const container = document.getElementById('customerPaginationContainer');
+                
+                info.innerHTML = `Showing ${data.from || 0} to ${data.to || 0} of ${data.total || 0} entries`;
+                if (!data.last_page || data.last_page <= 1) {
+                    container.innerHTML = '';
+                    return;
+                }
+
+                let html = '<div class="flex gap-1">';
+                html += `<button onclick="loadCustomerData(${data.current_page - 1})" ${data.current_page === 1 ? 'disabled' : ''} class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg disabled:opacity-50 text-white">Prev</button>`;
+                
+                for (let i = 1; i <= data.last_page; i++) {
+                    if (i === 1 || i === data.last_page || (i >= data.current_page - 2 && i <= data.current_page + 2)) {
+                        if (i === data.current_page) {
+                            html += `<button class="px-3 py-1 bg-blue-600 text-white rounded-lg">${i}</button>`;
+                        } else {
+                            html += `<button onclick="loadCustomerData(${i})" class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg text-white">${i}</button>`;
+                        }
+                    } else if (i === data.current_page - 3 || i === data.current_page + 3) {
+                        html += `<span class="px-2 py-1 text-gray-500">...</span>`;
+                    }
+                }
+
+                html += `<button onclick="loadCustomerData(${data.current_page + 1})" ${data.current_page === data.last_page ? 'disabled' : ''} class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg disabled:opacity-50 text-white">Next</button></div>`;
+                container.innerHTML = html;
+            }
+
             function escapeHtml(text) {
                 return text
                     .replace(/&/g, "&amp;")
@@ -1427,6 +1533,69 @@
                     .replace(/>/g, "&gt;")
                     .replace(/"/g, "&quot;")
                     .replace(/'/g, "&#039;");
+            }
+
+            // ---- AJAX Save Ticket ----
+            function saveTicketAjax() {
+                const btn = document.getElementById('btnSaveTicket');
+                const originalHtml = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = '<i class="bx bx-loader-alt bx-spin mr-2"></i> Saving...';
+
+                const form = document.getElementById('form-ticketing');
+                const formData = new FormData(form);
+
+                // Add fields that have IDs but no names
+                formData.set('customer_name', document.getElementById('customer_name')?.value || '');
+                formData.set('customer_email', document.getElementById('customer_email')?.value || '');
+                formData.set('customer_phone', document.getElementById('customer_phone')?.value || '');
+                formData.set('order_id', document.getElementById('inputOrderId')?.value || '');
+
+                fetch(`{{ route('apps.ticketing.store') }}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                    if (data.success) {
+                        // Show success notification
+                        showTicketToast(data.message || 'Ticket berhasil disimpan!', 'success');
+                        form.reset();
+                        // Reload history table if visible
+                        if (typeof loadHistoryData === 'function') loadHistoryData();
+                    } else {
+                        showTicketToast(data.message || 'Gagal menyimpan ticket.', 'error');
+                    }
+                })
+                .catch(err => {
+                    console.error('Save ticket error:', err);
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                    showTicketToast('Terjadi error saat menyimpan ticket.', 'error');
+                });
+            }
+
+            function showTicketToast(message, type = 'success') {
+                const toast = document.createElement('div');
+                const colors = type === 'success' 
+                    ? 'border-green-500/50 text-green-400' 
+                    : 'border-red-500/50 text-red-400';
+                const icon = type === 'success' ? 'bx-check-circle' : 'bx-error-circle';
+                toast.className = `fixed top-6 right-6 bg-gray-900 border ${colors} shadow-2xl rounded-xl flex items-center p-4 z-[9999] transition-all duration-300 transform translate-x-full`;
+                toast.innerHTML = `<i class='bx ${icon} text-2xl mr-3'></i><span class="font-semibold text-sm">${message}</span>`;
+                document.body.appendChild(toast);
+                requestAnimationFrame(() => { toast.style.transform = 'translateX(0)'; });
+                setTimeout(() => {
+                    toast.style.transform = 'translateX(120%)';
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
             }
         </script>
     </x-slot>

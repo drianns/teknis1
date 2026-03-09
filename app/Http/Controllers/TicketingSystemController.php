@@ -57,7 +57,59 @@ class TicketingSystemController extends Controller
 
         $group_routes = [];
 
-        // Fetch Ticket History with Filter & Pagination
+        return view('pages.apps.ticketing-system.index', compact(
+            'company',
+            'channels',
+            'channel_pages',
+            'channel_accounts',
+            'chat_ticket_statuses',
+            'chat_ticket_categories',
+            'chat_ticket_priorities',
+            'group_routes',
+            'sub_categories',
+            'types',
+            'brands',
+            'brand_categories',
+            'groups',
+            'fulfillments',
+            'sources',
+            'activities',
+            'escalation_units'
+        ));
+    }
+
+    /**
+     * Store a new ticket via AJAX POST.
+     */
+    public function store(Request $request)
+    {
+        $companyId = 1;
+
+        $ticket = ChatHeaderTicket::create([
+            'company_id'         => $companyId,
+            'chat_ticket_user_id'=> $request->input('chat_ticket_user_id', 1),
+            'ticket_number'      => 'TKT-' . strtoupper(uniqid()),
+            'subject'            => $request->input('subject', '-'),
+            'category'           => $request->input('category'),
+            'subcategory'        => $request->input('subcategory'),
+            'question'           => $request->input('customer_question', ''),
+            'answer'             => $request->input('agent_response', ''),
+            'source_type'        => $request->input('channel', 'call'),
+            'status'             => $request->input('ticket_status', 'open'),
+            'priority'           => $request->input('priority', 'normal'),
+            'need_escalated'     => $request->input('need_escalated', 0),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Ticket berhasil disimpan!',
+            'ticket'  => $ticket,
+        ]);
+    }
+
+    public function getTicketHistoryData(Request $request)
+    {
+        $companyId = 1;
         $perPage = $request->input('per_page', 10);
         $search = $request->input('search');
 
@@ -74,11 +126,13 @@ class TicketingSystemController extends Controller
             });
         }
 
-        $ticket_history = $query->orderBy('created_at', 'desc')
-            ->paginate($perPage, ['*'], 'history_page')
-            ->withQueryString();
+        $data = $query->orderBy('created_at', 'desc')->paginate($perPage);
+        return response()->json($data);
+    }
 
-        // Fetch Customer Data (ChannelUser) with Filter & Pagination (Tab 3)
+    public function getCustomerData(Request $request)
+    {
+        $companyId = 1;
         $perPageCustomer = $request->input('per_page_customer', 10);
         $searchCustomer = $request->input('search_customer');
 
@@ -93,30 +147,7 @@ class TicketingSystemController extends Controller
             });
         }
 
-        $customers = $customerQuery->orderBy('created_at', 'desc')
-            ->paginate($perPageCustomer, ['*'], 'customer_page')
-            ->withQueryString();
-
-        return view('pages.apps.ticketing-system.index', compact(
-            'company',
-            'channels',
-            'channel_pages',
-            'channel_accounts',
-            'chat_ticket_statuses',
-            'chat_ticket_categories',
-            'chat_ticket_priorities',
-            'group_routes',
-            'ticket_history',
-            'customers',
-            'sub_categories',
-            'types',
-            'brands',
-            'brand_categories',
-            'groups',
-            'fulfillments',
-            'sources',
-            'activities',
-            'escalation_units'
-        ));
+        $data = $customerQuery->orderBy('created_at', 'desc')->paginate($perPageCustomer);
+        return response()->json($data);
     }
 }

@@ -9,33 +9,48 @@ class DataMaxHandleController extends Controller
 {
     public function index()
     {
-        $items = DataMaxHandle::latest()->paginate(15);
-        return view('pages.master-data.data-max-handle.index', compact('items'));
+        return view('pages.master-data.data-max-handle.index');
+    }
+
+    public function getData(Request $request)
+    {
+        $query = DataMaxHandle::query();
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        $perPage = $request->get('per_page', 10);
+        $items = $query->latest()->paginate($perPage);
+
+        return response()->json($items);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name'   => 'required|string|max:255',
             'status' => 'required|in:Aktif,Non Aktif'
         ]);
         DataMaxHandle::create($request->only('name', 'status'));
-        return redirect()->back()->with('success', 'Data Max Handle created successfully.');
+        return response()->json(['success' => true, 'message' => 'Data Max Handle created successfully.']);
     }
 
-    public function update(Request $request, DataMaxHandle $record)
+    public function update(Request $request, $id)
     {
+        $record = DataMaxHandle::findOrFail($id);
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name'   => 'required|string|max:255',
             'status' => 'required|in:Aktif,Non Aktif'
         ]);
         $record->update($request->only('name', 'status'));
-        return redirect()->back()->with('success', 'Data Max Handle updated successfully.');
+        return response()->json(['success' => true, 'message' => 'Data Max Handle updated successfully.']);
     }
 
-    public function destroy(DataMaxHandle $record)
+    public function destroy($id)
     {
+        $record = DataMaxHandle::findOrFail($id);
         $record->delete();
-        return redirect()->back()->with('success', 'Data Max Handle deleted successfully.');
+        return response()->json(['success' => true, 'message' => 'Data Max Handle deleted successfully.']);
     }
 }

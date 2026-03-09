@@ -1,5 +1,5 @@
 import './bootstrap';
-import './sidebar';
+// sidebar logic is now inline in sidebar.blade.php for instant loading
 
 import Alpine from 'alpinejs';
 import collapse from '@alpinejs/collapse';

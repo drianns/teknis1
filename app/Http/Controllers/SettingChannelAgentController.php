@@ -8,25 +8,38 @@ use Illuminate\Http\Request;
 
 class SettingChannelAgentController extends Controller
 {
-    public function index(Request $request)
+    public function index()
+    {
+        $users = User::all();
+        return view('pages.setting-application.setting-channel-agent.index', compact('users'));
+    }
+
+    public function getData(Request $request)
     {
         $query = SettingChannelAgent::with('user');
 
-        if ($request->has('search') && $request->search != '') {
+        if ($request->search) {
             $search = $request->search;
-            $query->whereHas('user', function ($q) use ($search) {
-                $q->where('name', 'like', '%' . $search . '%');
-            })->orWhere('menu', 'like', '%' . $search . '%')
-                ->orWhere('sub_menu', 'like', '%' . $search . '%')
-                ->orWhere('detail_menu', 'like', '%' . $search . '%')
-                ->orWhere('url', 'like', '%' . $search . '%');
+            $query->where(function($q) use ($search) {
+                $q->whereHas('user', function ($sq) use ($search) {
+                    $sq->where('name', 'like', '%' . $search . '%');
+                })->orWhere('menu', 'like', '%' . $search . '%')
+                  ->orWhere('sub_menu', 'like', '%' . $search . '%')
+                  ->orWhere('detail_menu', 'like', '%' . $search . '%')
+                  ->orWhere('url', 'like', '%' . $search . '%');
+            });
         }
 
         $perPage = $request->input('per_page', 10);
-        $settingChannelAgents = $query->paginate($perPage);
-        $users = User::all();
+        $data = $query->paginate($perPage);
 
-        return view('pages.setting-application.setting-channel-agent.index', compact('settingChannelAgents', 'users'));
+        return response()->json($data);
+    }
+
+    public function show($id)
+    {
+        $settingChannelAgent = SettingChannelAgent::findOrFail($id);
+        return response()->json($settingChannelAgent);
     }
 
     public function store(Request $request)
@@ -42,7 +55,7 @@ class SettingChannelAgentController extends Controller
 
         SettingChannelAgent::create($request->all());
 
-        return redirect()->route('setting.channel.agent.index')->with('success', 'Setting Channel Agent created successfully.');
+        return response()->json(['success' => true, 'message' => 'Setting Channel Agent created successfully.']);
     }
 
     public function update(Request $request, $id)
@@ -59,7 +72,7 @@ class SettingChannelAgentController extends Controller
         $settingChannelAgent = SettingChannelAgent::findOrFail($id);
         $settingChannelAgent->update($request->all());
 
-        return redirect()->route('setting.channel.agent.index')->with('success', 'Setting Channel Agent updated successfully.');
+        return response()->json(['success' => true, 'message' => 'Setting Channel Agent updated successfully.']);
     }
 
     public function destroy($id)
@@ -67,6 +80,6 @@ class SettingChannelAgentController extends Controller
         $settingChannelAgent = SettingChannelAgent::findOrFail($id);
         $settingChannelAgent->delete();
 
-        return redirect()->route('setting.channel.agent.index')->with('success', 'Setting Channel Agent deleted successfully.');
+        return response()->json(['success' => true, 'message' => 'Setting Channel Agent deleted successfully.']);
     }
 }

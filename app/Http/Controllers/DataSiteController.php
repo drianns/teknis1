@@ -9,35 +9,54 @@ class DataSiteController extends Controller
 {
     public function index()
     {
-        $items = DataSite::latest()->paginate(15);
-        return view('pages.master-data.data-site.index', compact('items'));
+        return view('pages.master-data.data-site.index');
+    }
+
+    public function getData(Request $request)
+    {
+        $query = DataSite::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('location', 'like', '%' . $search . '%');
+            });
+        }
+
+        $perPage = $request->get('per_page', 10);
+        $items = $query->latest()->paginate($perPage);
+
+        return response()->json($items);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name'     => 'required|string|max:255',
             'location' => 'required|string|max:255',
-            'status' => 'required|in:Aktif,Non Aktif'
+            'status'   => 'required|in:Aktif,Non Aktif'
         ]);
         DataSite::create($request->only('name', 'location', 'status'));
-        return redirect()->back()->with('success', 'Data Site created successfully.');
+        return response()->json(['success' => true, 'message' => 'Data Site created successfully.']);
     }
 
-    public function update(Request $request, DataSite $record)
+    public function update(Request $request, $id)
     {
+        $record = DataSite::findOrFail($id);
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name'     => 'required|string|max:255',
             'location' => 'required|string|max:255',
-            'status' => 'required|in:Aktif,Non Aktif'
+            'status'   => 'required|in:Aktif,Non Aktif'
         ]);
         $record->update($request->only('name', 'location', 'status'));
-        return redirect()->back()->with('success', 'Data Site updated successfully.');
+        return response()->json(['success' => true, 'message' => 'Data Site updated successfully.']);
     }
 
-    public function destroy(DataSite $record)
+    public function destroy($id)
     {
+        $record = DataSite::findOrFail($id);
         $record->delete();
-        return redirect()->back()->with('success', 'Data Site deleted successfully.');
+        return response()->json(['success' => true, 'message' => 'Data Site deleted successfully.']);
     }
 }

@@ -1,6 +1,8 @@
 document.addEventListener('alpine:init', () => {
     Alpine.data('sidebar', () => ({
         expanded: false,
+        collapseTimer: null,
+        navigating: false,
         openMenus: {
             apps: false,
             masterCustomer: false,
@@ -13,7 +15,9 @@ document.addEventListener('alpine:init', () => {
             setupChannelCall: false,
             dataLogin: false,
             recording: false,
-            report: false
+            report: false,
+            setupManagementUser: false,
+            settingApplication: false
         },
 
         init() {
@@ -22,6 +26,29 @@ document.addEventListener('alpine:init', () => {
             this.$watch('expanded', (value) => {
                 if (value) this.autoExpandActiveMenu();
             });
+
+            // Prevent collapse when navigating via link click
+            this.$el.addEventListener('click', (e) => {
+                const link = e.target.closest('a[href]');
+                if (link && link.href && !link.href.endsWith('#')) {
+                    this.navigating = true;
+                    clearTimeout(this.collapseTimer);
+                }
+            });
+        },
+
+        expand() {
+            clearTimeout(this.collapseTimer);
+            this.expanded = true;
+        },
+
+        collapse() {
+            if (this.navigating) return;
+            this.collapseTimer = setTimeout(() => {
+                if (!this.navigating) {
+                    this.expanded = false;
+                }
+            }, 300);
         },
 
         autoExpandActiveMenu() {

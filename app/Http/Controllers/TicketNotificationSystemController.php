@@ -12,14 +12,10 @@ class TicketNotificationSystemController extends Controller
 {
     public function index()
     {
-        // 1. Fetch Global Settings
+        // Global settings are static/metadata-like, so we keep them in the initial load
         $settings = TicketNotificationSetting::all()->keyBy('name');
 
-        // 2. Fetch User Notifications
-        $notificationUsers = TicketNotificationUser::with(['user.company', 'user.userAgent'])->get();
-
-        // 3. Fetch Master User List for Dropdown (Include their UserAgent details)
-        // We will pass this JSON to the frontend for Alpine to auto-fill.
+        // Master users for dropdown
         $masterUsers = User::with('userAgent')
             ->select('id', 'name', 'email')
             ->get()
@@ -34,7 +30,24 @@ class TicketNotificationSystemController extends Controller
                 ];
             });
 
-        return view('pages.setting-application.ticket-notification-system.index', compact('settings', 'notificationUsers', 'masterUsers'));
+        return view('pages.setting-application.ticket-notification-system.index', compact('settings', 'masterUsers'));
+    }
+
+    public function getUserData(Request $request)
+    {
+        $query = TicketNotificationUser::with(['user.company', 'user.userAgent']);
+
+        if ($request->search) {
+            $search = $request->search;
+            $query->whereHas('user', function($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                  ->orWhere('email', 'like', "%$search%");
+            });
+        }
+
+        $notificationUsers = $query->paginate($request->per_page ?? 10);
+
+        return response()->json($notificationUsers);
     }
 
     public function storeUser(Request $request)

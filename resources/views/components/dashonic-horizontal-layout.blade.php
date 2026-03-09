@@ -29,7 +29,7 @@
 
         <!-- Main Content Area -->
         <div
-            class="flex-1 flex flex-col min-w-0 transition-all duration-300 ml-[60px] h-full overflow-y-auto custom-scrollbar">
+            class="flex-1 flex flex-col min-w-0 transition-all duration-300 ml-[110px] h-full overflow-y-auto custom-scrollbar">
             <!-- Header (Optional) -->
             @if($withHeader == '1' && false) {{-- Set to false because user wants to replace navbar with sidebar --}}
                 @include('layouts.navigation')

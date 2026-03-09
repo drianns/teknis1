@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ChatHeaderTicket;
+use App\Models\AgentAuxLog;
+use App\Models\LoginActivity;
 use Illuminate\Support\Facades\Response;
 
 class ReportController extends Controller
@@ -452,38 +454,34 @@ class ReportController extends Controller
 
     public function agentAux(Request $request)
     {
-        $raw = [];
+        $query = AgentAuxLog::query();
 
-        if ($request->filled('start_date') || $request->filled('end_date')) {
-            $raw = array_filter($raw, function ($r) use ($request) {
-                $date = substr($r['start'], 0, 10);
-                if ($request->filled('start_date') && $date < $request->start_date) return false;
-                if ($request->filled('end_date')   && $date > $request->end_date)   return false;
-                return true;
-            });
-            $raw = array_values($raw);
+        if ($request->filled('start_date')) {
+            $query->whereDate('start_time', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('start_time', '<=', $request->end_date);
         }
 
-        $auxData = collect($raw)->map(function ($r) {
-            $start = \Carbon\Carbon::parse($r['start']);
-            $end   = \Carbon\Carbon::parse($r['end']);
-            $diff  = $start->diff($end);
+        $query->orderByDesc('start_time');
+
+        $allLogs = (clone $query)->get();
+
+        $auxData = $allLogs->map(function ($r) {
+            $diff = $r->start_time->diff($r->end_time);
             return [
-                'username'    => $r['username'],
-                'description' => $r['description'],
-                'start_date'  => $start->format('Y-m-d H:i:s'),
-                'end_date'    => $end->format('Y-m-d H:i:s'),
+                'username'    => $r->username,
+                'description' => $r->description,
+                'start_date'  => $r->start_time->format('Y-m-d H:i:s'),
+                'end_date'    => $r->end_time->format('Y-m-d H:i:s'),
                 'interval'    => sprintf('%02d:%02d:%02d:000', $diff->h, $diff->i, $diff->s),
             ];
         })->toArray();
 
         $totalAux    = count($auxData);
-        $lunchCount  = collect($auxData)->where('description', 'Lunch')->count();
-        $totalAgents = collect($auxData)->pluck('username')->unique()->count();
-
-        $totalSeconds = collect($raw)->sum(function ($r) {
-            return \Carbon\Carbon::parse($r['start'])->diffInSeconds(\Carbon\Carbon::parse($r['end']));
-        });
+        $lunchCount  = $allLogs->whereIn('description', ['Lunch Break', 'Lunch'])->count();
+        $totalAgents = $allLogs->pluck('username')->unique()->count();
+        $totalSeconds = $allLogs->sum('duration_seconds');
         $avgSec      = $totalAux > 0 ? (int) ($totalSeconds / $totalAux) : 0;
         $avgDuration = sprintf('%02d:%02d', intdiv($avgSec, 60), $avgSec % 60);
 
@@ -507,30 +505,35 @@ class ReportController extends Controller
 
     public function channelEmail(Request $request)
     {
-        $raw = [];
+        $query = ChatHeaderTicket::with(['userAgent.user', 'chat_ticket_user'])
+            ->where('source_type', 'email');
 
-        if ($request->filled('start_date') || $request->filled('end_date')) {
-            $raw = array_values(array_filter($raw, function ($r) use ($request) {
-                $date = substr($r['received'], 0, 10);
-                if ($request->filled('start_date') && $date < $request->start_date) return false;
-                if ($request->filled('end_date')   && $date > $request->end_date)   return false;
-                return true;
-            }));
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
         }
 
-        $emailData = collect($raw)->map(function ($r) {
-            $mins = $r['response_minutes'];
-            $h    = intdiv($mins, 60);
-            $m    = $mins % 60;
+        $query->orderByDesc('created_at');
+
+        $allTickets = (clone $query)->get();
+
+        $emailData = $allTickets->map(function ($t) {
+            $agent = $t->userAgent->full_name ?? ($t->userAgent->user->name ?? 'Unassigned');
+            $from  = $t->chat_ticket_user->email ?? '-';
+            $mins  = $t->created_at ? (int) $t->created_at->diffInMinutes($t->updated_at ?? now()) : 0;
+            $h     = intdiv($mins, 60);
+            $m     = $mins % 60;
             return [
-                'ticket_number'    => $r['ticket_number'],
-                'subject'          => $r['subject'],
-                'from'             => $r['from'],
-                'agent'            => $r['agent'],
-                'status'           => $r['status'],
+                'ticket_number'    => $t->ticket_number,
+                'subject'          => $t->subject ?? '-',
+                'from'             => $from,
+                'agent'            => $agent,
+                'status'           => $t->status ?? '-',
                 'response_minutes' => $mins,
                 'response_time'    => $h > 0 ? sprintf('%dh %02dm', $h, $m) : sprintf('%dm', $m),
-                'received_at'      => \Carbon\Carbon::parse($r['received'])->format('d M Y H:i'),
+                'received_at'      => $t->created_at ? $t->created_at->format('d M Y H:i') : '-',
             ];
         })->toArray();
 
@@ -553,24 +556,26 @@ class ReportController extends Controller
 
     public function loginActivity(Request $request)
     {
-        $raw = [];
+        $query = LoginActivity::query();
 
-        if ($request->filled('start_date') || $request->filled('end_date')) {
-            $raw = array_values(array_filter($raw, function ($r) use ($request) {
-                $date = substr($r['date'], 0, 10);
-                if ($request->filled('start_date') && $date < $request->start_date) return false;
-                if ($request->filled('end_date')   && $date > $request->end_date)   return false;
-                return true;
-            }));
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
         }
 
-        $loginData = collect($raw)->map(function ($r) {
+        $query->orderByDesc('created_at');
+
+        $allLogs = (clone $query)->get();
+
+        $loginData = $allLogs->map(function ($r) {
             return [
-                'id'          => $r['id'],
-                'agent'       => $r['agent'],
-                'description' => $r['description'],
-                'date'        => \Carbon\Carbon::parse($r['date'])->format('M j Y g:iA'),
-                'date_raw'    => $r['date'],
+                'id'          => $r->id,
+                'agent'       => $r->agent,
+                'description' => $r->description,
+                'date'        => $r->created_at->format('M j Y g:iA'),
+                'date_raw'    => $r->created_at->toDateTimeString(),
             ];
         })->toArray();
 

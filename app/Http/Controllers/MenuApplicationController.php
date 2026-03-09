@@ -10,12 +10,20 @@ class MenuApplicationController extends Controller
     /**
      * Display listing
      */
-    public function index(Request $request)
+    public function index()
+    {
+        return view('pages.setting-application.menu-application.index');
+    }
+
+    /**
+     * Get data for AJAX table
+     */
+    public function getData(Request $request)
     {
         $query = MenuApplication::query();
 
         // Search
-        if ($request->has('search') && $request->search != '') {
+        if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('menu_name', 'like', "%{$search}%")
@@ -28,7 +36,7 @@ class MenuApplicationController extends Controller
         $perPage = $request->get('per_page', 10);
         $menus = $query->orderBy('number', 'asc')->paginate($perPage);
 
-        return view('pages.setting-application.menu-application.index', compact('menus'));
+        return response()->json($menus);
     }
 
     /**

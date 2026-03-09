@@ -58,97 +58,24 @@
                     <table class="data-table w-full text-left border-collapse table-fixed">
                         <thead class="bg-gray-900/50">
                             <tr>
-                                <th
-                                    class="sticky top-0 z-10 bg-gray-900 px-3 py-3 w-16 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
-                                    ID <i class='bx bx-sort text-gray-600 ml-1'></i></th>
-                                <th
-                                    class="sticky top-0 z-10 bg-gray-900 px-3 py-3 w-40 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
-                                    Menu <i class='bx bx-sort text-gray-600 ml-1'></i></th>
-                                <th
-                                    class="sticky top-0 z-10 bg-gray-900 px-3 py-3 w-56 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
-                                    Sub Menu Name <i class='bx bx-sort text-gray-600 ml-1'></i></th>
-                                <th
-                                    class="sticky top-0 z-10 bg-gray-900 px-3 py-3 w-56 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
-                                    Url <i class='bx bx-sort text-gray-600 ml-1'></i></th>
-                                <th
-                                    class="sticky top-0 z-10 bg-gray-900 px-3 py-3 w-24 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
-                                    Detail Page <i class='bx bx-sort text-gray-600 ml-1'></i></th>
-                                <th
-                                    class="sticky top-0 z-10 bg-gray-900 px-3 py-3 w-20 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap text-center">
-                                    Action</th>
+                                <th class="sticky top-0 z-10 bg-gray-900 px-3 py-3 w-16 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">ID</th>
+                                <th class="sticky top-0 z-10 bg-gray-900 px-3 py-3 w-40 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">Menu</th>
+                                <th class="sticky top-0 z-10 bg-gray-900 px-3 py-3 w-56 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">Sub Menu Name</th>
+                                <th class="sticky top-0 z-10 bg-gray-900 px-3 py-3 w-56 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">Url</th>
+                                <th class="sticky top-0 z-10 bg-gray-900 px-3 py-3 w-24 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">Detail Page</th>
+                                <th class="sticky top-0 z-10 bg-gray-900 px-3 py-3 w-20 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap text-center">Action</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-700/50 text-sm text-gray-300">
-                            @forelse($subMenus as $subMenu)
-                                <tr class="hover:bg-blue-500/[0.03] transition-colors group/row">
-                                    <td class="px-3 py-3 whitespace-nowrap font-mono text-gray-300 font-medium">
-                                        {{ $subMenu->id }}
-                                    </td>
-                                    <td class="px-3 py-3 whitespace-nowrap font-medium text-white">{{ $subMenu->menu_name }}
-                                    </td>
-                                    <td class="px-3 py-3 whitespace-nowrap text-gray-400">{{ $subMenu->sub_menu_name }}</td>
-                                    <td class="px-3 py-3 whitespace-nowrap text-gray-400 truncate">{{ $subMenu->url }}</td>
-                                    <td class="px-3 py-3 whitespace-nowrap font-medium">
-                                        @if ($subMenu->type == 'Yes')
-                                            <span class="bg-teal-500 text-white px-3 py-1 rounded-full text-xs shadow-sm">Yes</span>
-                                        @else
-                                            <span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs shadow-sm">No</span>
-                                        @endif
-                                    </td>
-                                    <td class="px-3 py-3 whitespace-nowrap text-center">
-                                        <div class="action-dropdown relative flex justify-center"
-                                            x-data="{ dropdownOpen: false }">
-                                            <button @click.stop="dropdownOpen = !dropdownOpen"
-                                                class="w-8 h-8 rounded-lg hover:bg-gray-800 flex items-center justify-center transition-all text-blue-400">
-                                                <i class='bx bx-dots-vertical-rounded text-xl'></i>
-                                            </button>
-
-                                            <div x-show="dropdownOpen" @click.outside="dropdownOpen = false"
-                                                x-transition:enter="transition ease-out duration-100"
-                                                x-transition:enter-start="opacity-0 scale-95"
-                                                x-transition:enter-end="opacity-100 scale-100"
-                                                x-transition:leave="transition ease-in duration-75"
-                                                x-transition:leave-start="opacity-100 scale-100"
-                                                x-transition:leave-end="opacity-0 scale-95"
-                                                class="absolute right-0 top-full mt-2 w-32 bg-gray-800 border border-gray-700 rounded-xl shadow-xl z-20 overflow-hidden text-left"
-                                                style="display: none;">
-                                                <button
-                                                    class="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-700/50 hover:text-white flex items-center gap-3 transition-colors border-b border-gray-700/50"
-                                                    @click="editSubMenu({{ $subMenu->id }}); dropdownOpen = false">
-                                                    <i class='bx bx-edit-alt text-blue-400 text-lg'></i> <span
-                                                        class="font-medium">Edit</span>
-                                                </button>
-                                                <button
-                                                    class="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-red-500/10 hover:text-red-400 flex items-center gap-3 transition-colors"
-                                                    @click="deleteSubMenu({{ $subMenu->id }}); dropdownOpen = false">
-                                                    <i class='bx bx-trash text-red-500 text-lg'></i> <span
-                                                        class="font-medium">Delete</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="p-8 text-center text-gray-500 text-sm bg-gray-900 border-none">
-                                        No sub menus found.</td>
-                                </tr>
-                            @endforelse
+                        <tbody id="table-body" class="divide-y divide-gray-700/50 text-sm text-gray-300">
+                            <tr><td colspan="6" class="p-12 text-center text-gray-500">Loading data...</td></tr>
                         </tbody>
                     </table>
                 </div>
 
                 <!-- Pagination -->
-                <div
-                    class="table-pagination px-6 py-4 border-t border-gray-700/50 flex flex-wrap justify-between items-center gap-4 bg-gray-800/30">
-                    <div class="pagination-info text-sm text-gray-500">
-                        Showing <span class="text-white font-bold">{{ $subMenus->firstItem() ?? 0 }}</span> to <span
-                            class="text-white font-bold">{{ $subMenus->lastItem() ?? 0 }}</span> of <span
-                            class="text-white font-bold">{{ $subMenus->total() }}</span> entries
-                    </div>
-                    <div>
-                        {{ $subMenus->appends(request()->query())->links('components.pagination') }}
-                    </div>
+                <div class="table-pagination px-6 py-4 border-t border-gray-700/50 flex flex-wrap justify-between items-center gap-4 bg-gray-800/30">
+                    <div id="pagination-info" class="pagination-info text-sm text-gray-500"></div>
+                    <div id="pagination-links"></div>
                 </div>
             </div>
         </div>
@@ -321,6 +248,8 @@
         </div>
     </div>
 
+    @include('pages.setup-channel-email.partials._scrollbar')
+
     <style>
         /* Custom Scrollbar for overflow handling */
         .custom-scrollbar::-webkit-scrollbar {
@@ -340,79 +269,99 @@
         .custom-scrollbar::-webkit-scrollbar-corner {
             background: transparent;
         }
-
-        /* Spinner & Toast */
-        @keyframes spin-slow {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .spinner-ring {
-            animation: spin-slow 1s linear infinite;
-        }
-
-        @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideOutRight {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-        }
-
-        .toast-enter {
-            animation: slideInRight 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-        }
-
-        .toast-exit {
-            animation: slideOutRight 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important;
-        }
     </style>
 
     <script>
+        const AJAX_URL = '{{ route("sub.menu.application.getData") }}';
         const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+        let currentPage = 1, searchTimer = null;
 
-        // Search timeout config
-        let searchTimeout;
+        function loadTable(page = 1) {
+            currentPage = page;
+            const search = document.getElementById('table-search').value;
+            const perPage = document.getElementById('entries-per-page').value;
 
-        function debounceSearch(query) {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                searchTable(query);
-            }, 500);
+            fetch(`${AJAX_URL}?page=${page}&search=${encodeURIComponent(search)}&per_page=${perPage}`, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(res => res.json())
+            .then(data => {
+                renderTable(data.data);
+                renderPagination(data);
+            })
+            .catch(err => {
+                console.error('Load error:', err);
+                document.getElementById('table-body').innerHTML = '<tr><td colspan="6" class="p-12 text-center text-red-500">Failed to load data.</td></tr>';
+            });
         }
 
-        function changeEntriesPerPage(value) {
-            const url = new URL(window.location);
-            url.searchParams.set('per_page', value);
-            window.location = url;
+        function renderTable(items) {
+            const tbody = document.getElementById('table-body');
+            if (!items || items.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="p-12 text-center text-gray-500">No sub menus found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = items.map(item => `
+                <tr class="hover:bg-blue-500/[0.03] transition-colors group/row">
+                    <td class="px-3 py-3 whitespace-nowrap font-mono text-gray-300 font-medium">${item.id}</td>
+                    <td class="px-3 py-3 whitespace-nowrap font-medium text-white">${esc(item.menu_name)}</td>
+                    <td class="px-3 py-3 whitespace-nowrap text-gray-400">${esc(item.sub_menu_name)}</td>
+                    <td class="px-3 py-3 whitespace-nowrap text-gray-400 truncate">${esc(item.url)}</td>
+                    <td class="px-3 py-3 whitespace-nowrap">
+                        <span class="${item.type === 'Yes' ? 'bg-teal-500' : 'bg-red-500'} text-white px-3 py-1 rounded-full text-xs shadow-sm">
+                            ${item.type}
+                        </span>
+                    </td>
+                    <td class="px-3 py-3 whitespace-nowrap text-center">
+                        <div class="action-dropdown relative flex justify-center" x-data="{ dropdownOpen: false }">
+                            <button @click.stop="dropdownOpen = !dropdownOpen" class="w-8 h-8 rounded-lg hover:bg-gray-800 flex items-center justify-center transition-all text-blue-400">
+                                <i class='bx bx-dots-vertical-rounded text-xl'></i>
+                            </button>
+                            <div x-show="dropdownOpen" @click.outside="dropdownOpen = false" x-transition class="absolute right-0 top-full mt-2 w-32 bg-gray-800 border border-gray-700 rounded-xl shadow-xl z-20 overflow-hidden text-left" style="display: none;">
+                                <button class="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-700/50 hover:text-white flex items-center gap-3 transition-colors border-b border-gray-700/50" onclick="editSubMenu(${item.id})">
+                                    <i class='bx bx-edit-alt text-blue-400 text-lg'></i> Edit
+                                </button>
+                                <button class="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-red-500/10 hover:text-red-400 flex items-center gap-3 transition-colors" onclick="deleteSubMenu(${item.id})">
+                                    <i class='bx bx-trash text-red-500 text-lg'></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
         }
 
-        function searchTable(query) {
-            const url = new URL(window.location);
-            url.searchParams.set('search', query);
-            url.searchParams.delete('page'); // reset to page 1 on search
-            window.location = url;
+        function renderPagination(data) {
+            document.getElementById('pagination-info').innerHTML = `Showing <span class="text-white font-bold">${data.from || 0}</span> to <span class="text-white font-bold">${data.to || 0}</span> of <span class="text-white font-bold">${data.total}</span> entries`;
+            const container = document.getElementById('pagination-links');
+            container.innerHTML = '';
+            
+            const createBtn = (label, page, disabled, active) => {
+                const btn = document.createElement('button');
+                btn.innerHTML = label;
+                btn.disabled = disabled;
+                btn.className = `px-3 py-1 rounded-lg text-xs font-bold transition-all ${active ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700 border border-gray-700'} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`;
+                if (!disabled) btn.onclick = () => loadTable(page);
+                return btn;
+            };
+
+            container.appendChild(createBtn('<i class="bx bx-chevron-left"></i>', data.current_page - 1, data.current_page <= 1, false));
+            for (let i = Math.max(1, data.current_page - 1); i <= Math.min(data.last_page, data.current_page + 1); i++) {
+                container.appendChild(createBtn(i, i, false, i === data.current_page));
+            }
+            container.appendChild(createBtn('<i class="bx bx-chevron-right"></i>', data.current_page + 1, data.current_page >= data.last_page, false));
+        }
+
+        function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+        function debounceSearch() {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => loadTable(1), 500);
+        }
+
+        function changeEntriesPerPage() {
+            loadTable(1);
         }
 
         // Global triggers
@@ -421,234 +370,105 @@
         }
 
         function editSubMenu(id) {
-            window.dispatchEvent(new CustomEvent('sub-menu-modal', {
-                detail: { subMenuId: id }
-            }));
+            window.dispatchEvent(new CustomEvent('sub-menu-modal', { detail: { subMenuId: id } }));
         }
 
         function deleteSubMenu(id) {
-            if (!confirm('Are you sure you want to delete this sub menu? This action cannot be undone.')) {
-                return;
-            }
-
-            showLoading('Deleting sub menu record...');
-
+            if (!confirm('Are you sure?')) return;
+            showLoading('Deleting...');
             fetch(`/sub-menu-application/${id}`, {
                 method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json'
+                headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
+            })
+            .then(res => res.json())
+            .then(data => {
+                hideLoading();
+                if (data.success) {
+                    showToast(data.message);
+                    loadTable(currentPage);
+                } else {
+                    showToast(data.message, 'error');
                 }
             })
-                .then(res => res.json())
-                .then(data => {
-                    hideLoading();
-                    if (data.success) {
-                        showToast(data.message, 'success');
-                        setTimeout(() => location.reload(), 800);
-                    } else {
-                        showToast(data.message || 'Failed to delete sub menu', 'error');
-                    }
-                })
-                .catch(error => {
-                    hideLoading();
-                    console.error('Error:', error);
-                    showToast('Server error during deletion.', 'error');
-                });
+            .catch(() => { hideLoading(); showToast('Error deleting', 'error'); });
         }
 
         // Alpine JS Component Scope
         function subMenuModalData() {
             return {
-                open: false,
-                isEdit: false,
-                formData: {
-                    id: null,
-                    menuName: '',
-                    subMenuName: '',
-                    url: '',
-                    type: ''
-                },
-
+                open: false, isEdit: false,
+                formData: { id: null, menuName: '', subMenuName: '', url: '', type: '' },
                 resetForm() {
                     this.isEdit = false;
-                    this.formData = {
-                        id: null,
-                        menuName: '',
-                        subMenuName: '',
-                        url: '',
-                        type: ''
-                    };
+                    this.formData = { id: null, menuName: '', subMenuName: '', url: '', type: '' };
                 },
-
                 loadSubMenuData(detail) {
                     if (detail && detail.subMenuId) {
                         this.isEdit = true;
                         showLoading('Loading details...');
-
-                        fetch(`/sub-menu-application/${detail.subMenuId}`, {
-                            headers: { 'Accept': 'application/json' }
-                        })
-                            .then(res => res.json())
-                            .then(data => {
-                                hideLoading();
-                                this.formData = {
-                                    id: data.id,
-                                    menuName: data.menu_name,
-                                    subMenuName: data.sub_menu_name,
-                                    url: data.url || '',
-                                    type: data.type
-                                };
-                            })
-                            .catch(error => {
-                                hideLoading();
-                                console.error('Error loading data:', error);
-                                showToast('Failed to load sub menu data', 'error');
-                                this.open = false;
-                            });
-                    } else {
-                        this.resetForm();
-                    }
-                },
-
-                saveSubMenu() {
-                    // Validation
-                    if (!this.formData.menuName || !this.formData.subMenuName || !this.formData.type) {
-                        showToast('Please fill in all required fields.', 'error');
-                        return;
-                    }
-
-                    const endpointUrl = this.isEdit
-                        ? `/sub-menu-application/${this.formData.id}`
-                        : '/sub-menu-application/store';
-
-                    const method = this.isEdit ? 'PUT' : 'POST';
-
-                    showLoading(this.isEdit ? 'Updating sub menu...' : 'Saving new sub menu...');
-
-                    fetch(endpointUrl, {
-                        method: method,
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken,
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            menu_name: this.formData.menuName,
-                            sub_menu_name: this.formData.subMenuName,
-                            url: this.formData.url,
-                            type: this.formData.type
-                        })
-                    })
+                        fetch(`/sub-menu-application/${detail.subMenuId}`, { headers: { 'Accept': 'application/json' } })
                         .then(res => res.json())
                         .then(data => {
                             hideLoading();
-                            if (data.success) {
-                                showToast(this.isEdit ? 'Sub menu updated successfully' : 'Sub menu created successfully', 'success');
-                                this.open = false;
-                                setTimeout(() => location.reload(), 1000);
-                            } else {
-                                showToast(data.message || 'Failed to save sub menu', 'error');
-                            }
+                            this.formData = { id: data.id, menuName: data.menu_name, subMenuName: data.sub_menu_name, url: data.url || '', type: data.type };
                         })
-                        .catch(error => {
-                            hideLoading();
-                            console.error('Error:', error);
-                            showToast('Server error. Validation may have failed.', 'error');
-                        });
+                        .catch(() => { hideLoading(); showToast('Failed to load', 'error'); this.open = false; });
+                    } else { this.resetForm(); }
+                },
+                saveSubMenu() {
+                    if (!this.formData.menuName || !this.formData.subMenuName || !this.formData.type) {
+                        showToast('Fill required fields', 'error'); return;
+                    }
+                    const url = this.isEdit ? `/sub-menu-application/${this.formData.id}` : '/sub-menu-application/store';
+                    const method = this.isEdit ? 'PUT' : 'POST';
+                    showLoading('Saving...');
+                    fetch(url, {
+                        method: method,
+                        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
+                        body: JSON.stringify({ menu_name: this.formData.menuName, sub_menu_name: this.formData.subMenuName, url: this.formData.url, type: this.formData.type })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        hideLoading();
+                        if (data.success) {
+                            showToast(data.message);
+                            this.open = false;
+                            loadTable(this.isEdit ? currentPage : 1);
+                        } else { showToast(data.message, 'error'); }
+                    })
+                    .catch(() => { hideLoading(); showToast('Error saving', 'error'); });
                 }
             };
         }
 
-        /**
-         * Reusable UI Helpers
-         */
-        function showLoading(message = 'Processing request...') {
-            let overlay = document.getElementById('bantu-dagang-loader');
+        // UI Helpers
+        function showLoading(msg = 'Processing...') {
+            let overlay = document.getElementById('global-loader');
             if (!overlay) {
                 overlay = document.createElement('div');
-                overlay.id = 'bantu-dagang-loader';
-                overlay.className = 'fixed inset-0 bg-[#000000] bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-[200] transition-opacity duration-300';
-
-                overlay.innerHTML = `
-                                        <div class="bg-gray-900 border border-gray-800 rounded-2xl p-8 flex flex-col items-center shadow-2xl min-w-[300px] scale-95 opacity-0 transition-all duration-300" id="loader-box">
-                                            <div class="relative w-16 h-16 mb-4">
-                                                <div class="absolute inset-0 rounded-full border-[3px] border-gray-700"></div>
-                                                <div class="absolute inset-0 rounded-full border-[3px] border-blue-500 border-t-transparent spinner-ring"></div>
-                                            </div>
-                                            <h3 class="text-white font-bold text-lg mb-1">Please Wait</h3>
-                                            <p class="text-gray-400 text-sm dynamic-msg">${message}</p>
-                                        </div>
-                                    `;
+                overlay.id = 'global-loader';
+                overlay.className = 'fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[200] opacity-0 transition-opacity duration-300';
+                overlay.innerHTML = `<div class="bg-gray-900 p-8 rounded-2xl border border-gray-800 shadow-2xl flex flex-col items-center">
+                    <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <p class="text-white font-bold dynamic-msg">${msg}</p>
+                </div>`;
                 document.body.appendChild(overlay);
-            } else {
-                overlay.querySelector('.dynamic-msg').innerText = message;
-            }
-
-            setTimeout(() => {
-                const box = document.getElementById('loader-box');
-                if (box) {
-                    box.classList.remove('scale-95', 'opacity-0');
-                    box.classList.add('scale-100', 'opacity-100');
-                }
-            }, 10);
+                setTimeout(() => overlay.style.opacity = '1', 10);
+            } else { overlay.querySelector('.dynamic-msg').innerText = msg; }
         }
-
         function hideLoading() {
-            const overlay = document.getElementById('bantu-dagang-loader');
-            const box = document.getElementById('loader-box');
-
-            if (overlay && box) {
-                box.classList.remove('scale-100', 'opacity-100');
-                box.classList.add('scale-95', 'opacity-0');
-                overlay.classList.add('opacity-0');
-
-                setTimeout(() => {
-                    overlay.remove();
-                }, 300);
-            }
+            const el = document.getElementById('global-loader');
+            if (el) { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }
         }
-
-        function showToast(message, type = 'success') {
-            const toastId = 'toast-' + Date.now();
+        function showToast(msg, type = 'success') {
             const toast = document.createElement('div');
-            toast.id = toastId;
-
-            let iconClass = 'bx-check-circle';
-            let iconColor = 'text-green-500';
-            let bgLine = 'bg-green-500';
-
-            if (type === 'error') {
-                iconClass = 'bx-error-circle';
-                iconColor = 'text-red-500';
-                bgLine = 'bg-red-500';
-            }
-
-            toast.className = `fixed top-6 right-6 bg-gray-900 border border-gray-800 shadow-xl rounded-xl flex items-center overflow-hidden z-[300] min-w-[300px] toast-enter`;
-
-            toast.innerHTML = `
-                                    <div class="w-1.5 h-full self-stretch ${bgLine}"></div>
-                                    <div class="px-4 py-3 flex items-center w-full">
-                                        <i class='bx ${iconClass} ${iconColor} text-2xl mr-3'></i>
-                                        <div class="flex-1">
-                                            <p class="text-white text-sm font-semibold">${type === 'error' ? 'Error' : 'Success'}</p>
-                                            <p class="text-gray-400 text-[13px]">${message}</p>
-                                        </div>
-                                        <button onclick="document.getElementById('${toastId}').classList.add('toast-exit')" class="ml-4 text-gray-500 hover:text-white transition-colors">
-                                            <i class='bx bx-x text-xl'></i>
-                                        </button>
-                                    </div>
-                                `;
-
+            toast.className = `fixed top-6 right-6 px-6 py-3 rounded-xl border shadow-2xl z-[300] transition-all transform translate-x-full ${type === 'success' ? 'bg-gray-900 border-green-500/50 text-green-400' : 'bg-gray-900 border-red-500/50 text-red-500'}`;
+            toast.innerHTML = `<div class="flex items-center gap-3"><i class='bx ${type === 'success' ? 'bx-check-circle' : 'bx-error-circle'} text-xl'></i><span class="font-semibold text-sm">${msg}</span></div>`;
             document.body.appendChild(toast);
-
-            setTimeout(() => {
-                const el = document.getElementById(toastId);
-                if (el) {
-                    el.classList.add('toast-exit');
-                    setTimeout(() => el.remove(), 300);
-                }
-            }, 4000);
+            setTimeout(() => toast.style.transform = 'translateX(0)', 10);
+            setTimeout(() => { toast.style.transform = 'translateX(full)'; setTimeout(() => toast.remove(), 300); }, 3000);
         }
+
+        document.addEventListener('DOMContentLoaded', () => loadTable(1));
     </script>
 @endsection

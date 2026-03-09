@@ -99,62 +99,43 @@
                 <div class="col-span-1 lg:col-span-3 flex flex-col bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-xl h-full min-h-0 relative" x-data="{ userSearchQuery: '' }">
                     
                     <!-- Top Toolbar inside Right Panel -->
-                    <div class="p-4 border-b border-gray-800 flex justify-between items-center bg-gray-800/50">
+                    <div class="p-4 border-b border-gray-800 flex flex-wrap justify-between items-center bg-gray-800/50 gap-4">
                         <button onclick="openNotificationModal()"
                             class="px-4 py-2 flex items-center gap-2 bg-gray-800 border border-gray-700 hover:bg-gray-700 rounded-full text-white text-sm font-semibold shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/50">
                             <i class='bx bx-plus text-blue-400'></i> Add Email Address Notification
                         </button>
 
-                        <div class="relative w-64">
-                            <input type="text" x-model="userSearchQuery"
-                                class="bg-gray-800 border-gray-700 rounded-full pl-4 pr-10 py-1.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-full placeholder-gray-500 shadow-inner"
-                                placeholder="Email or User" />
-                            <i class='bx bx-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-500'></i>
+                        <div class="flex items-center gap-4">
+                            <select id="entries-per-page" onchange="loadUserGrid(1)"
+                                class="bg-gray-800 border border-gray-700 rounded-full px-3 py-1.5 text-sm text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500/50">
+                                <option value="12">12 per page</option>
+                                <option value="24">24 per page</option>
+                                <option value="48">48 per page</option>
+                            </select>
+                            <div class="relative w-64">
+                                <input type="text" id="user-grid-search"
+                                    class="bg-gray-800 border-gray-700 rounded-full pl-4 pr-10 py-1.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-full placeholder-gray-500 shadow-inner"
+                                    placeholder="Email or User" oninput="debounceSearch()" />
+                                <i class='bx bx-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-500'></i>
+                            </div>
                         </div>
                     </div>
 
                     <!-- User Cards Grid -->
                     <div class="flex-1 overflow-y-auto custom-scrollbar p-6">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
-                            @forelse($notificationUsers as $nu)
-                                @php
-                                    $user = $nu->user;
-                                    $level = $user->userAgent ? $user->userAgent->user_type : 'Undefined';
-                                    $dept = $user->company ? $user->company->name : 'N/A';
-                                @endphp
-                                <div class="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden shadow-sm hover:shadow-md hover:border-blue-500/50 transition-all flex flex-col items-center p-6 relative group cursor-pointer" 
-                                    onclick="editNotificationModal({{ json_encode($nu) }}, {{ json_encode($user) }})"
-                                    x-show="userSearchQuery === '' || '{{ strtolower($user->name) }}'.includes(userSearchQuery.toLowerCase()) || '{{ strtolower($user->email) }}'.includes(userSearchQuery.toLowerCase())">
-                                    <!-- Edit Overlay -->
-                                    <div class="absolute inset-0 bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px] z-10">
-                                        <div class="w-10 h-10 rounded-full bg-blue-500 shadow-lg text-white flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform duration-300">
-                                            <i class='bx bx-edit text-xl'></i>
-                                        </div>
-                                    </div>
-
-                                    <!-- Avatar -->
-                                    <div class="w-24 h-24 flex-shrink-0 rounded-full bg-[#A7A7DD] mb-4 flex items-center justify-center overflow-hidden border-4 border-gray-800 shadow-sm relative group-hover:border-blue-500/30 transition-colors">
-                                        <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=A7A7DD&color=fff&size=128" alt="{{ $user->name }}" class="w-full h-full object-cover">
-                                    </div>
-                                    
-                                    <!-- User Info -->
-                                    <h3 class="text-white font-semibold text-center text-sm mb-2 px-2 truncate w-full group-hover:text-blue-400 transition-colors">{{ $user->name }}</h3>
-                                    
-                                    <div class="bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] uppercase font-bold px-3 py-1 rounded-full mb-3 shadow-sm select-none">
-                                        {{ $dept }}
-                                    </div>
-                                    
-                                    <p class="text-gray-400 text-xs text-center truncate w-full px-2" title="{{ $user->email }}">
-                                        {{ $user->email }}
-                                    </p>
-                                </div>
-                            @empty
-                                <div class="col-span-full flex flex-col items-center justify-center p-12 text-gray-500 bg-gray-800/50 rounded-2xl border border-gray-700/50 border-dashed">
-                                    <i class='bx bx-user-x text-5xl mb-3 opacity-50'></i>
-                                    <p>No email notification users found.</p>
-                                </div>
-                            @endforelse
+                        <div id="user-grid-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+                            <!-- Populated via AJAX -->
+                            <div class="col-span-full flex flex-col items-center justify-center p-20 text-gray-500">
+                                <div class="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                                <p>Loading notification users...</p>
+                            </div>
                         </div>
+                    </div>
+
+                    <!-- Grid Pagination -->
+                    <div class="px-6 py-4 border-t border-gray-800 bg-gray-800/30 flex justify-between items-center text-xs text-gray-400">
+                        <div id="grid-pagination-info"></div>
+                        <div id="grid-pagination-links" class="flex gap-2"></div>
                     </div>
                 </div>
             </div>
@@ -360,236 +341,214 @@
         .spinner-ring { animation: spin-slow 1s linear infinite; }
     </style>
 
+    @include('pages.setup-channel-email.partials._scrollbar')
+
     <script>
+        const AJAX_URL = '{{ route("ticket.notification.system.getData") }}';
         const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
         const masterUsers = @json($masterUsers);
+        let currentGridPage = 1, searchTimer = null;
+
+        function loadUserGrid(page = 1) {
+            currentGridPage = page;
+            const search = document.getElementById('user-grid-search').value;
+            const perPage = document.getElementById('entries-per-page').value;
+            const container = document.getElementById('user-grid-container');
+
+            fetch(`${AJAX_URL}?page=${page}&search=${encodeURIComponent(search)}&per_page=${perPage}`, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(res => res.json())
+            .then(data => {
+                renderUserGrid(data.data);
+                renderGridPagination(data);
+            })
+            .catch(err => {
+                console.error('Grid load error:', err);
+                container.innerHTML = '<div class="col-span-full p-20 text-center text-red-500">Failed to load notification users.</div>';
+            });
+        }
+
+        function renderUserGrid(items) {
+            const container = document.getElementById('user-grid-container');
+            if (!items || items.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full flex flex-col items-center justify-center p-20 text-gray-500 bg-gray-800/50 rounded-2xl border border-gray-700/50 border-dashed">
+                        <i class='bx bx-user-x text-5xl mb-3 opacity-50'></i>
+                        <p>No email notification users found.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = items.map(nu => {
+                const user = nu.user;
+                const dept = user.company ? user.company.name : 'N/A';
+                const escName = esc(user.name);
+                const escEmail = esc(user.email);
+                
+                return `
+                    <div class="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden shadow-sm hover:shadow-md hover:border-blue-500/50 transition-all flex flex-col items-center p-6 relative group cursor-pointer" 
+                        onclick='editNotificationModal(${JSON.stringify(nu)}, ${JSON.stringify(user)})'>
+                        <div class="absolute inset-0 bg-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px] z-10">
+                            <div class="w-10 h-10 rounded-full bg-blue-500 shadow-lg text-white flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform duration-300">
+                                <i class='bx bx-edit text-xl'></i>
+                            </div>
+                        </div>
+                        <div class="w-24 h-24 flex-shrink-0 rounded-full bg-[#A7A7DD] mb-4 flex items-center justify-center overflow-hidden border-4 border-gray-800 shadow-sm relative group-hover:border-blue-500/30 transition-colors">
+                            <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=A7A7DD&color=fff&size=128" alt="${escName}" class="w-full h-full object-cover">
+                        </div>
+                        <h3 class="text-white font-semibold text-center text-sm mb-2 px-2 truncate w-full group-hover:text-blue-400 transition-colors">${escName}</h3>
+                        <div class="bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] uppercase font-bold px-3 py-1 rounded-full mb-3 shadow-sm select-none">${esc(dept)}</div>
+                        <p class="text-gray-400 text-xs text-center truncate w-full px-2" title="${escEmail}">${escEmail}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderGridPagination(data) {
+            document.getElementById('grid-pagination-info').innerText = `Showing ${data.from || 0} to ${data.to || 0} of ${data.total} users`;
+            const container = document.getElementById('grid-pagination-links');
+            container.innerHTML = '';
+            
+            if (data.last_page <= 1) return;
+
+            const createBtn = (label, page, disabled, active) => {
+                const btn = document.createElement('button');
+                btn.innerHTML = label;
+                btn.disabled = disabled;
+                btn.className = `w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold transition-all ${active ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700 border border-gray-700'} ${disabled ? 'opacity-30 cursor-not-allowed' : ''}`;
+                if (!disabled) btn.onclick = () => loadUserGrid(page);
+                return btn;
+            };
+
+            container.appendChild(createBtn('<i class="bx bx-left-arrow-alt"></i>', data.current_page - 1, data.current_page <= 1, false));
+            for (let i = 1; i <= data.last_page; i++) {
+                if (i === 1 || i === data.last_page || (i >= data.current_page - 1 && i <= data.current_page + 1)) {
+                    container.appendChild(createBtn(i, i, false, i === data.current_page));
+                } else if (i === 2 || i === data.last_page - 1) {
+                    const span = document.createElement('span');
+                    span.innerText = '...';
+                    span.className = 'text-gray-600 self-end px-1';
+                    container.appendChild(span);
+                }
+            }
+            container.appendChild(createBtn('<i class="bx bx-right-arrow-alt"></i>', data.current_page + 1, data.current_page >= data.last_page, false));
+        }
+
+        function esc(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+        function debounceSearch() {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => loadUserGrid(1), 500);
+        }
 
         function toggleSetting(name, isActive) {
             fetch('/ticket-notification-system/setting', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: name,
-                    is_active: isActive
-                })
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
+                body: JSON.stringify({ name: name, is_active: isActive })
             }).then(res => res.json())
             .then(data => {
-                if(data.success) {
-                    showToast('Setting saved', 'success');
-                } else {
-                    showToast('Error saving setting', 'error');
-                }
-            }).catch(e => {
-                showToast('Server error', 'error');
-            });
+                if(data.success) showToast('Setting saved');
+                else showToast('Error saving setting', 'error');
+            }).catch(() => showToast('Server error', 'error'));
         }
 
-        function openNotificationModal() {
-            window.dispatchEvent(new CustomEvent('notification-modal'));
-        }
+        function openNotificationModal() { window.dispatchEvent(new CustomEvent('notification-modal')); }
 
         function editNotificationModal(nuObj, userObj) {
-            window.dispatchEvent(new CustomEvent('notification-modal', {
-                detail: { nuObj, userObj }
-            }));
+            window.dispatchEvent(new CustomEvent('notification-modal', { detail: { nuObj, userObj } }));
         }
 
         function notificationModalData() {
             return {
-                open: false,
-                allUsers: masterUsers,
-                userSearch: '',
-                selectedUserObj: null,
-                formData: {
-                    user_id: '',
-                    email: '',
-                    status: 'Yes',
-                    level: '',
-                    department: '',
-                    group_agent: '',
-                    is_ticket_create: false,
-                    is_ticket_over_sla: false,
-                    is_ticket_closed: false,
-                    is_ticket_escalation: false
-                },
-
+                open: false, allUsers: masterUsers, userSearch: '', selectedUserObj: null,
+                formData: { user_id: '', email: '', status: 'Yes', level: '', department: '', group_agent: '', is_ticket_create: false, is_ticket_over_sla: false, is_ticket_closed: false, is_ticket_escalation: false },
                 get filteredUsers() {
-                    if (this.userSearch === '') {
-                        return this.allUsers.slice(0, 50); // limit to avoid lag
-                    }
-                    return this.allUsers.filter(usr => 
-                        usr.name.toLowerCase().includes(this.userSearch.toLowerCase()) || 
-                        usr.email.toLowerCase().includes(this.userSearch.toLowerCase())
-                    ).slice(0, 50);
+                    const q = this.userSearch.toLowerCase();
+                    return q === '' ? this.allUsers.slice(0, 50) : this.allUsers.filter(u => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)).slice(0, 50);
                 },
-
                 selectUser(usr) {
                     this.selectedUserObj = usr;
                     if(usr) {
-                        this.formData.user_id = usr.id;
-                        this.formData.email = usr.email;
-                        this.formData.level = usr.level;
-                        this.formData.department = usr.department;
+                        this.formData.user_id = usr.id; this.formData.email = usr.email;
+                        this.formData.level = usr.level; this.formData.department = usr.department;
                         this.formData.group_agent = usr.group_agent;
                     } else {
-                        this.formData.user_id = '';
-                        this.formData.email = '';
-                        this.formData.level = '';
-                        this.formData.department = '';
-                        this.formData.group_agent = '';
+                        this.formData.user_id = ''; this.formData.email = '';
+                        this.formData.level = ''; this.formData.department = ''; this.formData.group_agent = '';
                     }
                 },
-
                 initData(detail) {
                     this.userSearch = '';
                     if (detail && detail.nuObj) {
                         const nu = detail.nuObj;
-                        const usrId = nu.user_id;
-                        const loadedUser = this.allUsers.find(u => u.id == usrId);
-                        
+                        const loadedUser = this.allUsers.find(u => u.id == nu.user_id);
                         this.selectUser(loadedUser);
-                        
                         this.formData.status = nu.status;
-                        this.formData.is_ticket_create = nu.is_ticket_create == 1;
-                        this.formData.is_ticket_over_sla = nu.is_ticket_over_sla == 1;
-                        this.formData.is_ticket_closed = nu.is_ticket_closed == 1;
-                        this.formData.is_ticket_escalation = nu.is_ticket_escalation == 1;
-
+                        this.formData.is_ticket_create = !!nu.is_ticket_create;
+                        this.formData.is_ticket_over_sla = !!nu.is_ticket_over_sla;
+                        this.formData.is_ticket_closed = !!nu.is_ticket_closed;
+                        this.formData.is_ticket_escalation = !!nu.is_ticket_escalation;
                     } else {
-                        this.selectedUserObj = null;
-                        this.selectUser(null);
+                        this.selectedUserObj = null; this.selectUser(null);
                         this.formData.status = 'Yes';
-                        this.formData.is_ticket_create = false;
-                        this.formData.is_ticket_over_sla = false;
-                        this.formData.is_ticket_closed = false;
-                        this.formData.is_ticket_escalation = false;
+                        this.formData.is_ticket_create = this.formData.is_ticket_over_sla = this.formData.is_ticket_closed = this.formData.is_ticket_escalation = false;
                     }
                 },
-
                 saveUserConf() {
-                    if (!this.formData.user_id) {
-                        showToast('Please select a User Name', 'error');
-                        return;
-                    }
-
-                    showLoading('Saving notification config...');
-
+                    if (!this.formData.user_id) { showToast('Please select a User Name', 'error'); return; }
+                    showLoading('Saving...');
                     fetch('/ticket-notification-system/user', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken,
-                            'Accept': 'application/json'
-                        },
+                        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
                         body: JSON.stringify({
-                            user_id: this.formData.user_id,
-                            status: this.formData.status,
-                            is_ticket_create: this.formData.is_ticket_create,
-                            is_ticket_over_sla: this.formData.is_ticket_over_sla,
-                            is_ticket_closed: this.formData.is_ticket_closed,
-                            is_ticket_escalation: this.formData.is_ticket_escalation
+                            user_id: this.formData.user_id, status: this.formData.status,
+                            is_ticket_create: this.formData.is_ticket_create, is_ticket_over_sla: this.formData.is_ticket_over_sla,
+                            is_ticket_closed: this.formData.is_ticket_closed, is_ticket_escalation: this.formData.is_ticket_escalation
                         })
                     }).then(res => res.json())
                     .then(data => {
                         hideLoading();
                         if (data.success) {
-                            showToast(data.message, 'success');
-                            this.open = false;
-                            setTimeout(() => location.reload(), 1000);
-                        } else {
-                            showToast(data.message || 'Validation error', 'error');
-                        }
-                    }).catch(e => {
-                        hideLoading();
-                        showToast('Server error', 'error');
-                    });
+                            showToast(data.message); this.open = false;
+                            loadUserGrid(currentGridPage);
+                        } else { showToast(data.message || 'Error', 'error'); }
+                    }).catch(() => { hideLoading(); showToast('Server error', 'error'); });
                 }
             }
         }
 
-        // --- Core UI Reusables --- //
-        function showLoading(message = 'Processing...') {
-            let overlay = document.getElementById('bantu-dagang-loader');
+        // UI Helpers
+        function showLoading(msg = 'Processing...') {
+            let overlay = document.getElementById('global-loader');
             if (!overlay) {
                 overlay = document.createElement('div');
-                overlay.id = 'bantu-dagang-loader';
-                overlay.className = 'fixed inset-0 bg-[#000000] bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-[500] transition-opacity duration-300';
-                overlay.innerHTML = `
-                    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-8 flex flex-col items-center shadow-2xl min-w-[300px] scale-95 opacity-0 transition-all duration-300" id="loader-box">
-                        <div class="relative w-16 h-16 mb-4">
-                            <div class="absolute inset-0 rounded-full border-[3px] border-gray-700"></div>
-                            <div class="absolute inset-0 rounded-full border-[3px] border-blue-500 border-t-transparent spinner-ring"></div>
-                        </div>
-                        <h3 class="text-white font-bold text-lg mb-1">Please Wait</h3>
-                        <p class="text-gray-400 text-sm dynamic-msg">${message}</p>
-                    </div>
-                `;
+                overlay.id = 'global-loader';
+                overlay.className = 'fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[500] opacity-0 transition-opacity duration-300';
+                overlay.innerHTML = `<div class="bg-gray-900 p-8 rounded-2xl border border-gray-800 shadow-2xl flex flex-col items-center">
+                    <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <p class="text-white font-bold dynamic-msg">${msg}</p>
+                </div>`;
                 document.body.appendChild(overlay);
-            } else {
-                overlay.querySelector('.dynamic-msg').innerText = message;
-            }
-            setTimeout(() => {
-                const box = document.getElementById('loader-box');
-                if (box) {
-                    box.classList.remove('scale-95', 'opacity-0');
-                    box.classList.add('scale-100', 'opacity-100');
-                }
-            }, 10);
+                setTimeout(() => overlay.style.opacity = '1', 10);
+            } else { overlay.querySelector('.dynamic-msg').innerText = msg; }
         }
-
         function hideLoading() {
-            const overlay = document.getElementById('bantu-dagang-loader');
-            const box = document.getElementById('loader-box');
-            if (overlay && box) {
-                box.classList.remove('scale-100', 'opacity-100');
-                box.classList.add('scale-95', 'opacity-0');
-                overlay.classList.add('opacity-0');
-                setTimeout(() => overlay.remove(), 300);
-            }
+            const el = document.getElementById('global-loader');
+            if (el) { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }
         }
-
-        function showToast(message, type = 'success') {
-            const toastId = 'toast-' + Date.now();
+        function showToast(msg, type = 'success') {
             const toast = document.createElement('div');
-            toast.id = toastId;
-
-            let iconClass = 'bx-check-circle';
-            let iconColor = 'text-green-500';
-            let bgLine = 'bg-green-500';
-
-            if (type === 'error') {
-                iconClass = 'bx-error-circle';
-                iconColor = 'text-red-500';
-                bgLine = 'bg-red-500';
-            }
-
-            toast.className = `fixed top-6 right-6 bg-gray-900 border border-gray-800 shadow-xl rounded-xl flex items-center overflow-hidden z-[600] min-w-[300px] toast-enter`;
-
-            toast.innerHTML = `
-                <div class="w-1.5 h-full self-stretch ${bgLine}"></div>
-                <div class="px-4 py-3 flex items-center w-full">
-                    <i class='bx ${iconClass} ${iconColor} text-2xl mr-3'></i>
-                    <div class="flex-1">
-                        <p class="text-white text-sm font-semibold">${type === 'error' ? 'Error' : 'Success'}</p>
-                        <p class="text-gray-400 text-[13px]">${message}</p>
-                    </div>
-                    <button onclick="document.getElementById('${toastId}').classList.add('toast-exit')" class="ml-4 text-gray-500 hover:text-white transition-colors">
-                        <i class='bx bx-x text-xl'></i>
-                    </button>
-                </div>
-            `;
+            toast.className = `fixed top-6 right-6 px-6 py-3 rounded-xl border shadow-2xl z-[600] transition-all transform translate-x-full ${type === 'success' ? 'bg-gray-900 border-green-500/50 text-green-400' : 'bg-gray-900 border-red-500/50 text-red-500'}`;
+            toast.innerHTML = `<div class="flex items-center gap-3"><i class='bx ${type === 'success' ? 'bx-check-circle' : 'bx-error-circle'} text-xl'></i><span class="font-semibold text-sm">${msg}</span></div>`;
             document.body.appendChild(toast);
-            setTimeout(() => {
-                const el = document.getElementById(toastId);
-                if (el) {
-                    el.classList.add('toast-exit');
-                    setTimeout(() => el.remove(), 300);
-                }
-            }, 4000);
+            setTimeout(() => toast.style.transform = 'translateX(0)', 10);
+            setTimeout(() => { toast.style.transform = 'translateX(full)'; setTimeout(() => toast.remove(), 300); }, 3000);
         }
+
+        document.addEventListener('DOMContentLoaded', () => loadUserGrid(1));
     </script>
 @endsection
+```

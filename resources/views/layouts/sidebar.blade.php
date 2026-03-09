@@ -1,625 +1,548 @@
 @php
     $isActive = fn($route) => request()->routeIs($route);
-    $activePath = request()->path();
+
+    $menuGroups = [
+        ['type' => 'link', 'route' => 'home', 'label' => 'Home', 'icon' => 'bx-home-alt'],
+        ['type' => 'link', 'route' => 'channel.email.inbox', 'label' => 'Messages', 'icon' => 'bx-message-square-detail'],
+        [
+            'type' => 'group', 'key' => 'apps', 'label' => 'Apps', 'icon' => 'bx-grid-alt',
+            'active' => request()->is('apps/*'),
+            'items' => [
+                ['route' => 'apps.ticketing-department', 'label' => 'Ticketing Department'],
+                ['route' => 'apps.taskboard', 'label' => 'Taskboard'],
+                ['route' => 'apps.thread-system', 'label' => 'Thread System'],
+                ['route' => 'apps.ticketing', 'label' => 'Ticketing'],
+                ['route' => 'apps.history-ticketing', 'label' => 'History Ticketing'],
+            ]
+        ],
+        [
+            'type' => 'group', 'key' => 'recording', 'label' => 'Recording', 'icon' => 'bx-microphone',
+            'active' => request()->is('recording*'),
+            'items' => [['route' => 'recording.index', 'label' => 'Voice Recording']]
+        ],
+        [
+            'type' => 'group', 'key' => 'report', 'label' => 'Report', 'icon' => 'bx-bar-chart-alt-2',
+            'active' => request()->is('report/*'),
+            'items' => [
+                ['route' => 'report.statistic-call', 'label' => 'Statistic Call'],
+                ['route' => 'report.assign-email', 'label' => 'Assign Email'],
+                ['route' => 'report.sl-nespresso', 'label' => 'SL Nespresso'],
+                ['route' => 'report.sl-kanmo', 'label' => 'SL Kanmo'],
+                ['route' => 'report.base-on-sla', 'label' => 'Base on SLA'],
+                ['route' => 'report.base-on-transaction', 'label' => 'Base on Transaction'],
+                ['route' => 'report.base-on-staff', 'label' => 'Base on Staff'],
+                ['route' => 'report.thread-transaction', 'label' => 'Thread Transaction'],
+                ['route' => 'report.interaction-ticket', 'label' => 'Interaction Ticket'],
+                ['route' => 'report.agent-aux', 'label' => 'Report AUX'],
+                ['route' => 'report.channel-email', 'label' => 'Channel Email'],
+            ]
+        ],
+        [
+            'type' => 'group', 'key' => 'masterCustomer', 'label' => 'Master Customer', 'icon' => 'bx-user',
+            'active' => request()->is('master-customer/*'),
+            'items' => [
+                ['route' => 'master-customer.data-table', 'label' => 'Data Table Customer'],
+                ['route' => 'master-customer.data-customer', 'label' => 'Data Customer'],
+            ]
+        ],
+        [
+            'type' => 'group', 'key' => 'channel', 'label' => 'Channel', 'icon' => 'bx-broadcast',
+            'active' => request()->is('channel/*'),
+            'items' => [
+                ['route' => 'channel.email.inbox', 'label' => 'Inbox Email'],
+                ['route' => 'channel.email.history', 'label' => 'History Email'],
+            ]
+        ],
+        [
+            'type' => 'group', 'key' => 'setupEmail', 'label' => 'Setup Channel Email', 'icon' => 'bx-cog',
+            'active' => request()->routeIs('dashboard.email', 'monitoring.email.response', 'setting.agent.email') || request()->is('setup-channel-email/*'),
+            'items' => [
+                ['route' => 'dashboard.email', 'label' => 'Dashboard Email'],
+                ['route' => 'monitoring.email.response', 'label' => 'Monitoring Response'],
+                ['route' => 'setting.agent.email', 'label' => 'Setting Agent Email'],
+                ['route' => 'setup-channel-email.setting-auto-reply', 'label' => 'Auto Reply Setting'],
+                ['route' => 'setup-channel-email.template-auto-reply', 'label' => 'Template Auto Reply'],
+                ['route' => 'setup-channel-email.template-response', 'label' => 'Template Response'],
+                ['route' => 'setup-channel-email.filter-jumlah-hari', 'label' => 'Filter Jumlah Hari'],
+                ['route' => 'setup-channel-email.jam-operasional', 'label' => 'Jam Operasional'],
+                ['route' => 'setup-channel-email.incoming-email', 'label' => 'Incoming Email'],
+                ['route' => 'setup-channel-email.setting-agent', 'label' => 'Setting Agent'],
+                ['route' => 'setup-channel-email.data-signature', 'label' => 'Data Signature'],
+                ['route' => 'setup-channel-email.account-corporate', 'label' => 'Account Corporate'],
+            ]
+        ],
+        [
+            'type' => 'group', 'key' => 'settingEmailSys', 'label' => 'Setting Email System', 'icon' => 'bx-envelope-open',
+            'active' => request()->is('setting-email-system/*'),
+            'items' => [
+                ['route' => 'setting-email-system.accounts', 'label' => 'Email Account'],
+                ['route' => 'setting-email-system.signature', 'label' => 'Email Signature'],
+                ['route' => 'setting-email-system.service', 'label' => 'Email Service'],
+                ['route' => 'setting-email-system.service-method', 'label' => 'Service Method'],
+                ['route' => 'setting-email-system.server-profile', 'label' => 'Server Profile'],
+                ['route' => 'setting-email-system.server-protocol', 'label' => 'Service Protocol'],
+                ['route' => 'setting-email-system.server-protocol-out', 'label' => 'Protocol Out'],
+            ]
+        ],
+        [
+            'type' => 'group', 'key' => 'epicSystem', 'label' => 'EPIC System', 'icon' => 'bx-chip',
+            'active' => request()->is('setting-epic-system/*'),
+            'items' => [['route' => 'setting-epic-system.configuration', 'label' => 'Configurasi EPIC']]
+        ],
+        [
+            'type' => 'group', 'key' => 'masterData', 'label' => 'Master Data', 'icon' => 'bx-data',
+            'active' => request()->is('data-*') || request()->is('channel-ticket*') || request()->is('department-escalation*'),
+            'items' => [
+                ['route' => 'data-group-name.index', 'label' => 'Group Name'],
+                ['route' => 'data-fulfillment-location.index', 'label' => 'Fulfillment Location'],
+                ['route' => 'data-type.index', 'label' => 'Data Type'],
+                ['route' => 'data-category.index', 'label' => 'Data Category'],
+                ['route' => 'data-meta.index', 'label' => 'Data Meta'],
+                ['route' => 'data-sub-category.index', 'label' => 'Sub Category'],
+                ['route' => 'channel-ticket.index', 'label' => 'Channel Ticket'],
+                ['route' => 'department-escalation-unit.index', 'label' => 'Department Unit'],
+                ['route' => 'data-source.index', 'label' => 'Data Source'],
+                ['route' => 'data-activity.index', 'label' => 'Data Activity'],
+                ['route' => 'data-aux-reason.index', 'label' => 'Aux Reason'],
+                ['route' => 'data-status-ticket.index', 'label' => 'Status Ticket'],
+                ['route' => 'data-group-agent.index', 'label' => 'Group Agent'],
+                ['route' => 'data-brand-category.index', 'label' => 'Brand Category'],
+                ['route' => 'data-fulfillment.index', 'label' => 'Data Fulfillment'],
+                ['route' => 'data-holiday.index', 'label' => 'Data Holiday'],
+                ['route' => 'data-brand-name.index', 'label' => 'Brand Name'],
+                ['route' => 'data-max-handle.index', 'label' => 'Max Handle'],
+                ['route' => 'data-site.index', 'label' => 'Data Site'],
+            ]
+        ],
+        [
+            'type' => 'group', 'key' => 'channelCall', 'label' => 'Setup Channel Call', 'icon' => 'bx-phone-call',
+            'active' => request()->routeIs('setting.agent.call'),
+            'items' => [['route' => 'setting.agent.call', 'label' => 'Setting Agent Call']]
+        ],
+        [
+            'type' => 'group', 'key' => 'dataLogin', 'label' => 'Data Login', 'icon' => 'bx-log-in-circle',
+            'active' => request()->routeIs('monitoring.login.*', 'report.login-activity'),
+            'items' => [
+                ['route' => 'monitoring.login.index', 'label' => 'Monitoring Login'],
+                ['route' => 'report.login-activity', 'label' => 'Login Activity'],
+            ]
+        ],
+        [
+            'type' => 'group', 'key' => 'mgmtUser', 'label' => 'Management User', 'icon' => 'bx-user-pin',
+            'active' => request()->routeIs('management-user.*'),
+            'items' => [
+                ['route' => 'management-user.data-access-application', 'label' => 'Data Access'],
+                ['route' => 'management-user.data-user-application', 'label' => 'Data User'],
+                ['route' => 'management-user.level-user-application', 'label' => 'Level User'],
+                ['route' => 'management-user.export.user.application', 'label' => 'Export User'],
+            ]
+        ],
+        [
+            'type' => 'group', 'key' => 'settingApp', 'label' => 'Setting Application', 'icon' => 'bx-wrench',
+            'active' => request()->routeIs('menu.application', 'sub.menu.application', 'detail.menu.application', 'ticket.notification.system', 'setting.channel.agent.index'),
+            'items' => [
+                ['route' => 'menu.application', 'label' => 'Menu Application'],
+                ['route' => 'sub.menu.application', 'label' => 'Sub Menu'],
+                ['route' => 'detail.menu.application', 'label' => 'Detail Menu'],
+                ['route' => 'ticket.notification.system', 'label' => 'Ticket Notification'],
+                ['route' => 'setting.channel.agent.index', 'label' => 'Channel Agent'],
+            ]
+        ],
+    ];
 @endphp
 
-<aside x-data="sidebar()" @mouseenter="expanded = true" @mouseleave="expanded = false"
-    class="fixed left-0 top-0 h-screen flex transition-all duration-300 z-50 bg-gray-900 border-r border-gray-800 rounded-r-[20px] overflow-visible group"
-    :class="expanded ? 'w-[280px] sm:w-[300px] shadow-2xl' : 'w-[60px] shadow-lg'" id="main-sidebar">
-    <!-- Left Icon Bar (Always Visible Strip) -->
-    <div
-        class="w-[60px] bg-gray-800/50 flex flex-col items-center py-6 gap-6 border-r border-gray-800 h-full flex-shrink-0 relative z-40">
-        <div class="text-blue-500 transition-transform hover:scale-110 mb-2 cursor-pointer" title="Kanmo Center">
-            <i class="bx bx-sparkles text-2xl"></i>
+<div class="fixed inset-y-0 left-0 z-40 w-20 bg-gray-900/60 backdrop-blur-xl border-r border-gray-800 transition-all duration-300 flex flex-col sidebar-mini" id="sidebar">
+    <!-- Logo Section -->
+    <div class="flex items-center justify-between h-16 px-6 border-b border-gray-800 justify-end">
+        <div class="flex items-center">
+            <span class="logo-long h-12 w-40 flex-shrink-0 mt-1 ml-2">
+                <!-- Fallback to plain text style if sidebar_logo helper is missing -->
+                <div class="flex items-center h-full w-full">
+                    <span class="text-white font-bold text-xl tracking-wide">KANMO</span><span class="text-blue-500 font-bold text-xl">CRM</span>
+                </div>
+            </span>
+            <span class="logo-short h-8 w-8 flex-shrink-0">
+                <div class="h-full w-full bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <i class="bx bx-repost text-white text-xl"></i>
+                </div>
+            </span>
         </div>
-        <a href="{{ route('home') }}" class="icon-nav-item {{ $isActive('home') ? 'text-blue-500' : 'text-gray-400' }}"
-            data-tooltip="Dashboard">
-            <i class="bx bx-home text-2xl"></i>
-        </a>
-        <a href="{{ route('channel.email.inbox') }}"
-            class="icon-nav-item {{ $isActive('channel.email.inbox') ? 'text-blue-500' : 'text-gray-400' }}"
-            data-tooltip="Messages">
-            <i class="bx bx-message-square-detail text-2xl"></i>
-        </a>
-        <a href="{{ route('apps.taskboard') }}"
-            class="icon-nav-item {{ request()->is('apps/*') ? 'text-blue-500' : 'text-gray-400' }}" data-tooltip="Apps">
-            <i class="bx bx-grid-alt text-2xl"></i>
-        </a>
-        <a href="{{ route('apps.thread-system') }}"
-            class="icon-nav-item {{ $isActive('apps.thread-system') ? 'text-blue-500' : 'text-gray-400' }}"
-            data-tooltip="Threads">
-            <i class="bx bx-clipboard text-2xl"></i>
-        </a>
-        <a href="{{ route('recording.index') }}"
-            class="icon-nav-item {{ request()->is('recording/*') ? 'text-blue-500' : 'text-gray-400' }}"
-            data-tooltip="Recording">
-            <i class="bx bx-microphone text-2xl"></i>
-        </a>
-        <a href="{{ route('report.statistic-call') }}"
-            class="icon-nav-item {{ request()->is('report/*') ? 'text-blue-500' : 'text-gray-400' }}"
-            data-tooltip="Report">
-            <i class="bx bx-bar-chart-alt-2 text-2xl"></i>
-        </a>
-        <a href="{{ route('master-customer.data-customer') }}"
-            class="icon-nav-item {{ request()->is('master-customer/*') ? 'text-blue-500' : 'text-gray-400' }}"
-            data-tooltip="Master Customer">
-            <i class="bx bx-user text-2xl"></i>
-        </a>
-        <a href="{{ route('dashboard.email') }}"
-            class="icon-nav-item {{ $isActive('dashboard.email') ? 'text-blue-500' : 'text-gray-400' }}"
-            data-tooltip="Setup Channel Email">
-            <i class="bx bx-cog text-2xl"></i>
-        </a>
+        <button type="button" class="text-gray-400 hover:text-blue-400 transition-colors toggle-button hidden">
+            <i class="fa fa-bars text-2xl"></i>
+        </button>
     </div>
 
-    <!-- Main Menu Content (Slide/Fade in on hover) -->
-    <div class="flex-1 flex flex-col transition-all duration-300 h-full overflow-hidden z-30"
-        :class="expanded ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10 pointer-events-none'">
-        <!-- Header -->
-        <div class="flex items-center gap-2 p-5 text-white font-semibold text-lg mb-2 whitespace-nowrap">
-            <i class="bx bx-sparkles text-blue-500"></i>
-            <span>Menu</span>
-        </div>
-
-        <!-- Navigation List -->
-        <nav class="flex-1 px-4 overflow-y-auto space-y-1 pb-6 sidebar-scroll custom-scrollbar">
-
-            <!-- Home -->
-            <a href="{{ route('home') }}"
-                class="menu-item group {{ $isActive('home') ? 'menu-item-active' : 'menu-item-default' }}">
-                <i class="bx bx-home text-lg"></i>
-                <span class="transition-opacity duration-200"
-                    :class="expanded ? 'opacity-100' : 'opacity-0'">Home</span>
-            </a>
-
-            <!-- Messages -->
-            <a href="{{ route('channel.email.inbox') }}"
-                class="menu-item group {{ $isActive('channel.email.inbox') ? 'menu-item-active' : 'menu-item-default' }}">
-                <i class="bx bx-message-square-detail text-lg"></i>
-                <span class="transition-opacity duration-200"
-                    :class="expanded ? 'opacity-100' : 'opacity-0'">Messages</span>
-                <span x-show="expanded"
-                    class="ml-auto inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-red-500 text-white rounded-full text-[11px] font-semibold">2</span>
-            </a>
-
-            <!-- Apps Dropdown -->
-            <div class="space-y-1">
-                <button @click.stop="toggle('apps')"
-                    class="menu-item w-full group {{ request()->is('apps/*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
-                    <i class="bx bx-grid-alt text-lg"></i>
-                    <span :class="expanded ? 'opacity-100' : 'opacity-0'">Apps</span>
-                    <i x-show="expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200"
-                        :class="openMenus.apps ? 'rotate-180' : ''"></i>
-                </button>
-                <ul x-show="openMenus.apps && expanded" x-collapse class="pl-8 space-y-1">
-                    @foreach([
-                            ['route' => 'apps.ticketing-department', 'label' => 'Ticketing Department'],
-                            ['route' => 'apps.taskboard', 'label' => 'Taskboard'],
-                            ['route' => 'apps.thread-system', 'label' => 'Thread System'],
-                            ['route' => 'apps.ticketing', 'label' => 'Ticketing'],
-                            ['route' => 'apps.history-ticketing', 'label' => 'History Ticketing']
-                        ] as $item)
-                                <li>
-                                    <a href="{{ route($item['route']) }}" class="submenu-item {{ $isActive($item['route']) ? 'submenu-active' : 'submenu-default' }}">
-                                        <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                                        <span class="truncate">{{ $item['label'] }}</span>
-                                    </a>
-                                </li>
-                    @endforeach
+    <!-- Navigation Menu -->
+    <div class="flex-1 overflow-y-auto min-h-0 py-4 custom-scrollbar">
+        <nav class="px-2">
+            <ul class="space-y-1">
+                @foreach($menuGroups as $group)
+                    @if($group['type'] === 'link')
+                        <li class="menu-section">
+                            <a href="{{ route($group['route']) }}"
+                                onclick="window.location.href='{{ route($group['route']) }}'; return false;"
+                                class="w-full flex items-center justify-between px-4 py-3 text-gray-300 hover:bg-gray-800 rounded-lg {{ $isActive($group['route']) ? 'bg-blue-600/90 text-white shadow-lg shadow-blue-600/20' : '' }}">
+                                <div class="flex items-center">
+                                    <i class='bx {{ $group['icon'] }} mr-3 text-xl'></i>
+                                    <span>{{ $group['label'] }}</span>
+                                </div>
+                            </a>
+                        </li>
+                    @else
+                        <!-- Customer Interaction Menu (Hover to open) -->
+                        <li class="menu-section relative">
+                            <button type="button" onclick="toggleSubmenu(this)"
+                                class="w-full flex items-center justify-between px-4 py-3 text-gray-300 hover:bg-gray-800/80 rounded-lg transition-all {{ ($group['active'] ?? false) ? 'bg-blue-600/90 text-white shadow-lg shadow-blue-600/20 active-btn' : '' }}">
+                                <div class="flex items-center pointer-events-none">
+                                    <i class='bx {{ $group['icon'] }} mr-3 text-xl'></i>
+                                    <span>{{ $group['label'] }}</span>
+                                </div>
+                                <i class="fas fa-chevron-down text-sm transition-transform pointer-events-none"></i>
+                            </button>
+                            <ul class="pl-12 mt-1 space-y-1 submenu-container {{ ($group['active'] ?? false) ? 'active-submenu' : '' }}">
+                                @foreach($group['items'] as $item)
+                                    <li>
+                                        <a href="{{ route($item['route']) }}"
+                                            onclick="window.location.href='{{ route($item['route']) }}'; return false;"
+                                            class="block px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800/80 rounded-lg transition-colors {{ $isActive($item['route']) ? 'text-blue-400 font-medium' : '' }}">
+                                            {{ $item['label'] }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </li>
+                    @endif
+                @endforeach
             </ul>
-            </div>
-
-            <!-- Recording Dropdown -->
-            <div class="space-y-1">
-                <button @click.stop="toggle('recording')"
-                    class="menu-item w-full group {{ request()->is('recording/*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
-                    <i class="bx bx-microphone text-lg"></i>
-                    <span :class="expanded ? 'opacity-100' : 'opacity-0'">Recording</span>
-                    <i x-show="expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200"
-                        :class="openMenus.recording ? 'rotate-180' : ''"></i>
-                </button>
-                <ul x-show="openMenus.recording && expanded" x-collapse class="pl-8 space-y-1">
-                    @foreach([
-                            ['route' => 'recording.index', 'label' => 'Voice Recording'],
-                        ] as $item)
-                        <li>
-                            <a href="{{ route($item['route']) }}" class="submenu-item {{ $isActive($item['route']) ? 'submenu-active' : 'submenu-default' }}">
-                                <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                                <span class="truncate">{{ $item['label'] }}</span>
-                            </a>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-
-            <!-- Report Dropdown -->
-            <div class="space-y-1">
-                <button @click.stop="toggle('report')"
-                    class="menu-item w-full group {{ request()->is('report/*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
-                    <i class="bx bx-bar-chart-alt-2 text-lg"></i>
-                    <span :class="expanded ? 'opacity-100' : 'opacity-0'">Report</span>
-                    <i x-show="expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200"
-                        :class="openMenus.report ? 'rotate-180' : ''"></i>
-                </button>
-                <ul x-show="openMenus.report && expanded" x-collapse class="pl-8 space-y-1">
-                    @foreach([
-                            ['route' => 'report.statistic-call', 'label' => 'Report Statistic Call'],
-                            ['route' => 'report.assign-email', 'label' => 'Report Assign Email'],
-                            ['route' => 'report.sl-nespresso', 'label' => 'Report SL Nespresso'],
-                            ['route' => 'report.sl-kanmo', 'label' => 'Report SL Kanmo'],
-                            ['route' => 'report.base-on-sla', 'label' => 'Report base on SLA'],
-                            ['route' => 'report.base-on-transaction', 'label' => 'Report base on Transaction'],
-                            ['route' => 'report.base-on-staff', 'label' => 'Report base on Staff'],
-                            ['route' => 'report.thread-transaction', 'label' => 'Report Thread Transaction'],
-                            ['route' => 'report.interaction-ticket', 'label' => 'Report Interaction Ticket'],
-                            ['route' => 'report.agent-aux', 'label' => 'Report AUX'],
-                            ['route' => 'report.channel-email', 'label' => 'Report Channel Email'],
-                        ] as $item)
-                        <li>
-                            <a href="{{ route($item['route']) }}" class="submenu-item {{ $isActive($item['route']) ? 'submenu-active' : 'submenu-default' }}">
-                                <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                                <span class="truncate">{{ $item['label'] }}</span>
-                            </a>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-
-            <!-- Master Customer Dropdown -->
-
-            <div class="space-y-1">
-                <button @click.stop="toggle('masterCustomer')" 
-                        class="menu-item w-full group {{ request()->is('master-customer/*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
-                    <i class="bx bx-user text-lg"></i>
-                    <span :class="expanded ? 'opacity-100' : 
-              '             opacity-0'">Master Customer</span>
-                    <i x-show=
-         "                      expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200" :class="openMenus.masterCustomer ? 'rotate-180' : ''"></i>
-                </button>
-                <ul x-show="openMenus.masterCustomer && expanded" x-collapse class="pl-8 space-y-1">
-                    @foreach([
-                            ['route' => 'master-customer.data-table', 'label' => 'Data Table Customer'],
-                            ['route' => 'master-customer.data-customer', 'label' => 'Data Customer']
-                        ] as $item)
-                                <li>
-                                    <a href="{{ route($item['route']) }}" @click.stop="" class="submenu-item {{ $isActive($item['route']) ? 'submenu-active' : 'submenu-default' }}">
-                                        <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                                        <span>{{ $item['label'] }}</span>
-                                    </a>
-                                </li>
-                    @endforeach
-                </ul>
-
-                                   </div>
-
-            <!-- Channel Dropdown -->
-            <div class="space-y-1">
-                <button @click.stop="toggle('channel')"
-                    class="menu-item w-full group {{ request()->is('channel/*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
-                    <i class="bx bx-broadcast text-lg"></i>
-                    <span :class="expanded ? 'opacity-100' : 'opacity-0'">Channel</span>
-                    <i x-show="expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200"
-                        :class="openMenus.channel ? 'rotate-180' : ''"></i>
-                </button>
-                <div x-show="openMenus.channel && expanded" x-collapse class="pl-8 space-y-1">
-                    <div class="space-y-1">
-         
-                        <button @click.stop="toggle('channelEmail')"
-                            class="submenu-item w-full {{ request()->is('channel/email/*') ? 'text-blue-400 font-medium' : 'submenu-default' }}">
-                            <i class="bx bx-right-arrow-alt text-lg"></i>
-                            <span>Email</span>
-                            <i class="bx bx-chevron-down ml-auto transition-transform duration-200"
-                                :class="openMenus.channelEmail ? 'rotate-180' : ''"></i>
-                        </button>
-                        <ul x-show="openMenus.channelEmail" x-collapse class="pl-6 space-y-1 mt-1">
-                            @foreach([
-                                    ['route' => 'channel.email.inbox', 'label' => 'Inbox Email'],
-                                    ['route' => 'channel.email.history', 'label' => 'History Email']
-                                ] as $item)
-                                        <li>
-                                            <a href="{{ route($item['route']) }}" @click.stop="" class="submenu-item text-[12px] {{ $isActive($item['route']) ? 'submenu-active pl-3 border-l-2 border-blue-400' : 'submenu-default' }}">
-                                                <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-sm"></i>
-                                                <span>{{ $item['label'] }}</span>
-                                            </a>
-
-                                        </li>
-                            @endforeach
-
-                                            </ul>
-                    </div>
-                </div>
-
-                                   </div>
-            <!-- Setup Channel Email Dropdown -->
-            <div class="space-y-1">
-                <button @click.stop="toggle('setupChannelEmail')"
-                    class="menu-item w-full group {{ request()->routeIs('dashboard.email', 'monitoring.email.response', 'setting.agent.email') || request()->is('setup-channel-email/*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
-                    <i class="bx bx-cog text-lg"></i>
-                    <span :class="expanded ? 'opacity-100' : 'opacity-0'">Setup Channel Email</span>
-                    <i x-show="expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200"
-                        :class="openMenus.setupChannelEmail ? 'rotate-180' : ''"></i>
-                </button>
-                <ul x-show="openMenus.setupChannelEmail && expanded" x-collapse class="pl-8 space-y-1">
-                    <li>
-                        <a href="{{ route('dashboard.email') }}" class="submenu-item {{ $isActive('dashboard.email') ? 'submenu-active' : 'submenu-default' }}">
-                            <i class="bx {{ $isActive('dashboard.email') ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                            <span>Dashboard Email</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('monitoring.email.response') }}" class="submenu-item {{ $isActive('monitoring.email.response') ? 'submenu-active' : 'submenu-default' }}">
-                            <i class="bx {{ $isActive('monitoring.email.response') ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                            <span>Monitoring Email Response</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('setting.agent.email') }}" class="submenu-item {{ $isActive('setting.agent.email') ? 'submenu-active' : 'submenu-default' }}">
-                            <i class="bx {{ $isActive('setting.agent.email') ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                            <span>Setting Agent Email</span>
-                        </a>
-                    </li>
-                    @foreach([
-                            ['route' => 'setup-channel-email.setting-auto-reply', 'label' => 'Setting Auto Reply Email'],
-                            ['route' => 'setup-channel-email.template-auto-reply', 'label' => 'Template Auto Reply Email'],
-                            ['route' => 'setup-channel-email.template-response', 'label' => 'Template Response Email'],
-                            ['route' => 'setup-channel-email.filter-jumlah-hari', 'label' => 'Filter Jumlah Hari'],
-                            ['route' => 'setup-channel-email.jam-operasional', 'label' => 'Jam Operasional Email'],
-                            ['route' => 'setup-channel-email.incoming-email', 'label' => 'Incoming Email'],
-                            ['route' => 'setup-channel-email.setting-agent', 'label' => 'Setting Agent Email'],
-                            ['route' => 'setup-channel-email.data-signature', 'label' => 'Data Signature'],
-                            ['route' => 'setup-channel-email.account-corporate', 'label' => 'Account Email Corporate'],
-                        ] as $item)
-                        <li>
-                            <a href="{{ route($item['route']) }}" class="submenu-item {{ $isActive($item['route']) ? 'submenu-active' : 'submenu-default' }}">
-                                <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                                <span>{{ $item['label'] }}</span>
-                            </a>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-
-            <!-- Setting Email System Dropdown -->
-            <div class="space-y-1">
-                <button @click.stop="toggle('settingEmailSystem')"
-                    class="menu-item w-full group {{ request()->is('setting-email-system/*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
-                    <i class="bx bx-envelope-open text-lg"></i>
-                    <span :class="expanded ? 'opacity-100' : 'opacity-0'">Setting Email System</span>
-                    <i x-show="expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200"
-                        :class="openMenus.settingEmailSystem ? 'rotate-180' : ''"></i>
-                </button>
-                <ul x-show="openMenus.settingEmailSystem && expanded" x-collapse class="pl-8 space-y-1">
-                    @foreach([
-                            ['route' => 'setting-email-system.accounts', 'label' => 'Data Email Account'],
-                            ['route' => 'setting-email-system.signature', 'label' => 'Data Email Signature'],
-                            ['route' => 'setting-email-system.service', 'label' => 'Data Email Service'],
-                            ['route' => 'setting-email-system.service-method', 'label' => 'Data Email Service Method'],
-                            ['route' => 'setting-email-system.server-profile', 'label' => 'Data Email Server Profile'],
-                            ['route' => 'setting-email-system.server-protocol', 'label' => 'Data Email Service Protocol'],
-                            ['route' => 'setting-email-system.server-protocol-out', 'label' => 'Data Email Server Protocol Out'],
-                        ] as $item)
-                        <li>
-                            <a href="{{ route($item['route']) }}" class="submenu-item {{ $isActive($item['route']) ? 'submenu-active' : 'submenu-default' }}">
-                                <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                                <span>{{ $item['label'] }}</span>
-                            </a>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-
-            <!-- Setting EPIC System Dropdown -->
-            <div class="space-y-1">
-                <button @click.stop="toggle('settingEpicSystem')"
-                    class="menu-item w-full group {{ request()->is('setting-epic-system/*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
-                    <i class="bx bx-chip text-lg"></i>
-                    <span :class="expanded ? 'opacity-100' : 'opacity-0'">Setting EPIC System</span>
-                    <i x-show="expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200"
-                        :class="openMenus.settingEpicSystem ? 'rotate-180' : ''"></i>
-                </button>
-                <ul x-show="openMenus.settingEpicSystem && expanded" x-collapse class="pl-8 space-y-1">
-                    <li>
-                        <a href="{{ route('setting-epic-system.configuration') }}" class="submenu-item {{ $isActive('setting-epic-system.configuration') ? 'submenu-active' : 'submenu-default' }}">
-                            <i class="bx {{ $isActive('setting-epic-system.configuration') ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                            <span>Data Configurasi EPIC System</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Master Data Dropdown -->
-            <div class="space-y-1">
-                <button @click.stop="toggle('masterData')"
-                    class="menu-item w-full group {{ request()->is('data-*') || request()->is('channel-ticket*') || request()->is('department-escalation*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
-                    <i class="bx bx-data text-lg"></i>
-                    <span :class="expanded ? 'opacity-100' : 'opacity-0'">Master Data</span>
-                    <i x-show="expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200"
-                        :class="openMenus.masterData ? 'rotate-180' : ''"></i>
-                </button>
-                <ul x-show="openMenus.masterData && expanded" x-collapse class="pl-8 space-y-1 overflow-y-auto max-h-[300px] custom-scrollbar">
-                    @foreach([
-                            ['route' => 'data-group-name.index', 'label' => 'Data Group Name'],
-                            ['route' => 'data-fulfillment-location.index', 'label' => 'Data Fulfillment Location'],
-                            ['route' => 'data-type.index', 'label' => 'Data Type'],
-                            ['route' => 'data-category.index', 'label' => 'Data Category'],
-                            ['route' => 'data-meta.index', 'label' => 'Data Meta'],
-                            ['route' => 'data-sub-category.index', 'label' => 'Data Sub Category'],
-                            ['route' => 'channel-ticket.index', 'label' => 'Channel Ticket'],
-                            ['route' => 'department-escalation-unit.index', 'label' => 'Department Unit'],
-                            ['route' => 'data-source.index', 'label' => 'Data Source'],
-                            ['route' => 'data-activity.index', 'label' => 'Data Activity'],
-                            ['route' => 'data-aux-reason.index', 'label' => 'Data Aux Reason'],
-                            ['route' => 'data-status-ticket.index', 'label' => 'Data Status Ticket'],
-                            ['route' => 'data-group-agent.index', 'label' => 'Data Group Agent'],
-                            ['route' => 'data-brand-category.index', 'label' => 'Data Brand Category'],
-                            ['route' => 'data-fulfillment.index', 'label' => 'Data Fulfillment'],
-                            ['route' => 'data-holiday.index', 'label' => 'Data Holidays'],
-                            ['route' => 'data-brand-name.index', 'label' => 'Data Brand Name'],
-                            ['route' => 'data-max-handle.index', 'label' => 'Data Max Handle'],
-                            ['route' => 'data-site.index', 'label' => 'Data Site'],
-                        ] as $item)
-                        <li>
-                            <a href="{{ route($item['route']) }}" class="submenu-item {{ $isActive($item['route']) ? 'submenu-active' : 'submenu-default' }}">
-                                <i class="bx {{ $isActive($item['route']) ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                                <span>{{ $item['label'] }}</span>
-                            </a>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-
-            <!-- Setup Channel Call Dropdown -->
-            <div class="space-y-1">
-                <button @click.stop="toggle('setupChannelCall')"
-                    class="menu-item w-full group {{ request()->routeIs('setting.agent.call') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
-                    <i class="bx bx-phone-call text-lg"></i>
-                    <span :class="expanded ? 'opacity-100' : 'opacity-0'">Setup Channel Call</span>
-                    <i x-show="expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200"
-                        :class="openMenus.setupChannelCall ? 'rotate-180' : ''"></i>
-                </button>
-                <ul x-show="openMenus.setupChannelCall && expanded" x-collapse class="pl-8 space-y-1">
-                    <li>
-                        <a href="{{ route('setting.agent.call') }}" class="submenu-item {{ $isActive('setting.agent.call') ? 'submenu-active' : 'submenu-default' }}">
-                            <i class="bx {{ $isActive('setting.agent.call') ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                            <span>Setting Agent Call</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Data Login Dropdown -->
-            <div class="space-y-1">
-                <button @click.stop="toggle('dataLogin')"
-                    class="menu-item w-full group {{ request()->routeIs('monitoring.login.*', 'report.login-activity') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
-                    <i class="bx bx-data text-lg"></i>
-                    <span :class="expanded ? 'opacity-100' : 'opacity-0'">Data Login</span>
-                    <i x-show="expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200"
-                        :class="openMenus.dataLogin ? 'rotate-180' : ''"></i>
-                </button>
-                <ul x-show="openMenus.dataLogin && expanded" x-collapse class="pl-8 space-y-1">
-                    <li>
-                        <a href="{{ route('monitoring.login.index') }}" class="submenu-item {{ $isActive('monitoring.login.index') ? 'submenu-active' : 'submenu-default' }}">
-                            <i class="bx {{ $isActive('monitoring.login.index') ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                            <span>Monitoring Login</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('report.login-activity') }}" class="submenu-item {{ $isActive('report.login-activity') ? 'submenu-active' : 'submenu-default' }}">
-                            <i class="bx {{ $isActive('report.login-activity') ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                            <span>Login Activity</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="space-y-1">
-                <button @click.stop="toggle('setupManagementUser')"
-                    class="menu-item w-full group {{ request()->routeIs('management-user.*') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
-                    <i class="bx bx-user-pin text-lg"></i>
-                    <span :class="expanded ? 'opacity-100' : 'opacity-0'">Management User</span>
-                    <i x-show="expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200"
-                        :class="openMenus.setupManagementUser ? 'rotate-180' : ''"></i>
-                </button>
-                <ul x-show="openMenus.setupManagementUser && expanded" x-collapse class="pl-8 space-y-1">
-                    <li>
-                        <a href="{{ route('management-user.data-access-application') }}" class="submenu-item {{ $isActive('management-user.data-access-application') ? 'submenu-active' : 'submenu-default' }}">
-                            <i class="bx {{ $isActive('management-user.data-access-application') ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                            <span>Data Access Application</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('management-user.data-user-application') }}" class="submenu-item {{ $isActive('management-user.data-user-application') ? 'submenu-active' : 'submenu-default' }}">
-                            <i class="bx {{ $isActive('management-user.data-user-application') ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                            <span>Data User Application</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('management-user.level-user-application') }}" class="submenu-item {{ $isActive('management-user.level-user-application') ? 'submenu-active' : 'submenu-default' }}">
-                            <i class="bx {{ $isActive('management-user.level-user-application') ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                            <span>Level User Application</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('management-user.export.user.application') }}" class="submenu-item {{ $isActive('management-user.export.user.application') ? 'submenu-active' : 'submenu-default' }}">
-                            <i class="bx {{ $isActive('management-user.export.user.application') ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                            <span>Export User Application</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Setting Application Dropdown -->
-            <div class="space-y-1">
-                <button @click.stop="toggle('settingApplication')"
-                    class="menu-item w-full group {{ request()->routeIs('menu.application', 'sub.menu.application', 'detail.menu.application', 'ticket.notification.system', 'setting.channel.agent.index') ? 'text-blue-400 font-medium' : 'menu-item-default' }}">
-                    <i class="bx bx-wrench text-lg"></i>
-                    <span :class="expanded ? 'opacity-100' : 'opacity-0'">Setting Application</span>
-                    <i x-show="expanded" class="bx bx-chevron-down ml-auto transition-transform duration-200"
-                        :class="openMenus.settingApplication ? 'rotate-180' : ''"></i>
-                </button>
-                <ul x-show="openMenus.settingApplication && expanded" x-collapse class="pl-8 space-y-1">
-
-                    <li>
-                        <a href="{{ route('menu.application') }}" class="submenu-item {{ $isActive('menu.application') ? 'submenu-active' : 'submenu-default' }}">
-                            <i class="bx {{ $isActive('menu.application') ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                            <span>Menu Application</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('sub.menu.application') }}" class="submenu-item {{ $isActive('sub.menu.application') ? 'submenu-active' : 'submenu-default' }}">
-                            <i class="bx {{ $isActive('sub.menu.application') ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                            <span>Sub Menu Application</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('detail.menu.application') }}" class="submenu-item {{ $isActive('detail.menu.application') ? 'submenu-active' : 'submenu-default' }}">
-                            <i class="bx {{ $isActive('detail.menu.application') ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                            <span>Detail Menu Application</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('ticket.notification.system') }}" class="submenu-item {{ $isActive('ticket.notification.system') ? 'submenu-active' : 'submenu-default' }}">
-                            <i class="bx {{ $isActive('ticket.notification.system') ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                            <span>Ticket Notification System</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('setting.channel.agent.index') }}" class="submenu-item {{ $isActive('setting.channel.agent.index') ? 'submenu-active' : 'submenu-default' }}">
-                            <i class="bx {{ $isActive('setting.channel.agent.index') ? 'bx-right-arrow-alt text-blue-400' : 'bx-dots-horizontal-rounded text-gray-600' }} text-lg"></i>
-                            <span>Setting Channel Agent</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
         </nav>
+    </div>
 
-        <!-- Footer -->
-        <div class="p-4 border-t border-gray-800 bg-gray-900/50 mt-auto whitespace-nowrap">
-            <div class="flex items-center gap-3">
-                <img src="https://ui-avatars.com/api/?name={{ auth()->user()->name ?? 'User' }}&background=6366f1&color=fff" class="w-10 h-10 rounded-full shadow-lg border border-gray-700 flex-shrink-0">
-                <div class="flex-1 overflow-hidden" x-show="expanded" x-transition:enter="delay-100 duration-200">
-                    <div class="text-sm font-semibold text-white truncate">{{ auth()->user()->name ?? 'Guest User' }}</div>
-                    <div class="text-xs text-gray-500 truncate">{{ auth()->user()->role->name ?? 'Agent' }}</div>
+    <!-- Bottom Menu Section -->
+    <div class="border-t border-gray-800 mt-auto">
+        <div class="p-4 relative">
+            <div class="flex items-center space-x-3">
+                <div class="relative flex-shrink-0">
+                    <img class="h-10 w-10 rounded-full object-cover border-2 border-gray-700"
+                        src="https://ui-avatars.com/api/?name={{ auth()->user()->name ?? 'User' }}&background=6366f1&color=fff&size=40" alt="User Avatar">
+                    <span class="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full {{ auth()->check() ? 'bg-green-500' : 'bg-gray-500' }} ring-2 ring-gray-900"></span>
                 </div>
-                <button x-show="expanded" class="text-gray-400 hover:text-white"><i class="bx bx-cog text-xl"></i></button>
+                <div class="flex-1 min-w-0 profile-info">
+                    <button type="button" class="flex items-center w-full text-left" onclick="toggleProfileMenu()">
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-white truncate">
+                                {{ auth()->user()->name ?? 'User' }}
+                            </p>
+                            <p class="text-[11px] text-blue-400 truncate font-medium">
+                                Role: {{ auth()->user()->role->name ?? 'Agent' }}
+                            </p>
+                        </div>
+                        <i class="fas fa-chevron-up text-gray-400 ml-2 transform transition-transform duration-200" id="profileArrow"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Profile Dropdown Menu -->
+            <div id="profileMenu" class="absolute bottom-full left-0 right-0 mb-2 mr-6 ml-6 p-2 bg-gray-800 rounded-lg shadow-lg transform scale-95 opacity-0 pointer-events-none transition-all duration-200">
+                <div class="profile-info-block px-2 pt-2">
+                    <h6 class="text-sm font-medium text-white mb-0">{{ auth()->user()->name ?? 'User' }}</h6>
+                </div>
+
+                <!-- Menu Items -->
+                <div class="space-y-1 mt-2">
+                    <button type="button" onclick="openAuxModal()" class="w-full flex items-center px-3 py-2.5 text-gray-300 hover:bg-gray-700 hover:text-green-400 rounded-md transition-all duration-200 group">
+                        <div class="w-8 h-8 bg-green-500/10 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-500/20 transition-colors">
+                            <i class="fas fa-cog text-green-400 text-sm"></i>
+                        </div>
+                        <div class="flex-1 text-left">
+                            <span class="text-sm font-medium">System AUX</span>
+                        </div>
+                    </button>
+
+                    <form method="POST" action="#" class="m-0" id="logoutForm">
+                        @csrf
+                        <button type="submit" class="w-full flex items-center px-3 py-2.5 text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-md transition-all duration-200 group">
+                            <div class="w-8 h-8 bg-red-500/10 rounded-lg flex items-center justify-center mr-3 group-hover:bg-red-500/20 transition-colors">
+                                <i class="fas fa-sign-out-alt text-red-400 text-sm"></i>
+                            </div>
+                            <div class="flex-1 text-left">
+                                <span class="text-sm font-medium">Logout</span>
+                            </div>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</aside>
+</div>
+
+<!-- AUX Modal -->
+<div id="auxModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full transform transition-all duration-300 scale-95 opacity-0" id="auxModalContent">
+        <!-- Header -->
+        <div class="flex items-center justify-between p-6 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-cog text-blue-600 text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900">System AUX</h3>
+                </div>
+            </div>
+            <button type="button" onclick="closeAuxModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors duration-200">
+                <i class="fas fa-times text-gray-500 text-sm"></i>
+            </button>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6">
+            <div class="mb-6">
+                <label for="auxSelect" class="block text-sm font-semibold text-gray-700 mb-3">
+                    <i class="fas fa-list-ul mr-2 text-blue-500"></i>
+                    Select AUX Status
+                </label>
+                <div class="relative">
+                    <select id="auxSelect" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white text-gray-700 font-medium">
+                        <option value="" class="text-gray-500">Choose your status...</option>
+                        <option value="login" class="py-2">🔓 Login</option>
+                        <option value="logout" class="py-2">🔒 Logout</option>
+                        <option value="system_aux" class="py-2">System Aux</option>
+                        <option value="istirahat" class="py-2">🍴 Istirahat</option>
+                        <option value="ready" class="py-2">✅ Ready</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex space-x-3 pt-4 border-t border-gray-100">
+                <button type="button" onclick="closeAuxModal()" class="flex-1 px-4 py-3 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 rounded-lg hover:bg-gray-200 transition-all duration-200">
+                    Cancel
+                </button>
+                <button type="button" onclick="submitAuxStatus()" class="flex-1 px-4 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm">
+                    Submit
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <style>
-    /* Fixed width classes to prevent jumpy layout */
-    .menu-item {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 10px 16px;
-        border-radius: 8px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
-        white-space: nowrap;
+    /* Scrollbar styling */
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background-color: rgba(55, 65, 81, 0.8); border-radius: 20px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background-color: rgba(59, 130, 246, 0.5); }
+
+    /* Mini sidebar default state */
+    .sidebar-mini { width: 80px !important; }
+    .sidebar-mini .logo-long { display: none !important; }
+    .sidebar-mini .logo-short { display: block !important; }
+
+    .sidebar-mini .logo-text,
+    .sidebar-mini .menu-section span:not(.status-indicator),
+    .sidebar-mini .submenu-container,
+    .sidebar-mini .fa-chevron-down,
+    .sidebar-mini .profile-info,
+    .sidebar-mini .profile-actions {
+        display: none !important;
     }
 
-    .menu-item-default {
-        color: #9ca3af;
-        background: transparent;
+    .sidebar-mini .menu-section a,
+    .sidebar-mini .menu-section button {
+        padding: 0.75rem !important;
+        justify-content: center !important;
     }
 
-    .menu-item-default:hover {
-        background: rgba(255, 255, 255, 0.05);
-        color: white;
+    .sidebar-mini .menu-section i:not(.fa-chevron-down) {
+        margin: 0 !important;
+        font-size: 1.5rem !important;
+    }
+
+    .sidebar-mini .profile-section { padding: 0.75rem !important; }
+    .sidebar-mini .profile-section img {
+        width: 2.5rem !important;
+        height: 2.5rem !important;
+        margin: 0 auto !important;
+    }
+
+    /* Hover expand effect */
+    .sidebar-mini.expanded { width: 288px !important; }
+    .sidebar-mini.expanded .logo-long { display: block !important; }
+    .sidebar-mini.expanded .logo-short { display: none !important; }
+
+    .sidebar-mini.expanded .logo-text,
+    .sidebar-mini.expanded .menu-section span:not(.status-indicator),
+    .sidebar-mini.expanded .profile-info,
+    .sidebar-mini.expanded .profile-actions {
+        display: block !important;
+        animation: fadeIn 0.3s ease-in-out forwards;
+    }
+
+    .sidebar-mini.expanded .menu-section a,
+    .sidebar-mini.expanded .menu-section button {
+        padding: 0.75rem 1rem !important;
+        justify-content: flex-start !important;
+    }
+
+    .sidebar-mini.expanded .menu-section i:not(.fa-chevron-down) {
+        margin-right: 0.75rem !important;
+        font-size: 1.25rem !important;
+    }
+
+    .sidebar-mini.expanded .fa-chevron-down {
+        display: block !important;
+    }
+
+    /* Submenu magic hover trigger */
+    .submenu-container {
+        display: none;
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, opacity 0.3s ease;
+    }
+
+    /* Active Submenu state triggered by JS click */
+    .sidebar-mini.expanded .submenu-container.active-submenu {
+        display: block !important;
+        max-height: 2000px;
+        opacity: 1;
+        margin-bottom: 6px;
+        animation: slideDown 0.3s ease-out forwards;
+    }
+    
+    .sidebar-mini.expanded .menu-section > button.active-btn {
+        background-color: rgba(59, 130, 246, 0.05); /* very light blue hint */
+    }
+
+    .sidebar-mini.expanded .menu-section > button.active-btn .fa-chevron-down {
+        transform: rotate(180deg);
+        color: #60a5fa;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-4px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Hover effect for mini menu items */
+    .sidebar-mini .menu-section button:hover,
+    .sidebar-mini .menu-section > a:hover {
+        background-color: rgba(59, 130, 246, 0.1) !important;
         transform: translateX(4px);
     }
 
-    .menu-item-active {
-        background: #2563eb;
-        color: white;
-        font-weight: 500;
-        border-radius: 24px;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    /* Transitions */
+    .menu-section a, .menu-section button {
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
-
-    .submenu-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 16px;
-        font-size: 13px;
-        border-radius: 6px;
-        transition: all 200ms ease;
-        color: #6b7280;
-    }
-
-    .submenu-default:hover {
-        background: rgba(255, 255, 255, 0.03);
-        color: white;
-        padding-left: 20px;
-    }
-
-    .submenu-active {
-        color: #60a5fa;
-        font-weight: 500;
-        background: rgba(96, 165, 250, 0.05);
-    }
-
-    /* Tooltip styling for collapsed state */
-    .icon-nav-item {
-        position: relative;
-        transition: all 200ms ease;
-    }
-
-    .icon-nav-item:hover {
-        transform: scale(1.15);
-        color: white;
-    }
-
-    #main-sidebar:not(.expanded) .icon-nav-item[data-tooltip]:hover::after {
-        content: attr(data-tooltip);
-        position: absolute;
-        left: 100%;
-        top: 50%;
-        transform: translateY(-50%);
-        margin-left: 15px;
-        padding: 6px 12px;
-        background: #1f2937;
-        color: white;
-        border-radius: 6px;
-        white-space: nowrap;
-        font-size: 12px;
-        z-index: 100;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-        border: 1px border #374151;
-        pointer-events: none;
-    }
-
-    #main-sidebar:not(.expanded) .icon-nav-item[data-tooltip]:hover::before {
-        content: '';
-
-
-   
-               position: absolute;
-
-
-   
-               left: 100%;
-
-   
-       
-
-               top: 50%;
-
-       
-           transform: translateY(-50%);
-        margin-left: 5px;
-        border-width: 5px;
-        border-style: solid;
-        border-color: transparent #1f2937 transparent transparent;
-        z-index: 100;
-    }
-
-    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
-    .custom-scrollbar:hover::-webkit-scrollbar-thumb { background: #4b5563; }
 </style>
+
+<script>
+    function toggleSubmenu(button, forceOpen = false) {
+        const submenu = button.nextElementSibling;
+        const isActive = submenu.classList.contains('active-submenu');
+        
+        if (forceOpen && isActive) return; // already open, do nothing on hover
+        
+        // Close all other submenus (accordion style)
+        document.querySelectorAll('.submenu-container.active-submenu').forEach(el => {
+            el.classList.remove('active-submenu');
+            el.previousElementSibling.classList.remove('active-btn');
+        });
+
+        // Toggle the clicked one, or open if hovered
+        if (!isActive || forceOpen) {
+            submenu.classList.add('active-submenu');
+            button.classList.add('active-btn');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar) {
+            // Use JS mouse events instead of CSS :hover to prevent touch device double-tap bugs
+            sidebar.addEventListener('mouseenter', function() {
+                sidebar.classList.add('expanded');
+            });
+
+            sidebar.addEventListener('mouseleave', function() {
+                sidebar.classList.remove('expanded');
+                
+                // Close profile menu when mouse leaves sidebar
+                const profileMenu = document.getElementById('profileMenu');
+                const arrow = document.getElementById('profileArrow');
+                if (profileMenu && arrow) {
+                    profileMenu.classList.add('pointer-events-none', 'scale-95', 'opacity-0');
+                    profileMenu.classList.remove('scale-100', 'opacity-100');
+                    arrow.classList.remove('rotate-180');
+                }
+            });
+        }
+    });
+
+    function toggleProfileMenu() {
+        const sidebar = document.getElementById('sidebar');
+        if (!sidebar.classList.contains('expanded')) return;
+
+        const menu = document.getElementById('profileMenu');
+        const arrow = document.getElementById('profileArrow');
+        const isHidden = menu.classList.contains('pointer-events-none');
+
+        if (isHidden) {
+            menu.classList.remove('pointer-events-none', 'scale-95', 'opacity-0');
+            menu.classList.add('scale-100', 'opacity-100');
+            arrow.classList.add('rotate-180');
+        } else {
+            menu.classList.add('pointer-events-none', 'scale-95', 'opacity-0');
+            menu.classList.remove('scale-100', 'opacity-100');
+            arrow.classList.remove('rotate-180');
+        }
+    }
+
+    function openAuxModal() {
+        const modal = document.getElementById('auxModal');
+        const modalContent = document.getElementById('auxModalContent');
+        
+        if (!modal || !modalContent) return;
+        
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        
+        setTimeout(() => {
+            modalContent.classList.remove('scale-95', 'opacity-0');
+            modalContent.classList.add('scale-100', 'opacity-100');
+        }, 10);
+
+        // Close profile menu
+        const profileMenu = document.getElementById('profileMenu');
+        if (profileMenu) {
+            profileMenu.classList.add('pointer-events-none', 'scale-95', 'opacity-0');
+            profileMenu.classList.remove('scale-100', 'opacity-100');
+        }
+    }
+
+    function closeAuxModal() {
+        const modal = document.getElementById('auxModal');
+        const modalContent = document.getElementById('auxModalContent');
+        
+        if (!modal || !modalContent) return;
+        
+        modalContent.classList.remove('scale-100', 'opacity-100');
+        modalContent.classList.add('scale-95', 'opacity-0');
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }, 300);
+    }
+    
+    function submitAuxStatus() {
+        closeAuxModal();
+        // Here you can integrate your actual api payload as needed.
+    }
+</script>
