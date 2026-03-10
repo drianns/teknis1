@@ -62,6 +62,23 @@ class SetupChannelEmailController extends Controller
         return response()->json($query->latest()->paginate($perPage));
     }
 
+    public function updateFilterJumlahHari(Request $request, $id)
+    {
+        $request->validate([
+            'days' => 'required|integer|min:1',
+        ]);
+
+        $filter = \App\Models\FilterDay::findOrFail($id);
+        $filter->update([
+            'days' => $request->days,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Filter Hari successfully updated'
+        ]);
+    }
+
     public function incomingEmail()
     {
         return view('pages.setup-channel-email.incoming-email.index');
@@ -101,25 +118,23 @@ class SetupChannelEmailController extends Controller
         return response()->json($query->latest()->paginate($perPage));
     }
 
-    public function settingAgent()
+    public function updateJamOperasional(Request $request, $id)
     {
-        return view('pages.setup-channel-email.setting-agent.index');
-    }
+        $request->validate([
+            'open_time' => 'required|date_format:H:i:s',
+            'close_time' => 'required|date_format:H:i:s',
+        ]);
 
-    public function getSettingAgentData(Request $request)
-    {
-        $query = \App\Models\UserAgent::query();
+        $jam = \App\Models\OperatingHour::findOrFail($id);
+        $jam->update([
+            'open_time' => $request->open_time,
+            'close_time' => $request->close_time,
+        ]);
 
-        if ($request->search) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('username', 'like', '%' . $search . '%')
-                  ->orWhere('alias', 'like', '%' . $search . '%');
-            });
-        }
-
-        $perPage = $request->input('per_page', 10);
-        return response()->json($query->with('user')->latest()->paginate($perPage));
+        return response()->json([
+            'success' => true,
+            'message' => 'Jam Operasional successfully updated'
+        ]);
     }
 
     public function settingAutoReply()
@@ -138,9 +153,23 @@ class SetupChannelEmailController extends Controller
         return response()->json($query->latest()->paginate($perPage));
     }
 
+    public function toggleSettingAutoReply($id)
+    {
+        $setting = \App\Models\AutoReplySetting::findOrFail($id);
+        $setting->is_active = !$setting->is_active;
+        $setting->save();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Status berhasil diubah',
+            'is_active' => $setting->is_active
+        ]);
+    }
+
     public function templateAutoReply()
     {
-        return view('pages.setup-channel-email.template-auto-reply.index');
+        $emailAccounts = \App\Models\EmailAccount::all();
+        return view('pages.setup-channel-email.template-auto-reply.index', compact('emailAccounts'));
     }
 
     public function getTemplateAutoReply(Request $request)
@@ -148,12 +177,63 @@ class SetupChannelEmailController extends Controller
         $query = \App\Models\AutoReplyTemplate::query();
         if ($request->search) {
             $search = $request->search;
-            $query->where('name', 'like', "%{$search}%")
-                  ->orWhere('subject', 'like', "%{$search}%")
+            $query->where('account_email', 'like', "%{$search}%")
                   ->orWhere('body', 'like', "%{$search}%");
         }
         $perPage = $request->input('per_page', 10);
         return response()->json($query->latest()->paginate($perPage));
+    }
+
+    public function storeTemplateAutoReply(Request $request)
+    {
+        $request->validate([
+            'body' => 'required|max:7000',
+            'account_email' => 'required',
+            'is_active' => 'required|boolean',
+        ]);
+
+        \App\Models\AutoReplyTemplate::create([
+            'body' => $request->body,
+            'account_email' => $request->account_email,
+            'is_active' => $request->is_active,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Template successfully created'
+        ]);
+    }
+
+    public function updateTemplateAutoReply(Request $request, $id)
+    {
+        $request->validate([
+            'body' => 'required|max:7000',
+            'account_email' => 'required',
+            'is_active' => 'required|boolean',
+        ]);
+
+        $template = \App\Models\AutoReplyTemplate::findOrFail($id);
+        $template->update([
+            'body' => $request->body,
+            'account_email' => $request->account_email,
+            'is_active' => $request->is_active,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Template successfully updated'
+        ]);
+    }
+
+    public function destroyTemplateAutoReply($id)
+    {
+        $template = \App\Models\AutoReplyTemplate::findOrFail($id);
+        $template->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Template successfully deleted'
+        ]);
     }
 
     public function templateResponse()
@@ -169,10 +249,65 @@ class SetupChannelEmailController extends Controller
             $query->where('name', 'like', "%{$search}%")
                   ->orWhere('subject', 'like', "%{$search}%")
                   ->orWhere('body', 'like', "%{$search}%")
-                  ->orWhere('category', 'like', "%{$search}%");
+                  ->orWhere('category', 'like', "%{$search}%")
+                  ->orWhere('format_type', 'like', "%{$search}%");
         }
         $perPage = $request->input('per_page', 10);
         return response()->json($query->latest()->paginate($perPage));
+    }
+
+    public function storeTemplateResponse(Request $request)
+    {
+        $request->validate([
+            'body' => 'required|max:7500',
+            'format_type' => 'nullable|string',
+            'is_active' => 'required|boolean',
+        ]);
+
+        \App\Models\ResponseTemplate::create([
+            'name' => 'Template ' . date('YmdHis'),
+            'subject' => '',
+            'body' => $request->body,
+            'format_type' => $request->format_type,
+            'is_active' => $request->is_active,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Template successfully created'
+        ]);
+    }
+
+    public function updateTemplateResponse(Request $request, $id)
+    {
+        $request->validate([
+            'body' => 'required|max:7500',
+            'format_type' => 'nullable|string',
+            'is_active' => 'required|boolean',
+        ]);
+
+        $template = \App\Models\ResponseTemplate::findOrFail($id);
+        $template->update([
+            'body' => $request->body,
+            'format_type' => $request->format_type,
+            'is_active' => $request->is_active,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Template successfully updated'
+        ]);
+    }
+
+    public function destroyTemplateResponse($id)
+    {
+        $template = \App\Models\ResponseTemplate::findOrFail($id);
+        $template->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Template successfully deleted'
+        ]);
     }
 
     // Setting Email System
@@ -312,5 +447,41 @@ class SetupChannelEmailController extends Controller
         }
         $perPage = $request->input('per_page', 10);
         return response()->json($query->latest()->paginate($perPage));
+    }
+
+    public function updateDataSignature(Request $request, $id)
+    {
+        $request->validate([
+            'content' => 'required',
+        ]);
+
+        $signature = \App\Models\ChannelSignature::findOrFail($id);
+        $signature->update([
+            'content' => $request->content,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Signature successfully updated'
+        ]);
+    }
+
+    public function updateAccountCorporate(Request $request, $id)
+    {
+        $request->validate([
+            'account_id' => 'required',
+            'name' => 'required',
+        ]);
+
+        $account = \App\Models\ChannelAccount::findOrFail($id);
+        $account->update([
+            'account_id' => $request->account_id,
+            'name' => $request->name,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Account successfully updated'
+        ]);
     }
 }

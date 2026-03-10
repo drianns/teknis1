@@ -17,10 +17,10 @@ use App\Http\Controllers\DataAccessApplicationController;
 use App\Http\Controllers\DataUserApplicationController;
 use App\Http\Controllers\LevelUserApplicationController;
 use App\Http\Controllers\ExportUserApplicationController;
-use App\Http\Controllers\BantuDagangController;
 use App\Http\Controllers\MenuApplicationController;
 use App\Http\Controllers\SubMenuApplicationController;
 use App\Http\Controllers\SetupChannelEmailController;
+use App\Http\Controllers\PlaceholderController;
 use App\Http\Controllers\SettingChannelAgentController;
 use App\Http\Controllers\SettingAgentCallController;
 use App\Http\Controllers\SettingAgentEmailController;
@@ -54,30 +54,38 @@ Route::get('/setting-agent-email/data', [SettingAgentEmailController::class, 'ge
 Route::prefix('setup-channel-email')->name('setup-channel-email.')->group(function () {
     Route::get('/account-corporate', [SetupChannelEmailController::class, 'accountCorporate'])->name('account-corporate');
     Route::get('/account-corporate/data', [SetupChannelEmailController::class, 'getAccountCorporateData'])->name('account-corporate.getData');
+    Route::put('/account-corporate/{id}', [SetupChannelEmailController::class, 'updateAccountCorporate'])->name('account-corporate.update');
     
     Route::get('/data-signature', [SetupChannelEmailController::class, 'dataSignature'])->name('data-signature');
     Route::get('/data-signature/data', [SetupChannelEmailController::class, 'getDataSignature'])->name('data-signature.getData');
+    Route::put('/data-signature/{id}', [SetupChannelEmailController::class, 'updateDataSignature'])->name('data-signature.update');
 
     Route::get('/filter-jumlah-hari', [SetupChannelEmailController::class, 'filterJumlahHari'])->name('filter-jumlah-hari');
     Route::get('/filter-jumlah-hari/data', [SetupChannelEmailController::class, 'getFilterJumlahHari'])->name('filter-jumlah-hari.getData');
+    Route::put('/filter-jumlah-hari/{id}', [SetupChannelEmailController::class, 'updateFilterJumlahHari'])->name('filter-jumlah-hari.update');
     
     Route::get('/incoming-email', [SetupChannelEmailController::class, 'incomingEmail'])->name('incoming-email');
     Route::get('/incoming-email/data', [SetupChannelEmailController::class, 'getIncomingEmailData'])->name('incoming-email.getData');
     
     Route::get('/jam-operasional', [SetupChannelEmailController::class, 'jamOperasional'])->name('jam-operasional');
     Route::get('/jam-operasional/data', [SetupChannelEmailController::class, 'getJamOperasional'])->name('jam-operasional.getData');
-    
-    Route::get('/setting-agent', [SetupChannelEmailController::class, 'settingAgent'])->name('setting-agent');
-    Route::get('/setting-agent/data', [SetupChannelEmailController::class, 'getSettingAgentData'])->name('setting-agent.getData');
+    Route::put('/jam-operasional/{id}', [SetupChannelEmailController::class, 'updateJamOperasional'])->name('jam-operasional.update');
     
     Route::get('/setting-auto-reply', [SetupChannelEmailController::class, 'settingAutoReply'])->name('setting-auto-reply');
     Route::get('/setting-auto-reply/data', [SetupChannelEmailController::class, 'getSettingAutoReply'])->name('setting-auto-reply.getData');
+    Route::post('/setting-auto-reply/{id}/toggle', [SetupChannelEmailController::class, 'toggleSettingAutoReply'])->name('setting-auto-reply.toggle');
 
     Route::get('/template-auto-reply', [SetupChannelEmailController::class, 'templateAutoReply'])->name('template-auto-reply');
     Route::get('/template-auto-reply/data', [SetupChannelEmailController::class, 'getTemplateAutoReply'])->name('template-auto-reply.getData');
+    Route::post('/template-auto-reply', [SetupChannelEmailController::class, 'storeTemplateAutoReply'])->name('template-auto-reply.store');
+    Route::put('/template-auto-reply/{id}', [SetupChannelEmailController::class, 'updateTemplateAutoReply'])->name('template-auto-reply.update');
+    Route::delete('/template-auto-reply/{id}', [SetupChannelEmailController::class, 'destroyTemplateAutoReply'])->name('template-auto-reply.destroy');
 
     Route::get('/template-response', [SetupChannelEmailController::class, 'templateResponse'])->name('template-response');
     Route::get('/template-response/data', [SetupChannelEmailController::class, 'getTemplateResponse'])->name('template-response.getData');
+    Route::post('/template-response', [SetupChannelEmailController::class, 'storeTemplateResponse'])->name('template-response.store');
+    Route::put('/template-response/{id}', [SetupChannelEmailController::class, 'updateTemplateResponse'])->name('template-response.update');
+    Route::delete('/template-response/{id}', [SetupChannelEmailController::class, 'destroyTemplateResponse'])->name('template-response.destroy');
 });
 
 // Setting Email System Routes (7 Items)
@@ -291,3 +299,9 @@ Route::prefix('report')->name('report.')->group(function () {
     Route::get('/channel-email', [ReportController::class, 'channelEmail'])->name('channel-email');
     Route::get('/login-activity', [ReportController::class, 'loginActivity'])->name('login-activity');
 });
+
+// Placeholder Routes
+Route::get('/bantu-dagang', [PlaceholderController::class, 'index'])->name('bantu-dagang')->defaults('name', 'Bantu Dagang');
+Route::get('/file-manager', [PlaceholderController::class, 'index'])->name('file-manager')->defaults('name', 'File Manager');
+Route::get('/wallboard', [PlaceholderController::class, 'index'])->name('wallboard')->defaults('name', 'Wallboard');
+

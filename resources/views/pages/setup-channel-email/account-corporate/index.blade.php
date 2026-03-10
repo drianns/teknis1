@@ -34,26 +34,21 @@
                 <div class="table-wrapper flex-1 overflow-auto w-full custom-scrollbar">
                     <table class="w-full text-left border-collapse">
                         <thead class="bg-gray-900/50">
-                            <tr>
-                                <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 w-16 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">ID</th>
-                                <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Nama Perusahaan</th>
-                                <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Nama Akun</th>
-                                <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Email</th>
-                                <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Server Incoming</th>
-                                <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Server Outgoing</th>
-                                <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 w-28 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">Status</th>
-                                <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 w-20 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">Action</th>
-                            </tr>
+                        <tr>
+                            <th class="sticky top-0 z-10 bg-gray-900 px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Account Email Corporate</th>
+                            <th class="sticky top-0 z-10 bg-gray-900 px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Unit Kerja</th>
+                            <th class="sticky top-0 z-10 bg-gray-900 px-6 py-4 w-24 text-xs font-bold text-gray-400 uppercase tracking-widest text-center">Action</th>
+                        </tr>
                         </thead>
                         <tbody id="table-body" class="divide-y divide-gray-700/50 text-sm text-gray-300 font-medium">
-                            <tr>
-                                <td colspan="8" class="px-4 py-12 text-center text-gray-500">
-                                    <div class="flex flex-col items-center gap-3">
-                                        <div class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                                        <p>Loading data...</p>
-                                    </div>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td colspan="3" class="px-6 py-12 text-center text-gray-500">
+                                <div class="flex flex-col items-center gap-3">
+                                    <div class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                                    <p>Loading data...</p>
+                                </div>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -93,36 +88,73 @@
         function renderTable(rows) {
             const tableBody = document.getElementById('table-body');
             if (!rows || rows.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="8" class="px-4 py-12 text-center text-gray-500"><div class="flex flex-col items-center gap-2"><i class="bx bx-folder-open text-4xl opacity-20"></i><p>No account email corporate found</p></div></td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="3" class="px-6 py-12 text-center text-gray-500"><div class="flex flex-col items-center gap-2"><i class="bx bx-folder-open text-4xl opacity-20"></i><p>No account email corporate found</p></div></td></tr>';
                 return;
             }
 
             tableBody.innerHTML = rows.map(row => `
-                <tr class="hover:bg-blue-500/[0.03] transition-colors group/row">
-                    <td class="px-4 py-3 font-mono text-blue-400 font-medium text-center">${row.id}</td>
-                    <td class="px-4 py-3 font-medium text-white">${esc(row.perusahaan)}</td>
-                    <td class="px-4 py-3 text-gray-300">${esc(row.akun)}</td>
-                    <td class="px-4 py-3 text-gray-400">${esc(row.email)}</td>
-                    <td class="px-4 py-3 text-gray-400 italic text-[13px]">${esc(row.inc || '-')}</td>
-                    <td class="px-4 py-3 text-gray-400 italic text-[13px]">${esc(row.out || '-')}</td>
-                    <td class="px-4 py-3 text-center">
-                        <span class="${row.aktif ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-red-500/20 text-red-400 border-red-500/30'} px-3 py-1 rounded-full text-[11px] font-bold border whitespace-nowrap uppercase tracking-wider shadow-sm">
-                            ${row.aktif ? 'Aktif' : 'Non-Aktif'}
-                        </span>
+                <tr class="hover:bg-blue-500/[0.03] transition-colors group/row border-b border-gray-700/50">
+                    <td class="px-6 py-5 text-gray-300 font-medium font-inter">
+                        ${esc(row.account_id || row.email)}
                     </td>
-                    <td class="px-4 py-3 text-center">
+                    <td class="px-6 py-5 text-gray-400 font-inter">
+                        ${esc(row.name || (row.account_id && row.account_id.includes('nespresso') ? 'Nespresso' : 'Kanmo'))}
+                    </td>
+                    <td class="px-6 py-5 text-center">
                         <div class="relative flex justify-center" x-data="{ open: false }">
-                            <button @click.stop="open = !open" class="w-8 h-8 rounded-lg bg-gray-800 border border-gray-700/50 hover:bg-gray-700 flex items-center justify-center text-gray-400 hover:text-white transition-all shadow-sm">
-                                <i class='bx bx-dots-vertical-rounded text-lg'></i>
+                            <button @click.stop="open = !open" class="text-blue-500 hover:text-blue-400 transition-all">
+                                <i class='bx bx-dots-vertical text-2xl'></i>
                             </button>
                             <div x-show="open" @click.outside="open = false" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="absolute right-0 top-full mt-2 w-32 bg-gray-900 border border-gray-700/50 rounded-xl shadow-2xl z-20 overflow-hidden ring-1 ring-white/5" style="display:none;">
-                                <button class="w-full text-left px-4 py-2.5 text-xs text-gray-300 hover:bg-blue-500/10 hover:text-blue-400 flex items-center gap-3 border-b border-gray-700/30 transition-colors"><i class='bx bx-edit-alt text-lg'></i><span class="font-bold">Edit</span></button>
-                                <button class="w-full text-left px-4 py-2.5 text-xs text-red-400 hover:bg-red-500/10 flex items-center gap-3 transition-colors"><i class='bx bx-trash text-lg'></i><span class="font-bold">Delete</span></button>
+                                <button onclick='openEditModal(${JSON.stringify(row)})' class="w-full text-left px-4 py-2.5 text-xs text-gray-300 hover:bg-blue-500/10 hover:text-blue-400 flex items-center gap-3 transition-colors"><i class='bx bx-edit-alt text-lg'></i><span class="font-bold">Edit</span></button>
                             </div>
                         </div>
                     </td>
                 </tr>
             `).join('');
+        }
+
+        function openEditModal(data) {
+            document.getElementById('edit-id').value = data.id;
+            document.getElementById('edit-account_id').value = data.account_id || data.email;
+            document.getElementById('edit-name').value = data.name || (data.account_id && data.account_id.includes('nespresso') ? 'Nespresso' : 'Kanmo');
+            
+            const modal = document.getElementById('editModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('editModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        const UPDATE_URL = "{{ url('setup-channel-email/account-corporate') }}";
+        function handleUpdate(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit-id').value;
+            const account_id = document.getElementById('edit-account_id').value;
+            const name = document.getElementById('edit-name').value;
+            const token = document.querySelector('input[name="_token"]').value;
+
+            fetch(`${UPDATE_URL}/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ account_id, name })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    closeModal();
+                    loadTable();
+                }
+            })
+            .catch(err => console.error(err));
         }
 
         function renderPagination(data) {
@@ -168,5 +200,54 @@
 
         document.addEventListener('DOMContentLoaded', () => loadTable(1));
     </script>
+
+<!-- Edit Modal -->
+<div id="editModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-[2px] transition-opacity" onclick="closeModal()"></div>
+    <div class="bg-[#f0f4f8] border border-gray-300 rounded-2xl w-full max-w-md shadow-2xl relative overflow-hidden transform transition-all">
+        <!-- Header -->
+        <div class="px-6 py-4 border-b border-gray-200 bg-white flex justify-between items-center">
+            <h3 class="text-base font-bold text-[#64748b] tracking-tight font-inter">Form Account Email Corporate</h3>
+            <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                <i class='bx bx-x text-2xl'></i>
+            </button>
+        </div>
+        
+        <form id="editForm" onsubmit="handleUpdate(event)">
+            @csrf
+            <input type="hidden" id="edit-id">
+            <div class="p-6 space-y-6 bg-white">
+                <div>
+                    <label class="block text-[13px] font-bold text-[#64748b] mb-2 font-inter">Account Email Corporate</label>
+                    <input type="text" id="edit-account_id" name="account_id" class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all font-inter shadow-sm" placeholder="Email address...">
+                </div>
+                <div>
+                    <label class="block text-[13px] font-bold text-[#64748b] mb-2 font-inter">Group Agent</label>
+                    <div class="relative">
+                        <select id="edit-name" name="name" class="w-full bg-white border border-gray-300 rounded-lg px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all font-inter shadow-sm appearance-none cursor-pointer">
+                            <option value="Kanmo">Kanmo</option>
+                            <option value="Nespresso">Nespresso</option>
+                        </select>
+                        <i class='bx bx-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xl'></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="px-6 py-4 bg-white border-t border-gray-100 flex justify-between gap-3">
+                <button type="button" onclick="closeModal()" class="px-8 py-2.5 bg-[#ff4d4d] hover:bg-[#ff3333] text-white text-sm font-bold rounded-full transition-all shadow-md active:scale-95 font-inter">
+                    Cancel
+                </button>
+                <button type="submit" class="px-8 py-2.5 bg-[#6b9eff] hover:bg-[#5289ff] text-white text-sm font-bold rounded-full transition-all shadow-md active:scale-95 font-inter">
+                    Update
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    .font-inter { font-family: 'Inter', sans-serif; }
+</style>
 @endsection
 

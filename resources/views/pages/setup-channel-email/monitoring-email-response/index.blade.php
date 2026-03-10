@@ -160,84 +160,54 @@
             <div
                 class="flex flex-col md:flex-row md:items-end md:justify-between mb-6 gap-4 border-b border-gray-800 pb-4">
                 <div>
-                    <h1 class="text-2xl font-semibold text-white">Data Monitoring Email Response</h1>
+                    <h1 class="text-2xl font-semibold text-white flex items-center gap-3">
+                        Data Monitoring Email Response
+                        <button @click="openDateBar = true" class="text-gray-400 hover:text-blue-400 transition-colors focus:outline-none">
+                            <i class='bx bx-cog text-2xl'></i>
+                        </button>
+                    </h1>
                     <nav class="flex text-sm text-gray-400 mt-1">
                         <a href="#" class="hover:text-blue-400">Apps</a>
                         <span class="mx-2">/</span>
                         <span class="text-gray-300">Monitoring Email Response</span>
                     </nav>
                 </div>
+            </div>
 
-                <!-- Date Range Bar (Relocated) -->
-                <div class="relative" @click.outside="openDateBar = false">
-                    <div @click="openDateBar = !openDateBar" class="date-range-bar">
-                        <div class="bar-icon">
-                            <i class="bx bx-calendar-event"></i>
+            <!-- Filter Modal (Triggered by Gear Icon) -->
+            <div x-show="openDateBar" class="fixed inset-0 z-[9999] flex items-center justify-center p-4" style="display: none;">
+                <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" @click="openDateBar = false"></div>
+                <div x-show="openDateBar" x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-200 transform" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="bg-gray-800 rounded-2xl shadow-2xl border border-white/10 w-full max-w-lg flex flex-col z-10 overflow-hidden text-left">
+                    <div class="flex items-center justify-between px-6 py-4 bg-gray-900 border-b border-gray-700">
+                        <h5 class="text-blue-400 font-bold text-lg m-0 flex items-center gap-2">Filter Monitoring Email</h5>
+                        <button type="button" class="text-gray-400 hover:text-white transition-colors p-1" @click="openDateBar = false">
+                            <i class="bx bx-x text-2xl"></i>
+                        </button>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="relative">
+                            <select x-model="filters.emailAccount" class="w-full bg-gray-900 border border-gray-700 text-gray-300 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all appearance-none cursor-pointer">
+                                <option value="" disabled selected>Select</option>
+                                @foreach($emailServices as $service)
+                                    <option value="{{ $service->name }}">{{ $service->name }}</option>
+                                @endforeach
+                            </select>
+                            <i class="bx bx-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"></i>
                         </div>
-                        <div class="date-segment">
-                            <span class="segment-label">Start Date</span>
-                            <span class="segment-value" x-text="formatDateForBar(filters.startDate)">Select Date</span>
+                        <div class="relative">
+                            <input type="date" x-model="filters.startDate" class="w-full bg-gray-900 border border-gray-700 text-gray-400 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all cursor-pointer placeholder-gray-500">
                         </div>
-                        <div class="date-divider"></div>
-                        <div class="date-segment">
-                            <span class="segment-label">End Date</span>
-                            <span class="segment-value" x-text="formatDateForBar(filters.endDate)">Select Date</span>
-                        </div>
-                        <div class="bar-chevron">
-                            <i class="bx bx-chevron-down"></i>
+                        <div class="relative">
+                            <input type="date" x-model="filters.endDate" class="w-full bg-gray-900 border border-gray-700 text-gray-400 rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all cursor-pointer placeholder-gray-500">
                         </div>
                     </div>
-
-                    <!-- Modern Date Picker Popup -->
-                    <div x-show="openDateBar" x-transition
-                        class="absolute right-0 mt-3 modern-popup z-[90] p-5 shadow-2xl" style="display: none;">
-                        <div class="space-y-4">
-                            <!-- Presets -->
-                            <div>
-                                <span class="popup-label">Quick Selection</span>
-                                <div class="preset-grid">
-                                    <button @click="setPreset('today')" class="preset-btn"
-                                        :class="activePreset === 'today' ? 'active' : ''">Today</button>
-                                    <button @click="setPreset('yesterday')" class="preset-btn"
-                                        :class="activePreset === 'yesterday' ? 'active' : ''">Yesterday</button>
-                                    <button @click="setPreset('last7days')" class="preset-btn"
-                                        :class="activePreset === 'last7days' ? 'active' : ''">Last 7 Days</button>
-                                    <button @click="setPreset('thismonth')" class="preset-btn"
-                                        :class="activePreset === 'thismonth' ? 'active' : ''">This Month</button>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label class="popup-label">Start Date</label>
-                                    <input type="date" x-model="filters.startDate" class="popup-input">
-                                </div>
-                                <div>
-                                    <label class="popup-label">End Date</label>
-                                    <input type="date" x-model="filters.endDate" class="popup-input">
-                                </div>
-                            </div>
-
-                            <div>
-                                <label class="popup-label">Email Service</label>
-                                <select x-model="filters.emailAccount" class="popup-input">
-                                    <option value="support@kanmogroup.com">support@kanmogroup.com</option>
-                                    <option value="info@kanmogroup.com">info@kanmogroup.com</option>
-                                    <option value="billing@kanmogroup.com">billing@kanmogroup.com</option>
-                                </select>
-                            </div>
-
-                            <div class="flex gap-2 pt-2">
-                                <button @click="applyFilters(); openDateBar = false"
-                                    class="flex-1 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-blue-600/20 active:scale-95">
-                                    Apply Filter
-                                </button>
-                                <button @click="openDateBar = false"
-                                    class="px-4 py-2.5 bg-gray-700 hover:bg-gray-600 text-white text-sm font-bold rounded-xl transition-all">
-                                    Cancel
-                                </button>
-                            </div>
-                        </div>
+                    <div class="p-5 bg-gray-900/30 border-t border-gray-700 flex justify-between gap-4">
+                        <button @click="openDateBar = false" class="px-8 py-2.5 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/50 text-rose-400 font-bold rounded-full transition-all tracking-wide">
+                            Close
+                        </button>
+                        <button @click="applyFilters(); openDateBar = false" class="px-8 py-2.5 bg-blue-500 hover:bg-blue-600 border border-transparent text-white font-bold rounded-full transition-all tracking-wide shadow-lg shadow-blue-500/30">
+                            Submit
+                        </button>
                     </div>
                 </div>
             </div>
@@ -272,8 +242,17 @@
                 </div>
 
                 <!-- Main Table -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left text-gray-400">
+                <div class="relative overflow-hidden">
+                    <!-- Loading Overlay -->
+                    <div x-show="isLoading" class="absolute inset-0 bg-gray-900/60 backdrop-blur-[2px] z-[60] flex items-center justify-center transition-opacity duration-300" style="display: none;">
+                        <div class="flex flex-col items-center justify-center gap-4">
+                            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 shadow-lg shadow-blue-500/20"></div>
+                            <p class="text-blue-400 font-bold animate-pulse tracking-widest text-xs uppercase">Loading data...</p>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-gray-400">
                         <thead class="text-xs text-gray-400 uppercase bg-gray-900/40">
                             <tr>
                                 <th class="px-6 py-4 font-bold cursor-pointer hover:text-white transition-colors"
@@ -315,97 +294,72 @@
                                 <th class="px-6 py-4 font-bold text-center">Action</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-700/50 bg-transparent">
-                            <template x-if="isLoading">
-                                <tr>
-                                    <td colspan="7" class="px-6 py-12 text-center text-gray-500">
-                                        <div class="flex flex-col items-center justify-center gap-3">
-                                            <div
-                                                class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500">
-                                            </div>
-                                            <p class="animate-pulse">Loading data...</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </template>
+                        <tbody class="divide-y divide-gray-700/50 bg-transparent min-h-[200px]">
                             <template x-if="!isLoading && displayedEmails.length === 0">
                                 <tr>
                                     <td colspan="7" class="px-6 py-16 text-center text-gray-500">
                                         <div class="flex flex-col items-center justify-center">
                                             <i class="bx bx-info-circle text-5xl mb-4 text-gray-600"></i>
-                                            <p class="text-lg font-medium">No results found</p>
-                                            <p class="text-sm mt-1">Try adjusting your filters or search query</p>
+                                            <p class="text-lg font-medium text-gray-400">No results found</p>
+                                            <p class="text-sm mt-1 text-gray-500">Try adjusting your filters or search query</p>
                                         </div>
                                     </td>
                                 </tr>
                             </template>
                             <template x-for="email in displayedEmails" :key="email.id">
-                                <tr class="hover:bg-white/5 transition-colors group">
-                                    <td class="px-6 py-4">
+                                <tr class="hover:bg-blue-500/[0.03] transition-colors border-b border-gray-700/50 last:border-none group">
+                                    <td class="px-6 py-5">
                                         <div class="flex flex-col">
-                                            <span class="text-blue-400 font-medium" x-text="email.email_service"></span>
+                                            <span class="text-gray-300 font-medium" x-text="email.email_service"></span>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4">
+                                    <td class="px-6 py-5">
                                         <div class="flex items-center gap-2">
-                                            <div
-                                                class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-gray-400 text-xs">
-                                                <i class="bx bx-user"></i>
-                                            </div>
-                                            <span class="text-gray-300 font-medium" x-text="email.from"></span>
+                                            <span class="text-gray-300" x-text="email.from"></span>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4">
-                                        <div class="max-w-xs xl:max-w-md">
-                                            <p class="text-gray-200 line-clamp-1" x-text="email.subject"
-                                                :title="email.subject"></p>
-                                        </div>
+                                    <td class="px-6 py-5 max-w-sm">
+                                        <p class="text-gray-200 line-clamp-2" x-text="email.subject" :title="email.subject"></p>
                                     </td>
-                                    <td class="px-6 py-4 text-center">
-                                        <span
-                                            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider gap-1"
-                                            :class="email.status === 'Response' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'">
-                                            <template x-if="email.status === 'Response'">
-                                                <i class="bx bx-check-double text-sm"></i>
-                                            </template>
-                                            <span x-text="email.status"></span>
+                                    <td class="px-6 py-5 text-center">
+                                        <span class="inline-flex items-center justify-center px-4 py-1.5 rounded-full text-[11px] font-bold text-white shadow-sm transition-all"
+                                            :class="email.status === 'Response' ? 'bg-emerald-500 shadow-emerald-500/20' : 'bg-rose-500 shadow-rose-500/20'" x-text="email.status">
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4">
+                                    <td class="px-6 py-5">
                                         <span class="text-gray-400 font-medium" x-text="email.agent"></span>
                                     </td>
-                                    <td class="px-6 py-4">
+                                    <td class="px-6 py-5">
                                         <div class="flex flex-col">
                                             <span class="text-gray-300" x-text="formatDate(email.created_at)"></span>
-                                            <span class="text-[11px] text-gray-500 font-bold"
-                                                x-text="formatTime(email.created_at)"></span>
+                                            <span class="text-gray-400" x-text="formatTime(email.created_at)"></span>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 text-center relative" x-data="{ open: false }">
-                                        <button @click.stop="open = !open" @click.outside="open = false"
-                                            class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/10 text-gray-500 hover:text-white transition-all border border-transparent hover:border-white/10">
-                                            <i class="bx bx-dots-vertical-rounded text-xl"></i>
-                                        </button>
+                                    <td class="px-6 py-5 text-center relative" x-data="{ open: false }">
+                                        <div class="relative flex justify-center">
+                                            <button @click.stop="open = !open" @click.outside="open = false"
+                                                class="w-8 h-8 rounded-lg bg-gray-900 border border-gray-700/50 hover:bg-gray-700 flex items-center justify-center text-gray-400 hover:text-white transition-all shadow-sm">
+                                                <i class="bx bx-dots-vertical-rounded text-lg"></i>
+                                            </button>
 
-                                        <div x-show="open" x-transition:enter="transition ease-out duration-100"
-                                            x-transition:enter-start="opacity-0 scale-95"
-                                            x-transition:enter-end="opacity-100 scale-100"
-                                            x-transition:leave="transition ease-in duration-75"
-                                            class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-xl shadow-2xl z-50 border border-white/10 py-2 text-left"
-                                            style="display: none;">
-                                            <button @click="handleAssign(email.id); open = false"
-                                                class="w-full px-4 py-2.5 text-sm text-gray-300 hover:bg-blue-600 hover:text-white flex items-center gap-3 transition-colors">
-                                                <i class="bx bx-user-plus text-lg"></i> Assign
-                                            </button>
-                                            <button
-                                                class="w-full px-4 py-2.5 text-sm text-gray-600 cursor-not-allowed flex items-center gap-3"
-                                                title="Preview coming soon">
-                                                <i class="bx bx-show text-lg"></i> Preview
-                                            </button>
-                                            <button @click="handleConversation(email.id); open = false"
-                                                class="w-full px-4 py-2.5 text-sm text-gray-300 hover:bg-indigo-600 hover:text-white flex items-center gap-3 transition-colors">
-                                                <i class="bx bx-chat text-lg"></i> Conversation
-                                            </button>
+                                            <div x-show="open" x-transition:enter="transition ease-out duration-100"
+                                                x-transition:enter-start="opacity-0 scale-95"
+                                                x-transition:enter-end="opacity-100 scale-100"
+                                                x-transition:leave="transition ease-in duration-75"
+                                                class="absolute right-full top-0 mr-2 w-40 bg-gray-900 border border-gray-700/50 rounded-xl shadow-2xl z-20 overflow-hidden ring-1 ring-white/5"
+                                                style="display: none;">
+                                                <button @click="handleAssign(email.id); open = false"
+                                                    class="w-full text-left px-4 py-2.5 text-xs text-gray-300 hover:bg-blue-500/10 hover:text-blue-400 flex items-center gap-3 border-b border-gray-700/30 transition-colors">
+                                                    <i class="bx bx-share-alt text-lg text-blue-500"></i> <span class="font-bold">Assign</span>
+                                                </button>
+                                                <button class="w-full text-left px-4 py-2.5 text-xs text-gray-300 hover:bg-blue-500/10 hover:text-blue-400 flex items-center gap-3 border-b border-gray-700/30 transition-colors" title="Preview coming soon">
+                                                    <i class="bx bx-hide text-lg text-amber-500"></i> <span class="font-bold">Preview</span>
+                                                </button>
+                                                <button @click="handleConversation(email.id); open = false"
+                                                    class="w-full text-left px-4 py-2.5 text-xs text-gray-300 hover:bg-blue-500/10 hover:text-blue-400 flex items-center gap-3 transition-colors">
+                                                    <i class="bx bx-message-rounded-dots text-lg text-emerald-500"></i> <span class="font-bold">Conversation</span>
+                                                </button>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
@@ -620,9 +574,9 @@
                     totalPages: 1
                 },
                 filters: {
-                    emailAccount: 'support@kanmogroup.com',
-                    startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 30 days ago
-                    endDate: new Date().toISOString().split('T')[0]
+                    emailAccount: '',
+                    startDate: '',
+                    endDate: ''
                 },
 
                 formatDateForBar(dateStr) {
@@ -755,12 +709,18 @@
 
                 formatDate(dateStr) {
                     const d = new Date(dateStr);
-                    return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+                    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                    const day = String(d.getDate()).padStart(2, '0');
+                    const month = months[d.getMonth()];
+                    const year = d.getFullYear();
+                    return `${day} ${month} ${year}`;
                 },
 
                 formatTime(dateStr) {
                     const d = new Date(dateStr);
-                    return d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }) + ' WIB';
+                    const hours = String(d.getHours()).padStart(2, '0');
+                    const minutes = String(d.getMinutes()).padStart(2, '0');
+                    return `${hours}.${minutes} WIB`;
                 },
 
                 handleAssign(id) {

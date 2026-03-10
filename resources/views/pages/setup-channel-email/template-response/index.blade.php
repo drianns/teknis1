@@ -2,18 +2,28 @@
 
 @section('content')
     <div class="flex-1 flex flex-col h-screen overflow-hidden bg-gray-900">
-        <header class="flex-shrink-0 mb-3 px-6 pt-4">
-            <h1 class="text-[28px] font-bold text-white tracking-tight mb-2">Template Response Email</h1>
-            <div class="flex items-center gap-2 text-sm text-gray-400">
-                <span class="hover:text-blue-400 cursor-pointer transition-colors">Home</span>
-                <span class="mx-2">/</span>
-                <span class="hover:text-blue-400 cursor-pointer transition-colors">Setup Channel Email</span>
-                <span class="mx-2">/</span>
-                <span class="current text-blue-500 font-semibold">Template Response Email</span>
+        <header class="flex-shrink-0 mb-3 px-6 pt-4 flex justify-between items-start">
+            <div>
+                <h1 class="text-[28px] font-bold text-white tracking-tight mb-2">Template Response Email</h1>
+                <div class="flex items-center gap-2 text-sm text-gray-400">
+                    <span class="hover:text-blue-400 cursor-pointer transition-colors">Home</span>
+                    <span class="mx-2">/</span>
+                    <span class="hover:text-blue-400 cursor-pointer transition-colors">Setup Channel Email</span>
+                    <span class="mx-2">/</span>
+                    <span class="current text-blue-500 font-semibold">Template Response Email</span>
+                </div>
             </div>
         </header>
 
     <div class="flex-1 flex flex-col p-4 lg:p-6 lg:pt-0 pt-0 overflow-hidden w-full">
+        <!-- Action Header -->
+        <div class="mb-4 flex justify-between items-center">
+            <div></div> <!-- Spacer -->
+            <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2 shadow-lg shadow-blue-500/30">
+                <i class='bx bx-plus text-lg'></i> Template Response Email
+            </button>
+        </div>
+
         <div class="table-section bg-gray-800/80 backdrop-blur-md rounded-2xl border border-gray-700/50 shadow-2xl overflow-hidden ring-1 ring-white/5 flex-1 flex flex-col min-h-0">
             <div class="table-controls px-4 py-3 border-b border-gray-700/50 bg-gray-800/30 flex flex-wrap justify-between items-center gap-4">
                 <div class="flex items-center gap-3 text-sm text-gray-400">
@@ -36,16 +46,15 @@
                     <thead class="bg-gray-900/50">
                         <tr>
                             <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 w-16 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">ID</th>
-                            <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Nama Template</th>
-                            <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Subject</th>
-                            <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Body</th>
-                            <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Kategori</th>
+                            <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Template Response Email</th>
+                            <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Format Type</th>
+                            <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 w-28 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">Status</th>
                             <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 w-20 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody id="table-body" class="divide-y divide-gray-700/50 text-sm text-gray-300">
                         <tr>
-                            <td colspan="6" class="px-4 py-12 text-center text-gray-500">
+                            <td colspan="5" class="px-4 py-12 text-center text-gray-500">
                                 <div class="flex flex-col items-center gap-3">
                                     <div class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                                     <p>Loading data...</p>
@@ -63,11 +72,107 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Form -->
+<div id="formModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block align-bottom bg-gray-800 rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full border border-gray-700">
+            <div class="bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4 border-b border-gray-700 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-white" id="modalTitle">Data Format Email Response</h3>
+                <button type="button" onclick="closeModal()" class="text-gray-400 hover:text-white transition-colors">
+                    <i class='bx bx-x text-2xl'></i>
+                </button>
+            </div>
+            <form id="templateForm" onsubmit="submitForm(event)">
+                <input type="hidden" id="template_id" name="template_id">
+                <div class="bg-gray-800 px-4 py-5 sm:p-6 space-y-5 flex-1 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Template Response Email (Maksimal 7500 Character) <span class="text-red-500">*</span></label>
+                        <textarea id="body" name="body" class="summernote" required></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Format Type <span class="text-red-500">*</span></label>
+                            <input type="text" id="format_type" name="format_type" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-gray-300 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="e.g., Nespresso-Konfirmasi..." required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Status <span class="text-red-500">*</span></label>
+                            <select id="is_active" name="is_active" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-gray-300 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" required>
+                                <option value="1">Aktif</option>
+                                <option value="0">Non-Aktif</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="bg-gray-900/50 px-4 py-4 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-2xl border-t border-gray-700">
+                    <button type="submit" id="submitBtn" class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-6 py-2.5 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm transition-colors">
+                        Update
+                    </button>
+                    <button type="button" onclick="closeModal()" class="mt-3 w-full inline-flex justify-center rounded-xl border border-red-500/50 shadow-sm px-6 py-2.5 bg-red-500/10 text-base font-medium text-red-400 hover:bg-red-500/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-red-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition-colors">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @include('pages.setup-channel-email.partials._scrollbar')
+
+<!-- Summernote CSS & JS -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+
+<style>
+    .note-editor.note-frame {
+        border-color: #374151;
+        border-radius: 0.75rem;
+        background: #111827;
+    }
+    .note-editor .note-toolbar {
+        background: #1f2937;
+        border-bottom-color: #374151;
+        border-top-left-radius: 0.75rem;
+        border-top-right-radius: 0.75rem;
+    }
+    .note-editor .note-editable {
+        background: #111827;
+        color: #d1d5db;
+        border-bottom-left-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+    }
+    .note-btn { background: #374151 !important; color: #d1d5db !important; border-color: #4b5563 !important; }
+    .note-btn:hover { background: #4b5563 !important; }
+    .note-icon-caret { display: none; }
+</style>
 
 <script>
     const AJAX_URL = "{{ route('setup-channel-email.template-response.getData') }}";
+    const STORE_URL = "{{ route('setup-channel-email.template-response.store') }}";
+    const UPDATE_URL_TEMPLATE = "{{ url('setup-channel-email/template-response') }}";
     let searchTimeout;
+
+    $(document).ready(function() {
+        $('.summernote').summernote({
+            height: 200,
+            toolbar: [
+                ['style', ['bold', 'italic']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['insert', ['link']],
+                ['help', ['help']]
+            ],
+            callbacks: {
+                onChange: function(contents) {
+                    $('#body').val(contents);
+                }
+            }
+        });
+    });
 
     function loadTable(page = 1) {
         const tableBody = document.getElementById('table-body');
@@ -84,41 +189,53 @@
         })
         .catch(err => {
             console.error(err);
-            tableBody.innerHTML = '<tr><td colspan="6" class="px-4 py-12 text-center text-red-400 font-bold italic">Error loading data. Please try again.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="5" class="px-4 py-12 text-center text-red-400 font-bold italic">Error loading data. Please try again.</td></tr>';
         });
     }
 
     function renderTable(rows) {
         const tableBody = document.getElementById('table-body');
         if (!rows || rows.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="6" class="px-4 py-12 text-center text-gray-500"><div class="flex flex-col items-center gap-2"><i class="bx bx-folder-open text-4xl opacity-20"></i><p>No response templates found</p></div></td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="5" class="px-4 py-12 text-center text-gray-500"><div class="flex flex-col items-center gap-2"><i class="bx bx-folder-open text-4xl opacity-20"></i><p>No response templates found</p></div></td></tr>';
             return;
         }
 
-        tableBody.innerHTML = rows.map(row => `
-            <tr class="hover:bg-blue-500/[0.03] transition-colors group/row">
-                <td class="px-4 py-3 font-mono text-blue-400 font-medium text-center">${row.id}</td>
-                <td class="px-4 py-3 font-medium text-white">${esc(row.name)}</td>
-                <td class="px-4 py-3 text-gray-300 font-normal">${esc(row.subject)}</td>
-                <td class="px-4 py-3 text-gray-400 truncate max-w-sm font-normal">${esc(row.body)}</td>
-                <td class="px-4 py-3 text-gray-300 font-normal">
-                    <span class="px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 text-[10px] font-bold uppercase border border-blue-500/20">
-                        ${esc(row.category || 'General')}
+        tableBody.innerHTML = rows.map(row => {
+            // Strip HTML tags for preview and encode single quotes for JSON
+            const rawBody = row.body ? row.body : '';
+            const plainBody = rawBody.replace(/<[^>]+>/g, '');
+            const truncatedBody = plainBody.length > 500 ? plainBody.substring(0, 500) + '...' : plainBody;
+            
+            // Create a safe stringified version of the row for the edit function
+            const safeRow = esc(JSON.stringify(row));
+            
+            return `
+            <tr class="hover:bg-blue-500/[0.03] transition-colors group/row border-b border-gray-700/30">
+                <td class="px-4 py-4 font-mono text-blue-400 font-medium text-center align-top">${row.id}</td>
+                <td class="px-4 py-4 text-gray-300 font-normal align-top">
+                    <div class="prose prose-sm prose-invert max-w-none text-xs text-gray-400">
+                        ${rawBody}
+                    </div>
+                </td>
+                <td class="px-4 py-4 text-white font-medium align-top">${esc(row.format_type || '-')}</td>
+                <td class="px-4 py-4 text-center align-top">
+                    <span class="${row.is_active ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-red-500/20 text-red-400 border-red-500/30'} px-3 py-1 rounded-full text-[11px] font-bold border whitespace-nowrap tracking-wider shadow-sm">
+                        ${row.is_active ? 'Aktif' : 'Non-Aktif'}
                     </span>
                 </td>
-                <td class="px-4 py-3 text-center">
+                <td class="px-4 py-4 text-center align-top">
                     <div class="relative flex justify-center" x-data="{ open: false }">
                         <button @click.stop="open = !open" class="w-8 h-8 rounded-lg bg-gray-800 border border-gray-700/50 hover:bg-gray-700 flex items-center justify-center text-gray-400 hover:text-white transition-all shadow-sm">
                             <i class='bx bx-dots-vertical-rounded text-lg'></i>
                         </button>
                         <div x-show="open" @click.outside="open = false" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="absolute right-0 top-full mt-2 w-32 bg-gray-900 border border-gray-700/50 rounded-xl shadow-2xl z-20 overflow-hidden ring-1 ring-white/5" style="display:none;">
-                            <button class="w-full text-left px-4 py-2.5 text-xs text-gray-300 hover:bg-blue-500/10 hover:text-blue-400 flex items-center gap-3 border-b border-gray-700/30 transition-colors"><i class='bx bx-edit-alt text-lg'></i><span class="font-bold">Edit</span></button>
-                            <button class="w-full text-left px-4 py-2.5 text-xs text-red-400 hover:bg-red-500/10 flex items-center gap-3 transition-colors"><i class='bx bx-trash text-lg'></i><span class="font-bold">Delete</span></button>
+                            <button onclick="editModal('${safeRow}')" class="w-full text-left px-4 py-2.5 text-xs text-gray-300 hover:bg-blue-500/10 hover:text-blue-400 flex items-center gap-3 border-b border-gray-700/30 transition-colors"><i class='bx bx-edit-alt text-lg'></i><span class="font-bold">Edit</span></button>
+                            <button onclick="deleteTemplate(${row.id})" class="w-full text-left px-4 py-2.5 text-xs text-red-400 hover:bg-red-500/10 flex items-center gap-3 transition-colors"><i class='bx bx-trash text-lg'></i><span class="font-bold">Delete</span></button>
                         </div>
                     </div>
                 </td>
             </tr>
-        `).join('');
+        `}).join('');
     }
 
     function renderPagination(data) {
@@ -162,7 +279,104 @@
         return String(s || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
     }
 
+    // Modal logic
+    function openModal() {
+        document.getElementById('templateForm').reset();
+        document.getElementById('template_id').value = '';
+        $('#body').summernote('code', '');
+        document.getElementById('modalTitle').innerText = 'Data Format Email Response';
+        document.getElementById('formModal').classList.remove('hidden');
+    }
+
+    function editModal(rowStr) {
+        try {
+            // Unescape single quotes potentially in HTML attributes if we used them, but we used encodeURIComponent
+            const doc = new DOMParser().parseFromString(rowStr, "text/html");
+            const row = JSON.parse(doc.documentElement.textContent);
+            
+            document.getElementById('template_id').value = row.id;
+            document.getElementById('format_type').value = row.format_type;
+            
+            // Set is_active correctly handling null/undefined/booleans seamlessly
+            let isActiveVal = "0";
+            if (row.is_active || row.is_active === 1 || row.is_active === "1") {
+                isActiveVal = "1";
+            }
+            document.getElementById('is_active').value = isActiveVal;
+            
+            $('#body').summernote('code', row.body);
+            
+            document.getElementById('modalTitle').innerText = 'Data Format Email Response';
+            document.getElementById('formModal').classList.remove('hidden');
+        } catch(e) { console.error('Error parsing row data', e); }
+    }
+
+    function closeModal() {
+        document.getElementById('formModal').classList.add('hidden');
+    }
+
+    function submitForm(e) {
+        e.preventDefault();
+        
+        const id = document.getElementById('template_id').value;
+        const formData = {
+            body: $('#body').summernote('code'),
+            format_type: document.getElementById('format_type').value,
+            is_active: document.getElementById('is_active').value
+        };
+
+        const url = id ? `${UPDATE_URL_TEMPLATE}/${id}` : STORE_URL;
+        const method = id ? 'PUT' : 'POST';
+
+        fetch(url, {
+            method: method,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                closeModal();
+                loadTable(1);
+            } else {
+                alert('Gagal menyimpan data');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Terjadi kesalahan jaringan');
+        });
+    }
+
+    function deleteTemplate(id) {
+        if (!confirm('Apakah anda yakin ingin menghapus template ini?')) return;
+
+        fetch(`${UPDATE_URL_TEMPLATE}/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                loadTable(1);
+            } else {
+                alert('Gagal menghapus data');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Terjadi kesalahan jaringan');
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', () => loadTable(1));
 </script>
 @endsection
-

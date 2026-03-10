@@ -3,13 +3,13 @@
 @section('content')
     <div class="flex-1 flex flex-col h-screen overflow-hidden bg-gray-900">
         <header class="flex-shrink-0 mb-3 px-6 pt-4">
-            <h1 class="text-[28px] font-bold text-white tracking-tight mb-2">Jam Operasional Email</h1>
+            <h1 class="text-[28px] font-bold text-white tracking-tight mb-2">Data Jam Operasional Email</h1>
             <div class="flex items-center gap-2 text-sm text-gray-400">
                 <span class="hover:text-blue-400 cursor-pointer transition-colors">Home</span>
                 <span class="mx-2">/</span>
                 <span class="hover:text-blue-400 cursor-pointer transition-colors">Setup Channel Email</span>
                 <span class="mx-2">/</span>
-                <span class="current text-blue-500 font-semibold">Jam Operasional Email</span>
+                <span class="current text-blue-500 font-semibold">Data Jam Operasional Email</span>
             </div>
         </header>
 
@@ -36,16 +36,14 @@
                     <thead class="bg-gray-900/50">
                         <tr>
                             <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 w-16 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">ID</th>
-                            <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Hari</th>
-                            <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Jam Buka</th>
-                            <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Jam Tutup</th>
-                            <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 w-28 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">Status</th>
+                            <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Jam Mulai</th>
+                            <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Jam Selesai</th>
                             <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 w-20 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody id="table-body" class="divide-y divide-gray-700/50 text-sm text-gray-300">
                         <tr>
-                            <td colspan="6" class="px-4 py-12 text-center text-gray-500">
+                            <td colspan="4" class="px-4 py-12 text-center text-gray-500">
                                 <div class="flex flex-col items-center gap-3">
                                     <div class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                                     <p>Loading data...</p>
@@ -63,10 +61,52 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Edit Form -->
+<div id="formModal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block align-bottom bg-gray-800 rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-gray-700">
+            <div class="bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4 border-b border-gray-700 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-white">Edit Jam Operasional</h3>
+                <button type="button" onclick="closeModal()" class="text-gray-400 hover:text-white transition-colors">
+                    <i class='bx bx-x text-2xl'></i>
+                </button>
+            </div>
+            <form id="jamForm" onsubmit="submitForm(event)">
+                <input type="hidden" id="jam_id" name="jam_id">
+                <div class="bg-gray-800 px-4 py-5 sm:p-6 space-y-5">
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Jam Mulai <span class="text-red-500">*</span></label>
+                            <input type="time" id="open_time" name="open_time" step="1" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-gray-300 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Jam Selesai <span class="text-red-500">*</span></label>
+                            <input type="time" id="close_time" name="close_time" step="1" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-gray-300 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" required>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="bg-gray-900/50 px-4 py-4 sm:px-6 sm:flex sm:flex-row-reverse rounded-b-2xl border-t border-gray-700">
+                    <button type="submit" id="submitBtn" class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-6 py-2.5 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm transition-colors">
+                        Update
+                    </button>
+                    <button type="button" onclick="closeModal()" class="mt-3 w-full inline-flex justify-center rounded-xl border border-red-500/50 shadow-sm px-6 py-2.5 bg-red-500/10 text-base font-medium text-red-400 hover:bg-red-500/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-red-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition-colors">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @include('pages.setup-channel-email.partials._scrollbar')
 
 <script>
     const AJAX_URL = "{{ route('setup-channel-email.jam-operasional.getData') }}";
+    const UPDATE_URL_TEMPLATE = "{{ url('setup-channel-email/jam-operasional') }}";
     let searchTimeout;
 
     function loadTable(page = 1) {
@@ -84,41 +124,36 @@
         })
         .catch(err => {
             console.error(err);
-            tableBody.innerHTML = '<tr><td colspan="6" class="px-4 py-12 text-center text-red-400 font-bold italic">Error loading data. Please try again.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="4" class="px-4 py-12 text-center text-red-400 font-bold italic">Error loading data. Please try again.</td></tr>';
         });
     }
 
     function renderTable(rows) {
         const tableBody = document.getElementById('table-body');
         if (!rows || rows.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="6" class="px-4 py-12 text-center text-gray-500"><div class="flex flex-col items-center gap-2"><i class="bx bx-folder-open text-4xl opacity-20"></i><p>No operational hours data found</p></div></td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="4" class="px-4 py-12 text-center text-gray-500"><div class="flex flex-col items-center gap-2"><i class="bx bx-folder-open text-4xl opacity-20"></i><p>No operational hours data found</p></div></td></tr>';
             return;
         }
 
-        tableBody.innerHTML = rows.map(row => `
-            <tr class="hover:bg-blue-500/[0.03] transition-colors group/row">
-                <td class="px-4 py-3 font-mono text-blue-400 font-medium text-center">${row.id}</td>
-                <td class="px-4 py-3 font-medium text-white">${esc(row.day)}</td>
-                <td class="px-4 py-3 text-emerald-400 font-mono text-[13px]">${esc(row.open_time || '--:--')}</td>
-                <td class="px-4 py-3 text-red-400 font-mono text-[13px]">${esc(row.close_time || '--:--')}</td>
-                <td class="px-4 py-3 text-center">
-                    <span class="${row.is_active ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-red-500/20 text-red-400 border-red-500/30'} px-3 py-1 rounded-full text-[11px] font-bold border whitespace-nowrap uppercase tracking-wider shadow-sm">
-                        ${row.is_active ? 'Aktif' : 'Non-Aktif'}
-                    </span>
-                </td>
-                <td class="px-4 py-3 text-center">
+        tableBody.innerHTML = rows.map(row => {
+            const safeRow = esc(JSON.stringify(row));
+            return `
+            <tr class="hover:bg-blue-500/[0.03] transition-colors group/row border-b border-gray-700/30">
+                <td class="px-4 py-4 font-mono text-blue-400 font-medium text-center">${row.id}</td>
+                <td class="px-4 py-4 text-emerald-400 font-mono text-[13px]">${esc(row.open_time || '--:--')}</td>
+                <td class="px-4 py-4 text-red-400 font-mono text-[13px]">${esc(row.close_time || '--:--')}</td>
+                <td class="px-4 py-4 text-center">
                     <div class="relative flex justify-center" x-data="{ open: false }">
                         <button @click.stop="open = !open" class="w-8 h-8 rounded-lg bg-gray-800 border border-gray-700/50 hover:bg-gray-700 flex items-center justify-center text-gray-400 hover:text-white transition-all shadow-sm">
                             <i class='bx bx-dots-vertical-rounded text-lg'></i>
                         </button>
                         <div x-show="open" @click.outside="open = false" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="absolute right-0 top-full mt-2 w-32 bg-gray-900 border border-gray-700/50 rounded-xl shadow-2xl z-20 overflow-hidden ring-1 ring-white/5" style="display:none;">
-                            <button class="w-full text-left px-4 py-2.5 text-xs text-gray-300 hover:bg-blue-500/10 hover:text-blue-400 flex items-center gap-3 border-b border-gray-700/30 transition-colors"><i class='bx bx-edit-alt text-lg'></i><span class="font-bold">Edit</span></button>
-                            <button class="w-full text-left px-4 py-2.5 text-xs text-red-400 hover:bg-red-500/10 flex items-center gap-3 transition-colors"><i class='bx bx-trash text-lg'></i><span class="font-bold">Delete</span></button>
+                            <button onclick="editModal('${safeRow}')" class="w-full text-left px-4 py-2.5 text-xs text-gray-300 hover:bg-blue-500/10 hover:text-blue-400 flex items-center gap-3 transition-colors"><i class='bx bx-edit-alt text-lg'></i><span class="font-bold">Edit</span></button>
                         </div>
                     </div>
                 </td>
             </tr>
-        `).join('');
+        `}).join('');
     }
 
     function renderPagination(data) {
@@ -162,7 +197,55 @@
         return String(s || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
     }
 
+    function editModal(rowStr) {
+        try {
+            const doc = new DOMParser().parseFromString(rowStr, "text/html");
+            const row = JSON.parse(doc.documentElement.textContent);
+            
+            document.getElementById('jam_id').value = row.id;
+            document.getElementById('open_time').value = row.open_time;
+            document.getElementById('close_time').value = row.close_time;
+            document.getElementById('formModal').classList.remove('hidden');
+        } catch(e) { console.error('Error parsing row data', e); }
+    }
+
+    function closeModal() {
+        document.getElementById('formModal').classList.add('hidden');
+    }
+
+    function submitForm(e) {
+        e.preventDefault();
+        
+        const id = document.getElementById('jam_id').value;
+        const formData = {
+            open_time: document.getElementById('open_time').value,
+            close_time: document.getElementById('close_time').value
+        };
+
+        fetch(`${UPDATE_URL_TEMPLATE}/${id}`, {
+            method: 'PUT',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                closeModal();
+                loadTable(1);
+            } else {
+                alert('Gagal menyimpan data');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Terjadi kesalahan jaringan');
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', () => loadTable(1));
 </script>
 @endsection
-

@@ -106,9 +106,10 @@
                 <td class="px-4 py-3 font-mono text-blue-400 font-medium text-center">${row.id}</td>
                 <td class="px-4 py-3 font-medium text-white">${esc(row.name)}</td>
                 <td class="px-4 py-3 text-center">
-                    <span class="${row.is_active ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-red-500/20 text-red-400 border-red-500/30'} px-3 py-1 rounded-full text-[11px] font-bold border whitespace-nowrap uppercase tracking-wider shadow-sm">
-                        ${row.is_active ? 'Aktif' : 'Non-Aktif'}
-                    </span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" class="sr-only peer" ${row.is_active ? 'checked' : ''} onchange="toggleStatus(${row.id})">
+                        <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-checked:bg-blue-600 peer-focus:ring-4 peer-focus:ring-blue-800 transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div>
+                    </label>
                 </td>
                 <td class="px-4 py-3 text-center">
                     <div class="relative flex justify-center" x-data="{ open: false }">
@@ -123,6 +124,29 @@
                 </td>
             </tr>
         `).join('');
+    }
+
+    function toggleStatus(id) {
+        fetch(`{{ url('setup-channel-email/setting-auto-reply') }}/${id}/toggle`, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) {
+                alert('Gagal merubah status!');
+                loadTable(1);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Terjadi kesalahan jaringan');
+            loadTable(1);
+        });
     }
 
     function renderPagination(data) {

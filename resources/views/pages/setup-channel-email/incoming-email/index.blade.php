@@ -15,18 +15,50 @@
 
         <div class="flex-1 flex flex-col p-4 lg:p-6 lg:pt-0 pt-0 overflow-hidden w-full">
             <div class="table-section bg-gray-800/80 backdrop-blur-md rounded-2xl border border-gray-700/50 shadow-2xl overflow-hidden ring-1 ring-white/5 flex-1 flex flex-col min-h-0">
-                <div class="table-controls px-4 py-3 border-b border-gray-700/50 bg-gray-800/30 flex flex-wrap justify-between items-center gap-4">
+                <div class="px-6 py-5 border-b border-gray-700/50 bg-gray-800/50 flex flex-col xl:flex-row justify-between gap-6">
+                    <!-- Filters Section -->
+                    <div class="flex flex-wrap items-end gap-4">
+                        <div class="space-y-1.5 flex-1 min-w-[200px]">
+                            <label class="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">Start Date</label>
+                            <input type="date" id="start-date" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-sm text-white focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none transition-all shadow-inner">
+                        </div>
+                        <div class="space-y-1.5 flex-1 min-w-[200px]">
+                            <label class="text-xs font-bold text-gray-400 uppercase tracking-wider ml-1">End Date</label>
+                            <input type="date" id="end-date" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-sm text-white focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none transition-all shadow-inner">
+                        </div>
+                        <button onclick="loadTable(1)" class="h-[42px] px-6 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-blue-600/20 active:scale-95 transition-all flex items-center gap-2">
+                            <span>Submit</span>
+                        </button>
+                    </div>
+
+                    <!-- Export Section -->
+                    <div class="flex flex-wrap items-end gap-3 xl:ml-auto">
+                        <div class="relative w-40">
+                            <select id="export-type" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 pr-10 text-sm text-gray-300 appearance-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none transition-all shadow-inner cursor-pointer">
+                                <option value="excel">Excel</option>
+                                <option value="csv">CSV</option>
+                                <option value="pdf">PDF</option>
+                            </select>
+                            <i class="bx bx-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"></i>
+                        </div>
+                        <button class="h-[42px] px-6 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-emerald-600/20 active:scale-95 transition-all flex items-center gap-2">
+                            <span>Export</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-controls px-6 py-4 border-b border-gray-700/50 bg-gray-800/30 flex flex-wrap justify-between items-center gap-4">
                     <div class="flex items-center gap-3 text-sm text-gray-400">
                         <span>Show</span>
-                        <select id="per-page" onchange="loadTable(1)" class="bg-gray-800 border-gray-700 rounded-lg px-2 py-1 text-xs text-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                        <select id="per-page" onchange="loadTable(1)" class="bg-gray-900 border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 cursor-pointer">
                             <option value="10">10</option>
                             <option value="25">25</option>
                             <option value="50">50</option>
                         </select>
                         <span>entries</span>
                     </div>
-                    <div class="relative">
-                        <input type="text" id="search-input" oninput="debounceSearch()" class="bg-gray-800 border border-gray-700 rounded-xl pl-10 pr-4 py-2 text-sm text-gray-300 focus:outline-none focus:border-blue-500 w-64 placeholder-gray-500 shadow-inner" placeholder="Search Subject or Ticket..." />
+                    <div class="relative w-full sm:w-80">
+                        <input type="text" id="search-input" oninput="debounceSearch()" class="w-full bg-gray-900 border border-gray-700 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 shadow-inner placeholder-gray-500" placeholder="Search Subject or Ticket..." />
                         <i class='bx bx-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 text-lg'></i>
                     </div>
                 </div>
@@ -74,8 +106,11 @@
             const tableBody = document.getElementById('table-body');
             const search = document.getElementById('search-input').value;
             const perPage = document.getElementById('per-page').value;
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
 
-            fetch(`${AJAX_URL}?page=${page}&search=${encodeURIComponent(search)}&per_page=${perPage}`, {
+            // Optional: send start and end dates to controller if supported
+            fetch(`${AJAX_URL}?page=${page}&search=${encodeURIComponent(search)}&per_page=${perPage}&start_date=${startDate}&end_date=${endDate}`, {
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
             })
             .then(res => res.json())
@@ -167,7 +202,16 @@
             return String(s || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
         }
 
-        document.addEventListener('DOMContentLoaded', () => loadTable(1));
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            const lastMonth = new Date(today);
+            lastMonth.setDate(today.getDate() - 30);
+            
+            document.getElementById('start-date').value = lastMonth.toISOString().split('T')[0];
+            document.getElementById('end-date').value = today.toISOString().split('T')[0];
+
+            loadTable(1);
+        });
     </script>
 @endsection
 

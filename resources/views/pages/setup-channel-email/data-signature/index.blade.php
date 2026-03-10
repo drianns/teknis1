@@ -35,15 +35,14 @@
                 <table class="w-full text-left border-collapse">
                     <thead class="bg-gray-900/50">
                         <tr>
-                            <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 w-16 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">ID</th>
-                            <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Nama Signature</th>
-                            <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Konten Signature</th>
-                            <th class="sticky top-0 z-10 bg-gray-900 px-4 py-3 w-20 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">Action</th>
+                            <th class="sticky top-0 z-10 bg-gray-900 px-6 py-4 w-16 text-xs font-bold text-gray-400 uppercase tracking-widest text-center">Id</th>
+                            <th class="sticky top-0 z-10 bg-gray-900 px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Signature</th>
+                            <th class="sticky top-0 z-10 bg-gray-900 px-6 py-4 w-24 text-xs font-bold text-gray-400 uppercase tracking-widest text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody id="table-body" class="divide-y divide-gray-700/50 text-sm text-gray-300">
                         <tr>
-                            <td colspan="4" class="px-4 py-12 text-center text-gray-500">
+                            <td colspan="3" class="px-6 py-12 text-center text-gray-500">
                                 <div class="flex flex-col items-center gap-3">
                                     <div class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                                     <p>Loading data...</p>
@@ -61,11 +60,93 @@
         </div>
     </div>
 </div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
+    <div class="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-4xl shadow-2xl relative overflow-hidden transform transition-all">
+        <!-- Header -->
+        <div class="px-6 py-4 border-b border-gray-700 bg-gray-900/50 flex justify-between items-center">
+            <h3 class="text-lg font-bold text-gray-300 tracking-tight">Form Signature Email</h3>
+            <button onclick="closeModal()" class="text-gray-500 hover:text-white transition-colors">
+                <i class='bx bx-x text-2xl'></i>
+            </button>
+        </div>
+        
+        <form id="editForm" onsubmit="handleUpdate(event)">
+            @csrf
+            <input type="hidden" id="edit-id">
+            <div class="p-6">
+                <div class="mb-6 h-[400px]">
+                    <textarea id="edit-content" name="content"></textarea>
+                </div>
+            </div>
+            
+            <div class="px-6 py-4 bg-gray-800/30 border-t border-gray-700 flex justify-between gap-3">
+                <button type="button" onclick="closeModal()" class="px-6 py-2.5 bg-rose-500 hover:bg-rose-600 text-white text-sm font-bold rounded-full transition-all shadow-lg shadow-rose-500/20">
+                    Cancel
+                </button>
+                <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-full transition-all shadow-lg shadow-blue-500/20">
+                    Submit
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 @include('pages.setup-channel-email.partials._scrollbar')
+
+<!-- Summernote Dependencies -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+
+<style>
+    .note-editor.note-frame {
+        border: 1px solid rgba(55, 65, 81, 1) !important;
+        background: transparent !important;
+        border-radius: 12px !important;
+        overflow: hidden;
+    }
+    .note-toolbar {
+        background: rgba(17, 24, 39, 0.5) !important;
+        border-bottom: 1px solid rgba(55, 65, 81, 1) !important;
+    }
+    .note-btn {
+        background: transparent !important;
+        border: none !important;
+        color: #9ca3af !important;
+    }
+    .note-btn:hover {
+        background: rgba(59, 130, 246, 0.1) !important;
+        color: #fff !important;
+    }
+    .note-editable {
+        background: transparent !important;
+        color: #d1d5db !important;
+        font-size: 14px !important;
+    }
+</style>
 
 <script>
     const AJAX_URL = "{{ route('setup-channel-email.data-signature.getData') }}";
+    const UPDATE_URL = "{{ url('setup-channel-email/data-signature') }}";
     let searchTimeout;
+
+    $(document).ready(function() {
+        $('#edit-content').summernote({
+            placeholder: 'Write signature content here...',
+            tabsize: 2,
+            height: 350,
+            toolbar: [
+                ['style', ['bold', 'italic']],
+                ['para', ['ul', 'ol']],
+                ['insert', ['link']],
+                ['view', ['help']]
+            ]
+        });
+        loadTable(1);
+    });
 
     function loadTable(page = 1) {
         const tableBody = document.getElementById('table-body');
@@ -82,35 +163,73 @@
         })
         .catch(err => {
             console.error(err);
-            tableBody.innerHTML = '<tr><td colspan="4" class="px-4 py-12 text-center text-red-400 font-bold italic">Error loading data. Please try again.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="3" class="px-6 py-12 text-center text-red-400 font-bold italic">Error loading data. Please try again.</td></tr>';
         });
     }
 
     function renderTable(rows) {
         const tableBody = document.getElementById('table-body');
         if (!rows || rows.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="4" class="px-4 py-12 text-center text-gray-500"><div class="flex flex-col items-center gap-2"><i class="bx bx-folder-open text-4xl opacity-20"></i><p>No signature email data found</p></div></td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="3" class="px-6 py-12 text-center text-gray-500"><div class="flex flex-col items-center gap-2"><i class="bx bx-folder-open text-4xl opacity-20"></i><p>No signature email data found</p></div></td></tr>';
             return;
         }
 
         tableBody.innerHTML = rows.map(row => `
-            <tr class="hover:bg-blue-500/[0.03] transition-colors group/row">
-                <td class="px-4 py-3 font-mono text-blue-400 font-medium text-center">${row.id}</td>
-                <td class="px-4 py-3 font-medium text-white">${esc(row.name)}</td>
-                <td class="px-4 py-3 text-gray-400 truncate max-w-md">${esc(row.content)}</td>
-                <td class="px-4 py-3 text-center">
-                    <div class="relative flex justify-center" x-data="{ open: false }">
-                        <button @click.stop="open = !open" class="w-8 h-8 rounded-lg bg-gray-800 border border-gray-700/50 hover:bg-gray-700 flex items-center justify-center text-gray-400 hover:text-white transition-all shadow-sm">
-                            <i class='bx bx-dots-vertical-rounded text-lg'></i>
-                        </button>
-                        <div x-show="open" @click.outside="open = false" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="absolute right-0 top-full mt-2 w-32 bg-gray-900 border border-gray-700/50 rounded-xl shadow-2xl z-20 overflow-hidden ring-1 ring-white/5" style="display:none;">
-                            <button class="w-full text-left px-4 py-2.5 text-xs text-gray-300 hover:bg-blue-500/10 hover:text-blue-400 flex items-center gap-3 border-b border-gray-700/30 transition-colors"><i class='bx bx-edit-alt text-lg'></i><span class="font-bold">Edit</span></button>
-                            <button class="w-full text-left px-4 py-2.5 text-xs text-red-400 hover:bg-red-500/10 flex items-center gap-3 transition-colors"><i class='bx bx-trash text-lg'></i><span class="font-bold">Delete</span></button>
-                        </div>
+            <tr class="hover:bg-blue-500/[0.03] transition-colors group/row border-b border-gray-700/50">
+                <td class="px-6 py-5 font-medium text-gray-400 text-center">${row.id}</td>
+                <td class="px-6 py-5">
+                    <div class="text-gray-300 signature-preview">
+                        ${row.content}
                     </div>
+                </td>
+                <td class="px-6 py-5 text-center">
+                    <button onclick='openEditModal(${JSON.stringify(row)})' class="p-2 rounded-lg bg-gray-900 border border-gray-700/50 hover:bg-gray-700 text-blue-500 hover:text-blue-400 transition-all shadow-sm">
+                        <i class='bx bx-edit-alt text-lg'></i>
+                    </button>
                 </td>
             </tr>
         `).join('');
+    }
+
+    function openEditModal(data) {
+        document.getElementById('edit-id').value = data.id;
+        $('#edit-content').summernote('code', data.content);
+        
+        const modal = document.getElementById('editModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('editModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    function handleUpdate(e) {
+        e.preventDefault();
+        const id = document.getElementById('edit-id').value;
+        const content = $('#edit-content').summernote('code');
+        const token = document.querySelector('input[name="_token"]').value;
+
+        fetch(`${UPDATE_URL}/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': token,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ content })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                closeModal();
+                loadTable();
+                // Optional: Show toast notification
+            }
+        })
+        .catch(err => console.error(err));
     }
 
     function renderPagination(data) {
@@ -149,12 +268,6 @@
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => loadTable(1), 500);
     }
-
-    function esc(s) {
-        return String(s || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
-    }
-
-    document.addEventListener('DOMContentLoaded', () => loadTable(1));
 </script>
 @endsection
 

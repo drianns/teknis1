@@ -2,8 +2,7 @@
     $isActive = fn($route) => request()->routeIs($route);
 
     $menuGroups = [
-        ['type' => 'link', 'route' => 'home', 'label' => 'Home', 'icon' => 'bx-home-alt'],
-        ['type' => 'link', 'route' => 'channel.email.inbox', 'label' => 'Messages', 'icon' => 'bx-message-square-detail'],
+        ['type' => 'link', 'route' => 'home', 'label' => 'Dashboard', 'icon' => 'bx-tachometer'],
         [
             'type' => 'group', 'key' => 'apps', 'label' => 'Apps', 'icon' => 'bx-grid-alt',
             'active' => request()->is('apps/*'),
@@ -16,81 +15,7 @@
             ]
         ],
         [
-            'type' => 'group', 'key' => 'recording', 'label' => 'Recording', 'icon' => 'bx-microphone',
-            'active' => request()->is('recording*'),
-            'items' => [['route' => 'recording.index', 'label' => 'Voice Recording']]
-        ],
-        [
-            'type' => 'group', 'key' => 'report', 'label' => 'Report', 'icon' => 'bx-bar-chart-alt-2',
-            'active' => request()->is('report/*'),
-            'items' => [
-                ['route' => 'report.statistic-call', 'label' => 'Statistic Call'],
-                ['route' => 'report.assign-email', 'label' => 'Assign Email'],
-                ['route' => 'report.sl-nespresso', 'label' => 'SL Nespresso'],
-                ['route' => 'report.sl-kanmo', 'label' => 'SL Kanmo'],
-                ['route' => 'report.base-on-sla', 'label' => 'Base on SLA'],
-                ['route' => 'report.base-on-transaction', 'label' => 'Base on Transaction'],
-                ['route' => 'report.base-on-staff', 'label' => 'Base on Staff'],
-                ['route' => 'report.thread-transaction', 'label' => 'Thread Transaction'],
-                ['route' => 'report.interaction-ticket', 'label' => 'Interaction Ticket'],
-                ['route' => 'report.agent-aux', 'label' => 'Report AUX'],
-                ['route' => 'report.channel-email', 'label' => 'Channel Email'],
-            ]
-        ],
-        [
-            'type' => 'group', 'key' => 'masterCustomer', 'label' => 'Master Customer', 'icon' => 'bx-user',
-            'active' => request()->is('master-customer/*'),
-            'items' => [
-                ['route' => 'master-customer.data-table', 'label' => 'Data Table Customer'],
-                ['route' => 'master-customer.data-customer', 'label' => 'Data Customer'],
-            ]
-        ],
-        [
-            'type' => 'group', 'key' => 'channel', 'label' => 'Channel', 'icon' => 'bx-broadcast',
-            'active' => request()->is('channel/*'),
-            'items' => [
-                ['route' => 'channel.email.inbox', 'label' => 'Inbox Email'],
-                ['route' => 'channel.email.history', 'label' => 'History Email'],
-            ]
-        ],
-        [
-            'type' => 'group', 'key' => 'setupEmail', 'label' => 'Setup Channel Email', 'icon' => 'bx-cog',
-            'active' => request()->routeIs('dashboard.email', 'monitoring.email.response', 'setting.agent.email') || request()->is('setup-channel-email/*'),
-            'items' => [
-                ['route' => 'dashboard.email', 'label' => 'Dashboard Email'],
-                ['route' => 'monitoring.email.response', 'label' => 'Monitoring Response'],
-                ['route' => 'setting.agent.email', 'label' => 'Setting Agent Email'],
-                ['route' => 'setup-channel-email.setting-auto-reply', 'label' => 'Auto Reply Setting'],
-                ['route' => 'setup-channel-email.template-auto-reply', 'label' => 'Template Auto Reply'],
-                ['route' => 'setup-channel-email.template-response', 'label' => 'Template Response'],
-                ['route' => 'setup-channel-email.filter-jumlah-hari', 'label' => 'Filter Jumlah Hari'],
-                ['route' => 'setup-channel-email.jam-operasional', 'label' => 'Jam Operasional'],
-                ['route' => 'setup-channel-email.incoming-email', 'label' => 'Incoming Email'],
-                ['route' => 'setup-channel-email.setting-agent', 'label' => 'Setting Agent'],
-                ['route' => 'setup-channel-email.data-signature', 'label' => 'Data Signature'],
-                ['route' => 'setup-channel-email.account-corporate', 'label' => 'Account Corporate'],
-            ]
-        ],
-        [
-            'type' => 'group', 'key' => 'settingEmailSys', 'label' => 'Setting Email System', 'icon' => 'bx-envelope-open',
-            'active' => request()->is('setting-email-system/*'),
-            'items' => [
-                ['route' => 'setting-email-system.accounts', 'label' => 'Email Account'],
-                ['route' => 'setting-email-system.signature', 'label' => 'Email Signature'],
-                ['route' => 'setting-email-system.service', 'label' => 'Email Service'],
-                ['route' => 'setting-email-system.service-method', 'label' => 'Service Method'],
-                ['route' => 'setting-email-system.server-profile', 'label' => 'Server Profile'],
-                ['route' => 'setting-email-system.server-protocol', 'label' => 'Service Protocol'],
-                ['route' => 'setting-email-system.server-protocol-out', 'label' => 'Protocol Out'],
-            ]
-        ],
-        [
-            'type' => 'group', 'key' => 'epicSystem', 'label' => 'EPIC System', 'icon' => 'bx-chip',
-            'active' => request()->is('setting-epic-system/*'),
-            'items' => [['route' => 'setting-epic-system.configuration', 'label' => 'Configurasi EPIC']]
-        ],
-        [
-            'type' => 'group', 'key' => 'masterData', 'label' => 'Master Data', 'icon' => 'bx-data',
+            'type' => 'group', 'key' => 'masterData', 'label' => 'Master Data', 'icon' => 'bx-list-ul',
             'active' => request()->is('data-*') || request()->is('channel-ticket*') || request()->is('department-escalation*'),
             'items' => [
                 ['route' => 'data-group-name.index', 'label' => 'Group Name'],
@@ -115,20 +40,51 @@
             ]
         ],
         [
-            'type' => 'group', 'key' => 'channelCall', 'label' => 'Setup Channel Call', 'icon' => 'bx-phone-call',
-            'active' => request()->routeIs('setting.agent.call'),
-            'items' => [['route' => 'setting.agent.call', 'label' => 'Setting Agent Call']]
-        ],
-        [
-            'type' => 'group', 'key' => 'dataLogin', 'label' => 'Data Login', 'icon' => 'bx-log-in-circle',
-            'active' => request()->routeIs('monitoring.login.*', 'report.login-activity'),
+            'type' => 'group', 'key' => 'masterCustomer', 'label' => 'Master Customer', 'icon' => 'bx-group',
+            'active' => request()->is('master-customer/*'),
             'items' => [
-                ['route' => 'monitoring.login.index', 'label' => 'Monitoring Login'],
-                ['route' => 'report.login-activity', 'label' => 'Login Activity'],
+                ['route' => 'master-customer.data-table', 'label' => 'Data Table Customer'],
+                ['route' => 'master-customer.data-customer', 'label' => 'Data Customer'],
             ]
         ],
         [
-            'type' => 'group', 'key' => 'mgmtUser', 'label' => 'Management User', 'icon' => 'bx-user-pin',
+            'type' => 'group', 'key' => 'channel', 'label' => 'Channel', 'icon' => 'bx-plug',
+            'active' => request()->is('channel/*'),
+            'items' => [
+                ['route' => 'channel.email.inbox', 'label' => 'Inbox Email'],
+                ['route' => 'channel.email.history', 'label' => 'History Email'],
+            ]
+        ],
+        [
+            'type' => 'link', 'route' => 'bantu-dagang', 'label' => 'Bantu Dagang', 'icon' => 'bx-list-ul'
+        ],
+        [
+            'type' => 'link', 'route' => 'file-manager', 'label' => 'File Manager', 'icon' => 'bx-duplicate'
+        ],
+        [
+            'type' => 'group', 'key' => 'recording', 'label' => 'Recording', 'icon' => 'bx-list-ul',
+            'active' => request()->is('recording*'),
+            'items' => [['route' => 'recording.index', 'label' => 'Voice Recording']]
+        ],
+        [
+            'type' => 'group', 'key' => 'report', 'label' => 'Report', 'icon' => 'bx-duplicate',
+            'active' => request()->is('report/*'),
+            'items' => [
+                ['route' => 'report.statistic-call', 'label' => 'Statistic Call'],
+                ['route' => 'report.assign-email', 'label' => 'Assign Email'],
+                ['route' => 'report.sl-nespresso', 'label' => 'SL Nespresso'],
+                ['route' => 'report.sl-kanmo', 'label' => 'SL Kanmo'],
+                ['route' => 'report.base-on-sla', 'label' => 'Base on SLA'],
+                ['route' => 'report.base-on-transaction', 'label' => 'Base on Transaction'],
+                ['route' => 'report.base-on-staff', 'label' => 'Base on Staff'],
+                ['route' => 'report.thread-transaction', 'label' => 'Thread Transaction'],
+                ['route' => 'report.interaction-ticket', 'label' => 'Interaction Ticket'],
+                ['route' => 'report.agent-aux', 'label' => 'Report AUX'],
+                ['route' => 'report.channel-email', 'label' => 'Channel Email'],
+            ]
+        ],
+        [
+            'type' => 'group', 'key' => 'mgmtUser', 'label' => 'Management User', 'icon' => 'bx-id-card',
             'active' => request()->routeIs('management-user.*'),
             'items' => [
                 ['route' => 'management-user.data-access-application', 'label' => 'Data Access'],
@@ -138,7 +94,58 @@
             ]
         ],
         [
-            'type' => 'group', 'key' => 'settingApp', 'label' => 'Setting Application', 'icon' => 'bx-wrench',
+            'type' => 'link', 'route' => 'wallboard', 'label' => 'Wallboard', 'icon' => 'bx-tachometer'
+        ],
+        [
+            'type' => 'group', 'key' => 'dataLogin', 'label' => 'Data Login', 'icon' => 'bx-git-merge',
+            'active' => request()->routeIs('monitoring.login.*', 'report.login-activity'),
+            'items' => [
+                ['route' => 'monitoring.login.index', 'label' => 'Monitoring Login'],
+                ['route' => 'report.login-activity', 'label' => 'Login Activity'],
+            ]
+        ],
+        [
+            'type' => 'group', 'key' => 'settingEmailSys', 'label' => 'Setting Email System', 'icon' => 'bx-duplicate',
+            'active' => request()->is('setting-email-system/*'),
+            'items' => [
+                ['route' => 'setting-email-system.accounts', 'label' => 'Email Account'],
+                ['route' => 'setting-email-system.signature', 'label' => 'Email Signature'],
+                ['route' => 'setting-email-system.service', 'label' => 'Email Service'],
+                ['route' => 'setting-email-system.service-method', 'label' => 'Service Method'],
+                ['route' => 'setting-email-system.server-profile', 'label' => 'Server Profile'],
+                ['route' => 'setting-email-system.server-protocol', 'label' => 'Service Protocol'],
+                ['route' => 'setting-email-system.server-protocol-out', 'label' => 'Protocol Out'],
+            ]
+        ],
+        [
+            'type' => 'group', 'key' => 'channelCall', 'label' => 'Setup Channel Call', 'icon' => 'bx-duplicate',
+            'active' => request()->routeIs('setting.agent.call'),
+            'items' => [['route' => 'setting.agent.call', 'label' => 'Setting Agent Call']]
+        ],
+        [
+            'type' => 'group', 'key' => 'epicSystem', 'label' => 'Setting EPIC System', 'icon' => 'bx-duplicate',
+            'active' => request()->is('setting-epic-system/*'),
+            'items' => [['route' => 'setting-epic-system.configuration', 'label' => 'Configurasi EPIC']]
+        ],
+        [
+            'type' => 'group', 'key' => 'setupEmail', 'label' => 'Setup Channel Email', 'icon' => 'bx-highlight',
+            'active' => request()->routeIs('dashboard.email', 'monitoring.email.response', 'setting.agent.email') || request()->is('setup-channel-email/*'),
+            'items' => [
+                ['route' => 'setup-channel-email.setting-auto-reply', 'label' => 'Setting Auto Reply Email'],
+                ['route' => 'setup-channel-email.template-auto-reply', 'label' => 'Template Auto Reply Email'],
+                ['route' => 'setup-channel-email.template-response', 'label' => 'Template Response Email'],
+                ['route' => 'setup-channel-email.filter-jumlah-hari', 'label' => 'Data Filter Jumlah Hari'],
+                ['route' => 'setup-channel-email.jam-operasional', 'label' => 'Data Jam Operasional Email'],
+                ['route' => 'setup-channel-email.incoming-email', 'label' => 'Data Incoming Email'],
+                ['route' => 'dashboard.email', 'label' => 'Dashboard Email'],
+                ['route' => 'monitoring.email.response', 'label' => 'Monitoring Email Response'],
+                ['route' => 'setting.agent.email', 'label' => 'Setting Agent Email'],
+                ['route' => 'setup-channel-email.data-signature', 'label' => 'Data Signature'],
+                ['route' => 'setup-channel-email.account-corporate', 'label' => 'Account Email Corporate'],
+            ]
+        ],
+        [
+            'type' => 'group', 'key' => 'settingApp', 'label' => 'Setting Application', 'icon' => 'bx-list-check',
             'active' => request()->routeIs('menu.application', 'sub.menu.application', 'detail.menu.application', 'ticket.notification.system', 'setting.channel.agent.index'),
             'items' => [
                 ['route' => 'menu.application', 'label' => 'Menu Application'],
