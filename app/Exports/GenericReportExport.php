@@ -124,20 +124,22 @@ class GenericReportExport implements FromArray, WithHeadings, WithStyles, Should
                 // Freeze header row
                 $sheet->freezePane('A2');
 
+                // Center the 'No' column (Column A)
+                $sheet->getStyle('A')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+
                 // Auto-fit: ShouldAutoSize handles column widths,
                 // but set a max-width cap to prevent overly wide columns
                 for ($col = 1; $col <= $totalCols; $col++) {
                     $letter = $this->colLetter($col);
                     $dim    = $sheet->getColumnDimension($letter);
-                    // Cap columns at 40 characters wide
-                    if ($dim->getWidth() > 40) {
-                        $sheet->getColumnDimension($letter)->setWidth(40);
+                    // Cap columns at 50 characters wide
+                    if ($dim->getWidth() > 50) {
+                        $sheet->getColumnDimension($letter)->setWidth(50)->setAutoSize(false);
                     }
                 }
 
-                // Add report title text above table (row 0 is not possible, so we shift)
-                // Instead, set sheet tab color to match header
-                $sheet->getTabColor()->setRGB('1E3A5F');
+                // Set sheet tab color to match header
+                $sheet->getTabColor()->setRGB($this->headerBgColor);
             },
         ];
     }
