@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\MsUser;
 use App\Models\UserApplication;
 use Illuminate\Support\Facades\Hash;
 
@@ -16,12 +17,14 @@ class DataUserApplicationController extends Controller
 
     public function getData(Request $request)
     {
-        $query = UserApplication::query();
+        $query = MsUser::query(); // Menampilkan semua user (Aktif dan Non-Aktif)
 
         if ($request->has('search') && $request->search != '') {
-            $query->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('user_name', 'like', '%' . $request->search . '%')
-                  ->orWhere('email', 'like', '%' . $request->search . '%');
+            $query->where(function ($q) use ($request) {
+                $q->where('NAME', 'like', '%' . $request->search . '%')
+                  ->orWhere('USERNAME', 'like', '%' . $request->search . '%')
+                  ->orWhere('EMAIL_ADDRESS', 'like', '%' . $request->search . '%');
+            });
         }
 
         $data = $query->paginate($request->get('limit', 10));
@@ -32,25 +35,23 @@ class DataUserApplicationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'userName' => 'required|unique:user_applications,user_name',
+            'userName' => 'required|unique:msuser,USERNAME',
             'name' => 'required',
-            'email' => 'required|email|unique:user_applications,email',
+            'email' => 'required|email|unique:msuser,EMAIL_ADDRESS',
             'password' => 'required|min:6',
             'levelUser' => 'required',
         ]);
 
-        $user = UserApplication::create([
-            'user_name' => $request->userName,
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'level_user' => $request->levelUser,
-            'department' => $request->department,
-            'group_agent' => $request->groupAgent,
-            'site' => $request->site,
-            'status' => $request->status ?? 'Aktif',
-            'channels' => $request->channelAgent,
-            'description' => $request->description,
+        $user = MsUser::create([
+            'USERNAME' => $request->userName,
+            'NAME' => $request->name,
+            'EMAIL_ADDRESS' => $request->email,
+            'PASSWORD' => Hash::make($request->password),
+            'LEVELUSER' => $request->levelUser,
+            'ORGANIZATION' => $request->department,
+            'NA' => ($request->status == 'Non-Aktif') ? 'N' : 'Y',
+            'DATECREATE' => now(),
+            'Description' => $request->description,
         ]);
 
         return response()->json(['message' => 'User created successfully', 'user' => $user]);
@@ -58,42 +59,31 @@ class DataUserApplicationController extends Controller
 
     public function update(Request $request, $id)
     {
-        $user = UserApplication::findOrFail($id);
+        $user = MsUser::findOrFail($id);
 
         $request->validate([
-            'userName' => 'required|unique:user_applications,user_name,' . $id,
+            'userName' => 'required|unique:msuser,USERNAME,' . $id . ',USERID',
             'name' => 'required',
-            'email' => 'required|email|unique:user_applications,email,' . $id,
+            'email' => 'required|email|unique:msuser,EMAIL_ADDRESS,' . $id . ',USERID',
             'levelUser' => 'required',
         ]);
 
         $data = [
-            'user_name' => $request->userName,
-            'name' => $request->name,
-            'email' => $request->email,
-            'level_user' => $request->levelUser,
-            'department' => $request->department,
-            'group_agent' => $request->groupAgent,
-            'site' => $request->site,
-            'status' => $request->status ?? 'Aktif',
-            'channels' => $request->channelAgent,
-            'description' => $request->description,
+            'USERNAME' => $request->userName,
+            'NAME' => $request->name,
+            'EMAIL_ADDRESS' => $request->email,
+            'LEVELUSER' => $request->levelUser,
+            'ORGANIZATION' => $request->department,
+            'NA' => ($request->status == 'Non-Aktif') ? 'N' : 'Y',
+            'Description' => $request->description,
         ];
 
         if ($request->filled('password')) {
-            $data['password'] = Hash::make($request->password);
+            $data['PASSWORD'] = Hash::make($request->password);
         }
 
         $user->update($data);
 
         return response()->json(['message' => 'User updated successfully', 'user' => $user]);
-    }
-
-    public function destroy($id)
-    {
-        $user = UserApplication::findOrFail($id);
-        $user->delete();
-
-        return response()->json(['message' => 'User deleted successfully']);
     }
 }

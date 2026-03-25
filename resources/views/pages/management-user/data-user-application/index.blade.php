@@ -70,29 +70,52 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-700/50 text-sm text-gray-300">
-                        <template x-for="user in users" :key="user.id">
+                        <template x-for="user in users" :key="user.USERID">
                             <tr class="hover:bg-gray-700/30 transition-colors group">
-                                <td class="px-3 py-3 font-mono text-xs text-blue-400" x-text="user.id"></td>
-                                <td class="px-3 py-3 font-medium text-white" x-text="user.user_name"></td>
-                                <td class="px-3 py-3" x-text="user.name"></td>
+                                <td class="px-3 py-3 font-mono text-xs text-blue-400" x-text="user.USERID"></td>
+                                <td class="px-3 py-3 font-medium text-white" x-text="user.USERNAME"></td>
+                                <td class="px-3 py-3" x-text="user.NAME"></td>
                                 <td class="px-3 py-3">
                                     <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider" 
-                                          :class="user.level_user === 'Administrator' ? 'bg-red-500/10 text-red-500' : 'bg-blue-500/10 text-blue-500'" 
-                                          x-text="user.level_user"></span>
+                                          :class="user.LEVELUSER === 'Administrator' ? 'bg-red-500/10 text-red-500' : 'bg-blue-500/10 text-blue-500'" 
+                                          x-text="user.LEVELUSER"></span>
                                 </td>
-                                <td class="px-3 py-3 truncate text-gray-400" x-text="user.email"></td>
-                                <td class="px-3 py-3" x-text="user.group_agent || '-'"></td>
-                                <td class="px-3 py-3" x-text="user.department || '-'"></td>
-                                <td class="px-3 py-3 text-xs" x-text="user.site || '-'"></td>
+                                <td class="px-3 py-3 truncate text-gray-400" x-text="user.EMAIL_ADDRESS"></td>
+                                <td class="px-3 py-3" x-text="user.ORGANIZATION || '-'"></td>
+                                <td class="px-3 py-3" x-text="'-'"></td>
+                                <td class="px-3 py-3 text-xs" x-text="'-'"></td>
                                 <td class="px-3 py-3 text-center">
-                                    <span class="inline-flex w-2 h-2 rounded-full mr-1.5" :class="user.status === 'Aktif' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-gray-600'"></span>
-                                    <span x-text="user.status"></span>
+                                    <span class="inline-flex w-2 h-2 rounded-full mr-1.5" :class="user.NA === 'Y' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-gray-600'"></span>
+                                    <span x-text="user.NA === 'Y' ? 'Aktif' : 'Non-Aktif'"></span>
                                 </td>
                                 <td class="px-3 py-3 text-center">
-                                    <div class="flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button @click="previewUser(user)" class="p-1.5 hover:bg-gray-600 rounded-lg text-gray-400 hover:text-white transition-all"><i class='bx bx-show'></i></button>
-                                        <button @click="editUser(user)" class="p-1.5 hover:bg-blue-500/20 rounded-lg text-blue-400 hover:text-blue-300 transition-all"><i class='bx bx-edit'></i></button>
-                                        <button @click="deleteUser(user.id)" class="p-1.5 hover:bg-red-500/20 rounded-lg text-red-400 hover:text-red-300 transition-all"><i class='bx bx-trash'></i></button>
+                                    <div x-data="{ openDropdown: false }" class="relative inline-block text-left">
+                                        <button @click="openDropdown = !openDropdown" @click.outside="openDropdown = false" class="p-1.5 hover:bg-gray-600 rounded-lg text-gray-400 hover:text-white transition-all focus:outline-none">
+                                            <i class='bx bx-dots-vertical-rounded text-lg'></i>
+                                        </button>
+                                        
+                                        <div x-show="openDropdown" 
+                                             x-transition:enter="transition ease-out duration-100"
+                                             x-transition:enter-start="transform opacity-0 scale-95"
+                                             x-transition:enter-end="transform opacity-100 scale-100"
+                                             x-transition:leave="transition ease-in duration-75"
+                                             x-transition:leave-start="transform opacity-100 scale-100"
+                                             x-transition:leave-end="transform opacity-0 scale-95"
+                                             class="absolute right-7 top-0 w-36 rounded-xl shadow-lg bg-gray-800 border border-gray-700 z-50 overflow-hidden"
+                                             style="display: none;">
+                                            <div class="py-1">
+                                                <button @click="editUser(user); openDropdown = false" class="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-3 transition-colors">
+                                                    <i class='bx bx-pencil text-gray-400 text-base'></i> Edit
+                                                </button>
+                                                <button @click="showFoto(user); openDropdown = false" class="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-3 transition-colors">
+                                                    <i class='bx bxs-user text-gray-400 text-base'></i> Foto
+                                                </button>
+                                                <div class="border-t border-gray-700 my-1"></div>
+                                                <button @click="previewUser(user); openDropdown = false" class="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-3 transition-colors">
+                                                    <i class='bx bx-right-arrow-circle text-gray-400 text-base'></i> Preview
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -127,8 +150,163 @@
 
         </div>
 
+        <!-- Foto Modal -->
+        <div x-show="openFotoModal" x-transition.opacity class="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm" @click.self="openFotoModal = false" style="display: none;">
+            <div x-show="openFotoModal" x-transition.scale.origin.center class="bg-gray-800 border border-gray-700/50 rounded-2xl shadow-2xl p-6 w-full max-w-sm mx-4 text-center">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-white">User Photo</h3>
+                    <button @click="openFotoModal = false" class="p-1.5 hover:bg-gray-700 rounded-lg text-gray-400 hover:text-white transition-all">
+                        <i class='bx bx-x text-xl'></i>
+                    </button>
+                </div>
+                <div class="flex justify-center mb-4">
+                    <template x-if="selectedFotoUrl">
+                        <img :src="selectedFotoUrl" alt="User Photo" class="w-48 h-48 object-cover rounded-full border-4 border-gray-700 shadow-xl">
+                    </template>
+                    <template x-if="!selectedFotoUrl">
+                        <div class="w-48 h-48 rounded-full border-4 border-gray-700 bg-gray-900 flex items-center justify-center flex-col text-gray-500 shadow-xl">
+                            <i class='bx bxs-user text-6xl mb-2 hover:text-gray-400 transition-colors'></i>
+                            <span class="text-sm font-medium">No Photo</span>
+                        </div>
+                    </template>
+                </div>
+                <p class="text-white font-semibold text-lg" x-text="selectedUserName"></p>
+                <p class="text-gray-400 text-sm mt-1" x-text="selectedUserLevel"></p>
+            </div>
+        </div>
+
         <!-- Add/Edit User Modal -->
-        <!-- ... (Existing modal code remains, just showing script update below) ... -->
+        <div x-show="open" x-transition.opacity class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" @click.self="open = false">
+            <div x-show="open" x-transition.scale.origin.center class="bg-gray-800 border border-gray-700/50 rounded-2xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+                
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-700/50">
+                    <h2 class="text-lg font-bold text-white" x-text="modalTitle"></h2>
+                    <button @click="open = false" class="p-1.5 hover:bg-gray-700 rounded-lg text-gray-400 hover:text-white transition-all">
+                        <i class='bx bx-x text-xl'></i>
+                    </button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="px-6 py-5 space-y-4">
+
+                    <!-- Row 1: User Name & Name -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">User Name</label>
+                            <input type="text" x-model="formData.userName" :disabled="isPreview"
+                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-gray-200 focus:outline-none focus:border-blue-500 disabled:opacity-50 transition-colors" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Name</label>
+                            <input type="text" x-model="formData.name" :disabled="isPreview"
+                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-gray-200 focus:outline-none focus:border-blue-500 disabled:opacity-50 transition-colors" />
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Email & Password -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Email</label>
+                            <input type="email" x-model="formData.email" :disabled="isPreview"
+                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-gray-200 focus:outline-none focus:border-blue-500 disabled:opacity-50 transition-colors" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Password</label>
+                            <input type="password" x-model="formData.password" :disabled="isPreview"
+                                :placeholder="isEdit ? '(Kosongkan jika tidak diubah)' : ''"
+                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-gray-200 focus:outline-none focus:border-blue-500 disabled:opacity-50 transition-colors" />
+                        </div>
+                    </div>
+
+                    <!-- Row 3: Level User (dari API) & Status -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Level User</label>
+                            <select x-model="formData.levelUser" @change="handleLevelUserChange()" :disabled="isPreview"
+                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-gray-200 focus:outline-none focus:border-blue-500 disabled:opacity-50 transition-colors">
+                                <option value="">-- Pilih Level User --</option>
+                                <!-- ★ INI BAGIAN KUNCI: x-for loop dari data API -->
+                                <template x-for="level in levelUserOptions" :key="level.LevelUserID">
+                                    <option :value="level.Name" x-text="level.Description"></option>
+                                </template>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Status</label>
+                            <select x-model="formData.status" :disabled="isPreview"
+                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-gray-200 focus:outline-none focus:border-blue-500 disabled:opacity-50 transition-colors">
+                                <option value="Aktif">Aktif</option>
+                                <option value="Non-Aktif">Non-Aktif</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Row 4: Department & Group Agent (conditional) -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Department</label>
+                            <input type="text" x-model="formData.department" :disabled="isPreview || !isDepartmentActive"
+                                :class="!isDepartmentActive ? 'opacity-30 cursor-not-allowed' : ''"
+                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-gray-200 focus:outline-none focus:border-blue-500 disabled:opacity-50 transition-colors" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Group Agent</label>
+                            <input type="text" x-model="formData.groupAgent" :disabled="isPreview || !isGroupAgentActive"
+                                :class="!isGroupAgentActive ? 'opacity-30 cursor-not-allowed' : ''"
+                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-gray-200 focus:outline-none focus:border-blue-500 disabled:opacity-50 transition-colors" />
+                        </div>
+                    </div>
+
+                    <!-- Row 5: Site & Description -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Site</label>
+                            <input type="text" x-model="formData.site" :disabled="isPreview"
+                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-gray-200 focus:outline-none focus:border-blue-500 disabled:opacity-50 transition-colors" />
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Description</label>
+                            <input type="text" x-model="formData.description" :disabled="isPreview"
+                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-gray-200 focus:outline-none focus:border-blue-500 disabled:opacity-50 transition-colors" />
+                        </div>
+                    </div>
+
+                    <!-- Channel Agent Checkboxes -->
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Channel Agent</label>
+                        <div class="flex flex-wrap gap-3">
+                            <template x-for="(label, key) in channelOptions" :key="key">
+                                <label class="flex items-center gap-2 px-3 py-1.5 rounded-lg border cursor-pointer transition-all text-sm"
+                                    :class="formData.channelAgent[key] ? 'bg-blue-500/10 border-blue-500/50 text-blue-400' : 'bg-gray-900 border-gray-700 text-gray-400'">
+                                    <input type="checkbox" x-model="formData.channelAgent[key]" :disabled="isPreview" class="hidden" />
+                                    <i class='bx text-sm' :class="formData.channelAgent[key] ? 'bx-check-square' : 'bx-checkbox'"></i>
+                                    <span x-text="label"></span>
+                                </label>
+                            </template>
+                        </div>
+                        <div class="flex gap-2 mt-2" x-show="!isPreview">
+                            <button @click="toggleAllChannels(true)" class="text-xs text-blue-400 hover:underline">Select All</button>
+                            <span class="text-gray-600">|</span>
+                            <button @click="toggleAllChannels(false)" class="text-xs text-gray-400 hover:underline">Deselect All</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-700/50">
+                    <button @click="open = false"
+                        class="px-4 py-2 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700 text-sm font-medium transition-colors">
+                        <span x-text="isPreview ? 'Close' : 'Cancel'"></span>
+                    </button>
+                    <button x-show="!isPreview" @click="saveUser()"
+                        class="px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow-lg shadow-blue-500/20 transition-all">
+                        <i class='bx bx-save mr-1'></i>
+                        <span x-text="isEdit ? 'Update' : 'Save'"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
 
     </div>
 
@@ -141,6 +319,7 @@
                 isEdit: false,
                 isPreview: false,
                 users: [],
+                levelUserOptions: [],   //  Data dropdown dari API master-data
                 pagination: { total: 0, from: 0, to: 0, prev_page_url: null, next_page_url: null },
                 search: '',
                 limit: 10,
@@ -171,6 +350,7 @@
 
                 init() {
                     this.loadTable();
+                    this.loadLevelUsers();  //  Fetch data Level User dari API saat halaman dimuat
                     this.$watch('search', () => this.loadTable());
                     this.$watch('limit', () => this.loadTable());
                 },
@@ -189,6 +369,18 @@
                         };
                     } catch (error) {
                         console.error('Error loading users:', error);
+                    }
+                },
+
+                //  Ambil data Level User dari API master-data
+                async loadLevelUsers() {
+                    try {
+                        const response = await fetch('/api/master-data?TrxAction=UIDESK01');
+                        const data = await response.json();
+                        this.levelUserOptions = data;
+                        // data berisi: [{LevelUserID: 1, Name: "layer1", Description: "Layer 1"}, ...]
+                    } catch (error) {
+                        console.error('Gagal memuat data Level User:', error);
                     }
                 },
 
@@ -250,22 +442,22 @@
                     this.resetForm();
                     this.isEdit = true;
                     this.formData = {
-                        id: user.id,
-                        userName: user.user_name,
-                        name: user.name,
-                        email: user.email,
+                        id: user.USERID,
+                        userName: user.USERNAME,
+                        name: user.NAME,
+                        email: user.EMAIL_ADDRESS,
                         password: '',
-                        levelUser: user.level_user,
-                        department: user.department || '',
-                        groupAgent: user.group_agent || '',
-                        site: user.site || '',
-                        status: user.status,
-                        channelAgent: user.channels || {
+                        levelUser: user.LEVELUSER,
+                        department: user.ORGANIZATION || '',
+                        groupAgent: '',
+                        site: '',
+                        status: user.NA === 'Y' ? 'Aktif' : 'Non-Aktif',
+                        channelAgent: {
                             email: false, wa: false, inbound: false, outbound: false,
                             instagram: false, facebook: false, twitter: false, telegram: false
                         },
-                        description: user.description || '',
-                        photoUrl: user.photo_url || ''
+                        description: user.Description || '',
+                        photoUrl: ''
                     };
                     this.open = true;
                 },
@@ -311,27 +503,22 @@
                     }
                 },
 
-                async deleteUser(id) {
-                    if (!confirm('Are you sure you want to delete this user?')) return;
+                openFotoModal: false,
+                selectedFotoUrl: null,
+                selectedUserName: '',
+                selectedUserLevel: '',
 
-                    try {
-                        const response = await fetch(`/management-user/data-user-application/${id}`, {
-                            method: 'DELETE',
-                            headers: {
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                            }
-                        });
+                showFoto(user) {
+                    this.selectedFotoUrl = user.FotoAgent ? `/storage/${user.FotoAgent}` : null;
+                    this.selectedUserName = user.NAME;
+                    this.selectedUserLevel = user.LEVELUSER;
+                    this.openFotoModal = true;
+                },
 
-                        const result = await response.json();
-                        if (response.ok) {
-                            alert(result.message);
-                            this.loadTable();
-                        } else {
-                            alert("Error: " + result.message);
-                        }
-                    } catch (error) {
-                        console.error('Error deleting user:', error);
-                    }
+                // Panggil action buttons dengan USERID
+                previewUser(user) {
+                    this.editUser(user);
+                    this.isPreview = true;
                 }
             };
         }
