@@ -31,10 +31,10 @@ class ThreadTransactionController extends Controller
             ->count();
 
         $perPage = (int) $request->get('per_page', 10);
-        $threads  = $query->paginate($perPage)->withQueryString();
+        $transactions  = $query->paginate($perPage)->withQueryString();
 
         return view('pages.apps.thread-transaction.index', compact(
-            'threads', 'closedCount', 'openCount', 'totalTickets'
+            'transactions', 'closedCount', 'openCount', 'totalTickets'
         ));
     }
 

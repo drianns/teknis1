@@ -1,9 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-
-    <div class="min-h-screen bg-gray-900 w-full overflow-x-hidden" x-data="{ expanded: true, orderModalOpen: false }">
-        <div class="p-4 sm:p-6 lg:p-8 space-y-6">
+    <div class="flex-1 flex flex-col h-screen overflow-hidden bg-gray-900 w-full relative">
+        <div class="p-4 sm:p-6 lg:p-8 space-y-6 flex-1 overflow-y-auto custom-scrollbar">
 
             <!-- Header Section -->
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -185,105 +184,11 @@
                 </div>
 
             </div>
-        </div>
+    </div>
     </div>
 
-    @include('pages.setup-channel-email.partials._scrollbar')
-    <script>
-        const AJAX_URL = '{{ route("monitoring.login.getData") }}';
-        let currentPage = 1, searchTimer = null;
-
-        function loadTable(page = 1) {
-            currentPage = page;
-            const s = document.getElementById('searchInput').value;
-            const p = document.getElementById('perPage').value;
-            
-            fetch(`${AJAX_URL}?page=${page}&search=${encodeURIComponent(s)}&per_page=${p}`, {
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            })
-            .then(r => r.json())
-            .then(d => {
-                renderTable(d);
-                renderPagination(d);
-            })
-            .catch(() => {
-                document.getElementById('tableBody').innerHTML = '<tr><td colspan="7" class="py-12 text-center text-red-400 font-bold">Failed to load data.</td></tr>';
-            });
-        }
-
-        function renderTable(d) {
-            const b = document.getElementById('tableBody');
-            if(!d.data || !d.data.length) {
-                b.innerHTML = '<tr><td colspan="7" class="py-12 text-center text-gray-500"><div class="flex flex-col items-center justify-center gap-2"><i class="bx bx-folder-open text-4xl mb-1"></i><p>No users found</p></div></td></tr>';
-                return;
-            }
-            b.innerHTML = d.data.map(i => `
-                <tr class="hover:bg-blue-500/[0.03] transition-colors group/row">
-                    <td class="px-3 py-3 whitespace-nowrap"><span class="text-sm font-medium text-gray-300">${i.id}</span></td>
-                    <td class="px-3 py-3 whitespace-nowrap"><span class="text-sm font-medium text-white block">${escHtml(i.username)}</span></td>
-                    <td class="px-3 py-3 whitespace-nowrap"><span class="text-sm text-gray-300">${escHtml(i.name)}</span></td>
-                    <td class="px-3 py-3 whitespace-nowrap"><span class="text-xs text-gray-400">${escHtml(i.email)}</span></td>
-                    <td class="px-3 py-3 whitespace-nowrap"><span class="text-xs text-gray-400">${escHtml(i.level || '-')}</span></td>
-                    <td class="px-3 py-3 whitespace-nowrap"><span class="text-xs text-gray-400">${escHtml(i.aux_description || '-')}</span></td>
-                    <td class="px-3 py-3 text-center whitespace-nowrap">
-                        <div class="flex items-center justify-center gap-2">
-                            <button title="Action" class="p-1.5 w-8 h-8 flex items-center justify-center border border-orange-500/30 bg-orange-500/10 rounded-lg text-orange-400 hover:bg-orange-500 hover:text-white transition-all shadow-sm">
-                                <i class="bx bx-chevron-right text-lg"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>`).join('');
-        }
-
-        function renderPagination(d) {
-            document.getElementById('paginationInfo').innerHTML = `Showing <span class="text-white">${d.from ?? 0}</span> - <span class="text-white">${d.to ?? 0}</span> of <span class="text-blue-400">${d.total}</span> entries`;
-            const l = document.getElementById('paginationLinks');
-            l.innerHTML = '';
-            
-            const btn = (lb, pg, dis, act) => {
-                const b = document.createElement('button');
-                b.innerHTML = lb;
-                b.disabled = dis;
-                b.className = `px-3 py-1 rounded-lg text-xs font-bold transition-all ${act ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white border border-gray-700'} ${dis ? 'opacity-40 cursor-not-allowed' : ''}`;
-                if(!dis) b.onclick = () => loadTable(pg);
-                return b;
-            };
-
-            l.appendChild(btn('<i class="bx bx-chevron-left"></i>', d.current_page - 1, d.current_page <= 1, false));
-            for(let i = Math.max(1, d.current_page - 1); i <= Math.min(d.last_page, d.current_page + 1); i++) {
-                l.appendChild(btn(i, i, false, i === d.current_page));
-            }
-            l.appendChild(btn('<i class="bx bx-chevron-right"></i>', d.current_page + 1, d.current_page >= d.last_page, false));
-        }
-
-        function escHtml(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
-
-        document.getElementById('searchInput').addEventListener('input', () => {
-            clearTimeout(searchTimer);
-            searchTimer = setTimeout(() => loadTable(1), 400);
-        });
-        document.getElementById('perPage').addEventListener('change', () => loadTable(1));
-
-        loadTable();
-    </script>
-
-            </div>
-        </div>
-    </div>
-
-
-    <style>
-        .card-glow {
-            @apply absolute -right-8 -bottom-8 w-32 h-32 rounded-full blur-3xl opacity-0 transition-opacity duration-500;
-        }
-
-        .group:hover .card-glow {
-            @apply opacity-100;
-        }
-
-        [x-cloak] {
-            display: none !important;
-        }
-    </style>
-
+    <div id="monitoring-login-config" class="hidden" data-endpoint="{{ route('monitoring.login.getData') }}"></div>
+@push('scripts')
+    @vite('resources/js/pages/data-login/monitoring-login.js')
+@endpush
 @endsection

@@ -1,11 +1,9 @@
-<x-dashonic-horizontal-layout sidebar="1" with-sidebar="1" with-header="1" with-footer="1">
-    <x-slot name="title">
-        Thread Transaction
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="min-h-screen bg-gray-900">
+@section('content')
+    <div class="px-6 pt-4 pb-6 min-h-screen">
         <!-- Main Content -->
-        <main class="flex-1 p-6">
+        <main class="flex-1 space-y-6">
             <!-- Header & Breadcrumb -->
             <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
                 <div>
@@ -217,15 +215,9 @@
         </main>
     </div>
 
-    <!-- Loading Overlay -->
-    <div id="loading-overlay"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-75 hidden">
-        <div class="flex flex-col items-center">
-            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
-            <p class="mt-4 text-white text-lg font-semibold tracking-wider">Loading...</p>
-        </div>
-    </div>
+    @include('components.loading-overlay')
 
+    @push('scripts')
     <script>
         function showLoading() {
             document.getElementById('loading-overlay').classList.remove('hidden');
@@ -419,4 +411,5 @@
             loadTableData();
         });
     </script>
-</x-dashonic-horizontal-layout>
+    @endpush
+@endsection

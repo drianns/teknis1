@@ -1,0 +1,190 @@
+
+        /* Main page container */
+        .journey-page {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-height: 100vh;
+            padding: 20px 24px;
+            box-sizing: border-box;
+            background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.05), transparent),
+                radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.05), transparent),
+                #0f172a;
+        }
+
+        /* Three-column workspace container */
+        .journey-workspaces {
+            display: grid;
+            grid-template-columns: 320px 1fr 380px;
+            gap: 16px;
+            flex: 1;
+            min-height: 0;
+            margin-top: 0 !important;
+        }
+
+        /* Glassmorphism card style */
+        .workspace-card {
+            display: flex;
+            flex-direction: column;
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.25rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            height: 100%;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+
+        /* Card header */
+        .workspace-card-header {
+            flex-shrink: 0;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(15, 23, 42, 0.3);
+        }
+
+        /* Card body (scrollable content) */
+        .workspace-card-body {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 1.5rem;
+        }
+
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.3);
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Profile spacing */
+        .profile-field-group {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .profile-field-group:hover {
+            background: rgba(15, 23, 42, 0.6);
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+
+        /* Timeline adjustments */
+        .journey-timeline-line {
+            width: 2px;
+            background: linear-gradient(to bottom, rgba(99, 102, 241, 0.5), rgba(99, 102, 241, 0.1));
+            position: absolute;
+            left: 23px;
+            top: 0;
+            bottom: 0;
+        }
+
+        /* Pulse animation for live indicators */
+        @keyframes pulse-soft {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.7;
+                transform: scale(1.05);
+            }
+        }
+
+        .animate-pulse-soft {
+            animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 1400px) {
+            .journey-workspaces {
+                grid-template-columns: 280px 1fr 340px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .journey-workspaces {
+                grid-template-columns: 260px 1fr 300px;
+                gap: 12px;
+            }
+
+            .journey-page {
+                padding: 16px 20px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .journey-page {
+                height: auto;
+                max-height: none;
+                overflow: visible;
+            }
+
+            .journey-workspaces {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+        }
+    
+
+        @keyframes bwop-in {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes bwop-out {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+        }
+
+        .animate-bwop-in {
+            animation: bwop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .animate-bwop-out {
+            animation: bwop-out 0.3s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
+        }
+    
+

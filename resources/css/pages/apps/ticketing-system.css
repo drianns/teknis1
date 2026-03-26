@@ -1,0 +1,215 @@
+
+        /* Base State for Nav Pills */
+        .nav-pills .nav-link {
+            background-color: #1f2937;
+            /* gray-800 */
+            color: #9ca3af;
+            /* gray-400 */
+            border: 1px solid #374151;
+            /* gray-700 */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        /* Hover State */
+        .nav-pills .nav-link:hover {
+            background-color: #374151;
+            /* gray-700 */
+            color: #f3f4f6;
+            /* gray-100 */
+            border-color: #4b5563;
+            /* gray-600 */
+            transform: translateY(-1px);
+        }
+
+        /* Active State */
+        .nav-pills .nav-link.active {
+            background-color: #2563eb;
+            /* blue-600 */
+            color: white;
+            border-color: #2563eb;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.4), 0 2px 4px -1px rgba(37, 99, 235, 0.2);
+            font-weight: 600;
+        }
+
+        .nav-pills .nav-link.active i {
+            transform: scale(1.1);
+            transition: transform 0.3s ease;
+        }
+
+        /* FORM OVERRIDES FOR DARK MODE */
+        /* Force background color on focus and disabled states to override Bootstrap/Browser defaults */
+        #form-ticketing .form-control:focus,
+        #form-ticketing .form-select:focus {
+            background-color: #1f2937 !important;
+            /* bg-gray-800 */
+            color: #ffffff !important;
+            border-color: #3b82f6 !important;
+            /* blue-500 */
+            box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25) !important;
+        }
+
+        #form-ticketing .form-control:disabled,
+        #form-ticketing .form-select:disabled,
+        #form-ticketing .form-control[readonly] {
+            background-color: #1f2937 !important;
+            /* bg-gray-800 */
+            color: #d1d5db !important;
+            /* text-gray-300 */
+            opacity: 1;
+            /* Reset opacity for readability */
+            border-color: #374151 !important;
+            /* border-gray-700 */
+        }
+
+        /* Placeholder color */
+        #form-ticketing .form-control::placeholder {
+            color: #9ca3af;
+            /* gray-400 */
+        }
+    
+
+            /* Custom Dark Mode for Quill */
+            .ql-toolbar.ql-snow {
+                background-color: #374151;
+                /* gray-700 */
+                border-color: #4b5563 !important;
+                /* gray-600 */
+                color: #e5e7eb;
+                /* gray-200 */
+                border-top-left-radius: 0.5rem;
+                border-top-right-radius: 0.5rem;
+            }
+
+            .ql-container.ql-snow {
+                border-color: #4b5563 !important;
+                /* gray-600 */
+                background-color: #1f2937;
+                /* gray-800 */
+                color: #d1d5db;
+                /* gray-300 */
+                font-family: 'Inter', sans-serif;
+                border-bottom-left-radius: 0.5rem;
+                border-bottom-right-radius: 0.5rem;
+            }
+
+            .ql-snow .ql-stroke {
+                stroke: #e5e7eb;
+                /* gray-200 */
+            }
+
+            .ql-snow .ql-fill {
+                fill: #e5e7eb;
+                /* gray-200 */
+            }
+
+            .ql-snow .ql-picker {
+                color: #e5e7eb;
+            }
+
+            /* Active State for Toolbar Buttons */
+            .ql-snow .ql-active .ql-stroke {
+                stroke: #3b82f6 !important;
+                /* blue-500 */
+            }
+
+            .ql-snow .ql-active .ql-fill {
+                fill: #3b82f6 !important;
+                /* blue-500 */
+            }
+
+            /* Force Bold and Italic rendering in editor (overcoming Tailwind Preflight) */
+            .ql-editor strong {
+                font-weight: bold !important;
+            }
+
+            .ql-editor em {
+                font-style: italic !important;
+            }
+
+            /* Sidebar Search Input Override */
+            #sidebar-search-input:focus {
+                background-color: #1f2937 !important;
+                /* gray-800 */
+                color: #ffffff !important;
+                border-color: #3b82f6 !important;
+                /* blue-500 */
+                box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25) !important;
+            }
+
+            /* New Customer Popup Inputs Override */
+            #popup-new-customer .form-control:focus {
+                background-color: #1f2937 !important;
+                /* gray-800 */
+                color: #ffffff !important;
+                border-color: #3b82f6 !important;
+                /* blue-500 */
+                box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25) !important;
+            }
+
+            /* API Customer Popup Inputs Override */
+            #popup-api-customer .form-control:focus {
+                background-color: #1f2937 !important;
+                /* gray-800 */
+                color: #ffffff !important;
+                border-color: #3b82f6 !important;
+                /* blue-500 */
+                box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25) !important;
+            }
+
+            /* Add Channel Customer & Other Channel Popup Inputs Override */
+            #popup-add-channel-customer .form-control:focus,
+            #popup-other-channel .form-control:focus,
+            #popup-add-channel-customer .form-select:focus,
+            #popup-other-channel .form-select:focus {
+                background-color: #1f2937 !important;
+                /* gray-800 */
+                color: #ffffff !important;
+                border-color: #3b82f6 !important;
+                /* blue-500 */
+                box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25) !important;
+            }
+
+            /* "Bwop" Pop-in Animation */
+            @keyframes popIn {
+                0% {
+                    opacity: 0;
+                    transform: scale(0.9) translateY(10px);
+                }
+
+                50% {
+                    transform: scale(1.02);
+                }
+
+                100% {
+                    opacity: 1;
+                    transform: scale(1) translateY(0);
+                }
+            }
+
+            /* Pop-out Animation (Bwop Close) */
+            @keyframes popOut {
+                0% {
+                    opacity: 1;
+                    transform: scale(1) translateY(0);
+                }
+
+                40% {
+                    transform: scale(1.02);
+                }
+
+                /* Anticipation bounce */
+                100% {
+                    opacity: 0;
+                    transform: scale(0.9) translateY(10px);
+                }
+            }
+
+            .animate-open {
+                animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            }
+
+            .animate-close {
+                animation: popOut 0.3s ease-in forwards;
+            }
+        
+

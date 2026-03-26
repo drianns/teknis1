@@ -94,35 +94,35 @@
             <div class="table-wrapper flex-1 overflow-auto w-full custom-scrollbar">
                 <table class="data-table w-full text-left border-collapse table-fixed min-w-[900px]"
                        x-data="auxTableData()">
-                    <thead class="bg-gray-900/50 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    <thead class="bg-gray-900/50 sticky top-0 z-20 shadow-sm text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                         <tr>
                             <th draggable="true" @dragstart="handleDragStart($event,'No')" @dragend="handleDragEnd($event)"
-                                class="sticky top-0 z-10 bg-gray-900 draggable-header px-3 py-3 w-12 hover:bg-gray-800/80 transition-colors group cursor-grab active:cursor-grabbing border-r border-gray-700/40 whitespace-nowrap">
+                                class="bg-gray-900 draggable-header px-3 py-3 w-12 hover:bg-gray-800/80 transition-colors group cursor-grab active:cursor-grabbing border-r border-gray-700/40 whitespace-nowrap">
                                 <div class="flex items-center justify-between"><span>No</span>
                                 <i class='bx bx-grid-vertical text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity'></i></div>
                             </th>
                             <th draggable="true" @dragstart="handleDragStart($event,'AUX UserName')" @dragend="handleDragEnd($event)"
-                                class="sticky top-0 z-10 bg-gray-900 draggable-header px-3 py-3 w-44 hover:bg-gray-800/80 transition-colors group cursor-grab active:cursor-grabbing border-r border-gray-700/40 whitespace-nowrap">
+                                class="bg-gray-900 draggable-header px-3 py-3 w-44 hover:bg-gray-800/80 transition-colors group cursor-grab active:cursor-grabbing border-r border-gray-700/40 whitespace-nowrap">
                                 <div class="flex items-center justify-between"><span>AUX UserName</span>
                                 <i class='bx bx-grid-vertical text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity'></i></div>
                             </th>
                             <th draggable="true" @dragstart="handleDragStart($event,'AUX Description')" @dragend="handleDragEnd($event)"
-                                class="sticky top-0 z-10 bg-gray-900 draggable-header px-3 py-3 w-44 hover:bg-gray-800/80 transition-colors group cursor-grab active:cursor-grabbing border-r border-gray-700/40 whitespace-nowrap">
+                                class="bg-gray-900 draggable-header px-3 py-3 w-44 hover:bg-gray-800/80 transition-colors group cursor-grab active:cursor-grabbing border-r border-gray-700/40 whitespace-nowrap">
                                 <div class="flex items-center justify-between"><span>AUX Description</span>
                                 <i class='bx bx-grid-vertical text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity'></i></div>
                             </th>
                             <th draggable="true" @dragstart="handleDragStart($event,'AUX Start Date')" @dragend="handleDragEnd($event)"
-                                class="sticky top-0 z-10 bg-gray-900 draggable-header px-3 py-3 w-48 hover:bg-gray-800/80 transition-colors group cursor-grab active:cursor-grabbing border-r border-gray-700/40 whitespace-nowrap">
+                                class="bg-gray-900 draggable-header px-3 py-3 w-48 hover:bg-gray-800/80 transition-colors group cursor-grab active:cursor-grabbing border-r border-gray-700/40 whitespace-nowrap">
                                 <div class="flex items-center justify-between"><span>AUX Start Date</span>
                                 <i class='bx bx-grid-vertical text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity'></i></div>
                             </th>
                             <th draggable="true" @dragstart="handleDragStart($event,'AUX End Date')" @dragend="handleDragEnd($event)"
-                                class="sticky top-0 z-10 bg-gray-900 draggable-header px-3 py-3 w-48 hover:bg-gray-800/80 transition-colors group cursor-grab active:cursor-grabbing border-r border-gray-700/40 whitespace-nowrap">
+                                class="bg-gray-900 draggable-header px-3 py-3 w-48 hover:bg-gray-800/80 transition-colors group cursor-grab active:cursor-grabbing border-r border-gray-700/40 whitespace-nowrap">
                                 <div class="flex items-center justify-between"><span>AUX End Date</span>
                                 <i class='bx bx-grid-vertical text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity'></i></div>
                             </th>
                             <th draggable="true" @dragstart="handleDragStart($event,'AUX Interval')" @dragend="handleDragEnd($event)"
-                                class="sticky top-0 z-10 bg-gray-900 draggable-header px-3 py-3 w-40 hover:bg-gray-800/80 transition-colors group cursor-grab active:cursor-grabbing whitespace-nowrap">
+                                class="bg-gray-900 draggable-header px-3 py-3 w-40 hover:bg-gray-800/80 transition-colors group cursor-grab active:cursor-grabbing whitespace-nowrap">
                                 <div class="flex items-center justify-between"><span>AUX Interval</span>
                                 <i class='bx bx-grid-vertical text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity'></i></div>
                             </th>
@@ -252,68 +252,8 @@
     </div>
 </div>
 
-<style>
-    .draggable-header.dragging { opacity: 0.4; background-color: #1e3a8a !important; border: 1px dashed #3b82f6; }
-    .custom-scrollbar::-webkit-scrollbar { height: 8px; width: 6px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: #111827; border-radius: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #4b5563; }
-    select {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239CA3AF'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-        background-position: right 0.5rem center;
-        background-repeat: no-repeat;
-        background-size: 1.25rem 1.25rem;
-    }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    .animate-fade-in-up { animation: fadeInUp 0.25s ease forwards; }
-</style>
-
-<script>
-    function dragDropData() {
-        return {
-            groupedColumns: [], isDraggingOver: false,
-            init() { this.$watch('groupedColumns', v => { window.reportGroupedColumns = v; }); },
-            handleDrop(event) {
-                this.isDraggingOver = false;
-                const col = event.dataTransfer.getData('text/plain');
-                if (col && !this.groupedColumns.includes(col)) this.groupedColumns.push(col);
-                document.querySelectorAll('.draggable-header').forEach(el => el.classList.remove('dragging'));
-            },
-            removeGroupedColumn(index) { this.groupedColumns.splice(index, 1); }
-        };
-    }
-
-    function auxTableData() {
-        return {
-            handleDragStart(event, columnName) {
-                event.dataTransfer.effectAllowed = 'move';
-                event.dataTransfer.setData('text/plain', columnName);
-                event.target.closest('th').classList.add('dragging');
-            },
-            handleDragEnd(event) { event.target.closest('th').classList.remove('dragging'); }
-        };
-    }
-
-    function filterTable() {
-        const username = document.getElementById('filter-username').value.toLowerCase();
-        const desc     = document.getElementById('filter-desc').value.toLowerCase();
-        const interval = document.getElementById('filter-interval').value.toLowerCase();
-
-        document.querySelectorAll('.aux-row').forEach(row => {
-            const matchUser     = row.dataset.username.includes(username);
-            const matchDesc     = row.dataset.desc.includes(desc);
-            const matchInterval = row.dataset.interval.includes(interval);
-            row.style.display = (matchUser && matchDesc && matchInterval) ? '' : 'none';
-        });
-    }
-
-    function exportReport(format) {
-        const params = new URLSearchParams({
-            start_date: document.getElementById('start_date')?.value || '',
-            end_date:   document.getElementById('end_date')?.value   || '',
-            format, export: '1'
-        });
-        window.location.href = '{{ route("report.agent-aux") }}?' + params.toString();
-    }
-</script>
+    <div id="agent-aux-config" class="hidden" data-endpoint="{{ route('report.agent-aux') }}"></div>
+@push('scripts')
+    @vite('resources/js/pages/report/agent-aux.js')
+@endpush
 @endsection

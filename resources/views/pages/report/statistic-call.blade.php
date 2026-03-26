@@ -35,19 +35,9 @@
         </div>
     </div>
 
-    <script>
-        // Simple helper to handle iframe loading state if needed
-        const frame = document.getElementById('issabelReportFrame');
-        const overlay = document.getElementById('iframeOverlay');
-        
-        // You can change 'https://issabel.example.com' to your actual Issabel IP/Domain
-        const ISSABEL_URL = 'http://127.0.0.1'; // Update this with your actual Issabel URL
-        
-        if (frame) {
-            frame.src = ISSABEL_URL;
-            frame.onload = function() {
-                if (overlay) overlay.style.opacity = '0';
-            };
-        }
-    </script>
+        <div id="statistic-call-config" class="hidden" data-endpoint="http://127.0.0.1"></div>
+@push('scripts')
+    @vite('resources/js/pages/report/statistic-call.js')
+@endpush
 @endsection
+

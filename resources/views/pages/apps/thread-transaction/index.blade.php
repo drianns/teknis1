@@ -1,9 +1,6 @@
-<x-dashonic-horizontal-layout sidebar="1" with-sidebar="1" with-header="1" with-footer="1">
-    <x-slot name="title">
-        Thread Transaction
-    </x-slot>
-
-    <div class="min-h-screen bg-gray-900">
+@extends('layouts.app')
+@section('content')
+<div class="min-h-screen bg-gray-900">
         <!-- Main Content -->
         <main class="flex-1 p-6">
             <!-- Header & Breadcrumb -->
@@ -294,14 +291,8 @@
         </div>
     </div>
 
-    <script>
-        function showLoading() {
-            document.getElementById('loading-overlay').classList.remove('hidden');
-        }
-
-        // Hide loading on browser back button (bfcache restore)
-        window.addEventListener('pageshow', function (event) {
-            document.getElementById('loading-overlay').classList.add('hidden');
-        });
-    </script>
-</x-dashonic-horizontal-layout>
+    
+    @push('scripts')
+        @vite('resources/js/pages/apps/thread-transaction.js')
+    @endpush
+@endsection

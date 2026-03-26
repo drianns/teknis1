@@ -1,12 +1,10 @@
-<x-dashonic-horizontal-layout sidebar="1" with-sidebar="1" with-header="1" with-footer="1">
-    <x-slot name="title">
-        Ticketing Department
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="min-h-screen bg-gray-900 w-full overflow-x-hidden"
+@section('content')
+    <div class="px-6 pt-4 pb-6 min-h-screen"
         x-data="{ expanded: true, orderModalOpen: false, currentTicket: '' }">
         <!-- Main Content -->
-        <main class="flex-1 p-2 md:p-4">
+        <main class="flex-1 space-y-6">
             <!-- Header & Breadcrumb -->
             <div class="flex flex-col mb-4">
                 <div class="flex items-center gap-3 mb-2">
@@ -171,25 +169,9 @@
         </div>
     </div>
 
-    <!-- Loading Overlay -->
-    <div id="loading-overlay"
-        class="fixed inset-0 z-[9999] flex items-center justify-center bg-gray-900/80 backdrop-blur-sm hidden">
-        <div class="flex flex-col items-center">
-            <div class="relative">
-                <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
-                <div class="absolute inset-0 animate-ping rounded-full h-16 w-16 border-2 border-blue-500/20"></div>
-            </div>
-            <p class="mt-6 text-white text-xs font-black uppercase tracking-[0.3em] animate-pulse">Processing Request
-            </p>
-        </div>
-    </div>
+    @include('components.loading-overlay')
 
-    <style>
-        [x-cloak] {
-            display: none !important;
-        }
-    </style>
-
+    @push('scripts')
     <script>
         function showLoading() {
             document.getElementById('loading-overlay').classList.remove('hidden');
@@ -378,4 +360,5 @@
             }
         });
     </script>
-</x-dashonic-horizontal-layout>
+    @endpush
+@endsection

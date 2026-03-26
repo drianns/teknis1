@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('content')
     <div class="flex-1 flex flex-col h-screen overflow-hidden bg-gray-900">
@@ -61,8 +61,9 @@
         </div>
     </div>
 </div>
-@include('pages.setup-channel-email.partials._scrollbar')
 
+
+@push('scripts')
 <script>
     const AJAX_URL = "{{ route('setup-channel-email.filter-jumlah-hari.getData') }}";
     let searchTimeout;
@@ -156,5 +157,6 @@
 
     document.addEventListener('DOMContentLoaded', () => loadTable(1));
 </script>
+@endpush
 @endsection
 

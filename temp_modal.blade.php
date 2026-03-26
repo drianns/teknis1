@@ -1,0 +1,740 @@
+﻿<x-dashonic-horizontal-layout>
+    <div class="data-user-application-page flex-1 flex flex-col h-full overflow-hidden bg-gray-900 text-gray-100 p-4 w-full"
+        x-data="userModalData()">
+
+        <!-- Page Header -->
+        <header class="page-header mb-6 flex-shrink-0">
+            <div class="header-left">
+                <div class="title-with-action flex items-center gap-4 mb-2">
+                    <h1 class="text-2xl font-bold text-white">Data User Application</h1>
+                </div>
+                <nav class="breadcrumb text-sm text-gray-400">
+                    <span class="hover:text-blue-400 cursor-pointer">Home</span>
+                    <span class="mx-2">/</span>
+                    <span class="hover:text-blue-400 cursor-pointer">Management User</span>
+                    <span class="mx-2">/</span>
+                    <span class="current text-blue-500 font-semibold">Data User Application</span>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Table Section -->
+        <div
+            class="table-section bg-gray-800/80 backdrop-blur-md rounded-2xl border border-gray-700/50 shadow-2xl overflow-hidden ring-1 ring-white/5 flex-1 flex flex-col min-h-0">
+
+            <!-- Table Controls -->
+            <div
+                class="table-controls px-4 py-3 border-b border-gray-700/50 bg-gray-800/30 flex flex-wrap justify-between items-center gap-4">
+                <div class="show-entries flex items-center gap-3 text-sm text-gray-400">
+                    <span>Show</span>
+                    <select id="entries-per-page"
+                        class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 focus:border-blue-500 focus:outline-none text-gray-300">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    <span>entries</span>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <div class="search-box relative">
+                        <input type="text" id="table-search" placeholder="Search user..."
+                            class="bg-gray-800 border border-gray-700 rounded-xl pl-10 pr-4 py-2 text-sm text-gray-300 focus:outline-none focus:border-blue-500 w-64 focus:w-80 transition-all placeholder-gray-500" />
+                        <i class='bx bx-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 text-lg'></i>
+                    </div>
+
+                    <button
+                        class="btn-add px-4 py-2 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white text-sm font-semibold shadow-lg shadow-blue-500/20 transition-all"
+                        @click="openAddUserModal()">
+                        <i class='bx bx-plus text-lg'></i> Add User
+                    </button>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="table-wrapper flex-1 overflow-auto w-full">
+                <table class="data-table w-full text-left border-collapse table-fixed">
+                    <thead class="bg-gray-900/50">
+                        <tr>
+                            <th
+                                class="sticky top-0 z-10 bg-gray-900 px-3 py-3 w-16 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
+                                ID</th>
+                            <th
+                                class="sticky top-0 z-10 bg-gray-900 px-3 py-3 w-32 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
+                                User Name</th>
+                            <th
+                                class="sticky top-0 z-10 bg-gray-900 px-3 py-3 w-40 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
+                                Name</th>
+                            <th
+                                class="sticky top-0 z-10 bg-gray-900 px-3 py-3 w-32 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
+                                Level User</th>
+                            <th
+                                class="sticky top-0 z-10 bg-gray-900 px-3 py-3 w-48 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
+                                Email Address</th>
+                            <th
+                                class="sticky top-0 z-10 bg-gray-900 px-3 py-3 w-32 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
+                                Group Agent</th>
+                            <th
+                                class="sticky top-0 z-10 bg-gray-900 px-3 py-3 w-32 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
+                                Department</th>
+                            <th
+                                class="sticky top-0 z-10 bg-gray-900 px-3 py-3 w-24 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
+                                Site</th>
+                            <th
+                                class="sticky top-0 z-10 bg-gray-900 px-3 py-3 w-24 text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
+                                Status</th>
+                            <th
+                                class="sticky top-0 z-10 bg-gray-900 px-3 py-3 w-20 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center whitespace-nowrap">
+                                Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-table-body" class="divide-y divide-gray-700/50 text-sm text-gray-300">
+                        <!-- Example rows -->
+                        <tr class="hover:bg-blue-500/[0.03] transition-colors group/row">
+                            <td class="px-3 py-3 whitespace-nowrap font-mono text-blue-400 font-medium">
+                                <a href="#" class="hover:underline">#100</a>
+                            </td>
+                            <td class="px-3 py-3 whitespace-nowrap font-medium text-white">
+                                admin</td>
+                            <td class="px-3 py-3 whitespace-nowrap">Admin</td>
+                            <td class="px-3 py-3 whitespace-nowrap"><span
+                                    class="bg-purple-500/20 text-purple-300 px-2.5 py-1 rounded-full text-xs font-medium border border-purple-500/30">Administrator</span>
+                            </td>
+                            <td class="px-3 py-3 whitespace-nowrap text-gray-400 truncate">
+                                wandairwansyah@gmail.com</td>
+                            <td class="px-3 py-3 whitespace-nowrap text-gray-500 italic">-
+                            </td>
+                            <td class="px-3 py-3 whitespace-nowrap text-gray-500 italic">-
+                            </td>
+                            <td class="px-3 py-3 whitespace-nowrap text-gray-500 italic">-
+                            </td>
+                            <td class="px-3 py-3 whitespace-nowrap"><span
+                                    class="bg-green-500/20 text-green-400 px-2.5 py-1 rounded-full text-xs font-medium border border-green-500/30">Aktif</span>
+                            </td>
+                            <td class="px-3 py-3 whitespace-nowrap text-center">
+                                <div class="action-dropdown relative flex justify-center"
+                                    x-data="{ dropdownOpen: false }">
+                                    <button @click.stop="dropdownOpen = !dropdownOpen"
+                                        class="w-8 h-8 rounded-lg bg-gray-800 hover:bg-gray-700 flex items-center justify-center transition-all text-gray-400 hover:text-white">
+                                        <i class='bx bx-dots-vertical-rounded'></i>
+                                    </button>
+                                    <div x-show="dropdownOpen" @click.outside="dropdownOpen = false"
+                                        x-transition:enter="transition ease-out duration-100"
+                                        x-transition:enter-start="opacity-0 scale-95"
+                                        x-transition:enter-end="opacity-100 scale-100"
+                                        x-transition:leave="transition ease-in duration-75"
+                                        x-transition:leave-start="opacity-100 scale-100"
+                                        x-transition:leave-end="opacity-0 scale-95"
+                                        class="absolute right-0 top-full mt-2 w-48 bg-gray-800 border border-gray-700 rounded-xl shadow-xl z-20 overflow-hidden text-left">
+                                        <button
+                                            class="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-700/50 hover:text-white flex items-center gap-3 transition-colors border-b border-gray-700/50"
+                                            @click="editUser(100); dropdownOpen = false">
+                                            <i class='bx bx-edit-alt text-blue-400 text-lg'></i>
+                                            <span class="font-medium">Edit</span>
+                                        </button>
+                                        <button
+                                            class="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-700/50 hover:text-white flex items-center gap-3 transition-colors border-b border-gray-700/50"
+                                            @click="openProfile(100); dropdownOpen = false">
+                                            <i class='bx bx-user-circle text-purple-400 text-lg'></i>
+                                            <span class="font-medium">Profile</span>
+                                        </button>
+                                        <button
+                                            class="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-700/50 hover:text-white flex items-center gap-3 transition-colors border-b border-gray-700/50"
+                                            @click="previewUser(100); dropdownOpen = false">
+                                            <i class='bx bx-show text-green-400 text-lg'></i>
+                                            <span class="font-medium">Preview</span>
+                                        </button>
+                                        <button
+                                            class="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-red-500/10 hover:text-red-400 flex items-center gap-3 transition-colors"
+                                            onclick="deleteUser(100)">
+                                            <i class='bx bx-trash text-red-500 text-lg'></i>
+                                            <span class="font-medium">Delete</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Additional Logic for Empty Row -->
+                        <tr class="hover:bg-blue-500/[0.03] transition-colors group/row">
+                            <td class="px-3 py-3 whitespace-nowrap font-mono text-blue-400 font-medium">
+                                <a href="#" class="hover:underline">#101</a>
+                            </td>
+                            <td class="px-3 py-3 whitespace-nowrap font-medium text-white">agent1</td>
+                            <td class="px-3 py-3 whitespace-nowrap">Agent One</td>
+                            <td class="px-3 py-3 whitespace-nowrap"><span
+                                    class="bg-blue-500/20 text-blue-300 px-2.5 py-1 rounded-full text-xs font-medium border border-blue-500/30">Layer
+                                    1</span></td>
+                            <td class="px-3 py-3 whitespace-nowrap text-gray-400 truncate">agent1@kanmo.com</td>
+                            <td class="px-3 py-3 whitespace-nowrap text-gray-300">Kanmo</td>
+                            <td class="px-3 py-3 whitespace-nowrap text-gray-500 italic">-</td>
+                            <td class="px-3 py-3 whitespace-nowrap text-gray-300">Jakarta</td>
+                            <td class="px-3 py-3 whitespace-nowrap"><span
+                                    class="bg-green-500/20 text-green-400 px-2.5 py-1 rounded-full text-xs font-medium border border-green-500/30">Aktif</span>
+                            </td>
+                            <td class="px-3 py-3 whitespace-nowrap text-center">
+                                <div class="action-dropdown relative flex justify-center"
+                                    x-data="{ dropdownOpen: false }">
+                                    <button @click.stop="dropdownOpen = !dropdownOpen"
+                                        class="w-8 h-8 rounded-lg bg-gray-800 hover:bg-gray-700 flex items-center justify-center transition-all text-gray-400 hover:text-white">
+                                        <i class='bx bx-dots-vertical-rounded'></i>
+                                    </button>
+                                    <div x-show="dropdownOpen" @click.outside="dropdownOpen = false" x-transition
+                                        class="absolute right-0 top-full mt-2 w-48 bg-gray-800 border border-gray-700 rounded-xl shadow-xl z-20 overflow-hidden text-left">
+                                        <button
+                                            class="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-700/50 hover:text-white flex items-center gap-3 transition-colors border-b border-gray-700/50"
+                                            @click="editUser(101); dropdownOpen = false">
+                                            <i class='bx bx-pencil text-blue-400 text-lg'></i> <span
+                                                class="font-medium">Edit</span>
+                                        </button>
+                                        <button
+                                            class="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-700/50 hover:text-white flex items-center gap-3 transition-colors border-b border-gray-700/50"
+                                            @click="openProfile(101); dropdownOpen = false">
+                                            <i class='bx bx-user-circle text-purple-400 text-lg'></i> <span
+                                                class="font-medium">Profile</span>
+                                        </button>
+                                        <button
+                                            class="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-gray-700/50 hover:text-white flex items-center gap-3 transition-colors border-b border-gray-700/50"
+                                            @click="previewUser(101); dropdownOpen = false">
+                                            <i class='bx bx-show text-green-400 text-lg'></i> <span
+                                                class="font-medium">Preview</span>
+                                        </button>
+                                        <button
+                                            class="w-full text-left px-4 py-2.5 text-sm text-gray-300 hover:bg-red-500/10 hover:text-red-400 flex items-center gap-3 transition-colors"
+                                            onclick="deleteUser(101)">
+                                            <i class='bx bx-trash text-red-500 text-lg'></i> <span
+                                                class="font-medium">Delete</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div
+                class="table-pagination px-6 py-4 border-t border-gray-700/50 flex flex-wrap justify-between items-center gap-4 bg-gray-800/30">
+                <div class="pagination-info text-sm text-gray-500">
+                    Showing <span class="text-white font-bold">1</span> to <span class="text-white font-bold">10</span>
+                    of <span class="text-white font-bold">356</span> entries
+                </div>
+                <div class="pagination-controls flex gap-2">
+                    <button
+                        class="btn-page px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-gray-400 text-sm hover:bg-gray-700 hover:text-white transition-all disabled:opacity-50">Previous</button>
+                    <button
+                        class="btn-page px-3 py-1.5 rounded-lg bg-blue-600 border border-blue-600 text-white text-sm font-bold shadow-lg shadow-blue-500/20">1</button>
+                    <button
+                        class="btn-page px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-gray-400 text-sm hover:bg-gray-700 hover:text-white transition-all">2</button>
+                    <button
+                        class="btn-page px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-gray-400 text-sm hover:bg-gray-700 hover:text-white transition-all">3</button>
+                    <span class="px-2 text-gray-500">...</span>
+                    <button
+                        class="btn-page px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-gray-400 text-sm hover:bg-gray-700 hover:text-white transition-all">36</button>
+                    <button
+                        class="btn-page px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-gray-400 text-sm hover:bg-gray-700 hover:text-white transition-all">Next</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Add/Edit User Modal -->
+        <div class="relative z-50" x-show="open" style="display: none;">
+            <div x-show="open" class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm transition-opacity"
+                x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"></div>
+
+            <div class="fixed inset-0 z-10 overflow-y-auto">
+                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div @click.away="open = false"
+                        class="relative transform overflow-hidden rounded-2xl bg-gray-800 border border-white/10 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-4xl"
+                        x-transition:enter="ease-out duration-300"
+                        x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                        x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                        x-transition:leave="ease-in duration-200"
+                        x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                        x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+                        <!-- Modal Header -->
+                        <div class="px-6 py-5 border-b border-white/5 flex justify-between items-center bg-gray-900/50">
+                            <h3 class="text-lg font-bold text-white leading-6" x-text="modalTitle"></h3>
+                            <button @click="open = false" class="text-gray-500 hover:text-white transition-colors">
+                                <i class='bx bx-x text-2xl'></i>
+                            </button>
+                        </div>
+
+                        <!-- Modal Body -->
+                        <div class="px-6 py-6 space-y-6">
+
+                            <!-- Form Grid (3 columns) -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                                <!-- Row 1 -->
+                                <div class="space-y-2">
+                                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider">User
+                                        Name</label>
+                                    <input type="text" x-model="formData.userName" :disabled="isPreview"
+                                        class="w-full bg-gray-900 border border-white/10 text-gray-200 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                                        placeholder="User Name" />
+                                </div>
+
+                                <div class="space-y-2">
+                                    <label
+                                        class="block text-xs font-bold text-gray-500 uppercase tracking-wider">Name</label>
+                                    <input type="text" x-model="formData.name" :disabled="isPreview"
+                                        class="w-full bg-gray-900 border border-white/10 text-gray-200 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                                        placeholder="Name" />
+                                </div>
+
+                                <div class="space-y-2">
+                                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider">Email
+                                        Address</label>
+                                    <input type="email" x-model="formData.email" :disabled="isPreview"
+                                        class="w-full bg-gray-900 border border-white/10 text-gray-200 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                                        placeholder="Email Address" />
+                                </div>
+
+                                <!-- Row 2 -->
+                                <div class="space-y-2">
+                                    <label
+                                        class="block text-xs font-bold text-gray-500 uppercase tracking-wider">Password</label>
+                                    <input type="password" x-model="formData.password"
+                                        class="w-full bg-gray-900 border border-white/10 text-gray-200 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none transition-all"
+                                        placeholder="Password" />
+                                </div>
+
+                                <!-- Level User - TRIGGERS CONDITIONAL LOGIC -->
+                                <div class="space-y-2">
+                                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider">Level
+                                        User</label>
+                                    <div class="relative">
+                                        <select x-model="formData.levelUser" @change="handleLevelUserChange()"
+                                            :disabled="isPreview"
+                                            class="w-full bg-gray-900 border border-white/10 text-gray-200 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none transition-all appearance-none disabled:bg-gray-800 disabled:text-gray-600 disabled:cursor-not-allowed">
+                                            <option value="">Select</option>
+                                            <option value="layer1">Layer 1</option>
+                                            <option value="layer2">Layer 2</option>
+                                            <option value="layer3">Layer 3</option>
+                                            <option value="Administrator">Administrator</option>
+                                            <option value="Supervisor">Supervisor</option>
+                                        </select>
+                                        <i class='bx bx-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none'
+                                            :class="{'opacity-50': isPreview}"></i>
+                                    </div>
+                                </div>
+
+                                <!-- Department - CONDITIONAL -->
+                                <div class="space-y-2">
+                                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider"
+                                        :class="{'opacity-50': !isDepartmentActive || isPreview}">Department</label>
+                                    <div class="relative">
+                                        <select x-model="formData.department"
+                                            :disabled="!isDepartmentActive || isPreview"
+                                            class="w-full bg-gray-900 border border-white/10 text-gray-200 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none transition-all appearance-none disabled:bg-gray-800 disabled:text-gray-600 disabled:cursor-not-allowed">
+                                            <option value="">Select</option>
+                                            <option value="CRC">CRC</option>
+                                            <option value="IT">IT</option>
+                                            <option value="Aftersales Service">Aftersales Service</option>
+                                            <option value="CX Ops">CX Ops</option>
+                                            <option value="Finance">Finance</option>
+                                            <option value="MD">MD</option>
+                                            <option value="Membership">Membership</option>
+                                            <option value="Warehouse">Warehouse</option>
+                                            <option value="OPS Logistic">OPS Logistic</option>
+                                            <option value="Tech Team">Tech Team</option>
+                                            <option value="Store COACH">Store COACH</option>
+                                            <option value="Store GINGERSNAPS">Store GINGERSNAPS</option>
+                                            <option value="Store HAVAIANAS">Store HAVAIANAS</option>
+                                            <option value="Store JUSTICE">Store JUSTICE</option>
+                                            <option value="Store KANMO AIRPORT">Store KANMO AIRPORT</option>
+                                        </select>
+                                        <i class='bx bx-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none'
+                                            :class="{'opacity-50': !isDepartmentActive || isPreview}"></i>
+                                    </div>
+                                </div>
+
+                                <!-- Row 3 -->
+                                <!-- Group Agent - CONDITIONAL -->
+                                <div class="space-y-2">
+                                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider"
+                                        :class="{'opacity-50': !isGroupAgentActive || isPreview}">Group Agent</label>
+                                    <div class="relative">
+                                        <select x-model="formData.groupAgent"
+                                            :disabled="!isGroupAgentActive || isPreview"
+                                            class="w-full bg-gray-900 border border-white/10 text-gray-200 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none transition-all appearance-none disabled:bg-gray-800 disabled:text-gray-600 disabled:cursor-not-allowed">
+                                            <option value="">Select</option>
+                                            <option value="Kanmo">Kanmo</option>
+                                            <option value="MP">MP</option>
+                                            <option value="Nespresso">Nespresso</option>
+                                        </select>
+                                        <i class='bx bx-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none'
+                                            :class="{'opacity-50': !isGroupAgentActive || isPreview}"></i>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <label
+                                        class="block text-xs font-bold text-gray-500 uppercase tracking-wider">Site</label>
+                                    <div class="relative">
+                                        <select x-model="formData.site" :disabled="isPreview"
+                                            class="w-full bg-gray-900 border border-white/10 text-gray-200 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none transition-all appearance-none disabled:bg-gray-800 disabled:text-gray-600 disabled:cursor-not-allowed">
+                                            <option value="">Select</option>
+                                            <option value="Jakarta">Jakarta</option>
+                                            <option value="Surabaya">Surabaya</option>
+                                            <option value="Bandung">Bandung</option>
+                                        </select>
+                                        <i class='bx bx-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none'
+                                            :class="{'opacity-50': isPreview}"></i>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <label
+                                        class="block text-xs font-bold text-gray-500 uppercase tracking-wider">Status</label>
+                                    <div class="relative">
+                                        <select x-model="formData.status" :disabled="isPreview"
+                                            class="w-full bg-gray-900 border border-white/10 text-gray-200 text-sm rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none transition-all appearance-none disabled:bg-gray-800 disabled:text-gray-600 disabled:cursor-not-allowed">
+                                            <option value="">Select</option>
+                                            <option value="Aktif">Aktif</option>
+                                            <option value="Non Aktif">Non Aktif</option>
+                                        </select>
+                                        <i class='bx bx-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none'
+                                            :class="{'opacity-50': isPreview}"></i>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Channel Data Agent (Only for Layer 1) -->
+                            <div x-show="formData.levelUser === 'layer1'" x-transition
+                                class="col-span-1 md:col-span-3 mt-4 border border-blue-500/20 rounded-xl overflow-hidden bg-gray-900/30">
+                                <div
+                                    class="px-5 py-3 flex justify-between items-center border-b border-white/5 bg-blue-500/5">
+                                    <div class="flex items-center gap-2">
+                                        <i class='bx bx-broadcast text-blue-400 text-lg'></i>
+                                        <h4 class="text-white font-bold text-sm tracking-wide">Channel Data Agent</h4>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button @click="toggleAllChannels(true)"
+                                            class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 hover:text-blue-300 transition-all border border-blue-500/20">Select
+                                            All</button>
+                                        <button @click="toggleAllChannels(false)"
+                                            class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-gray-700/50 text-gray-400 hover:bg-gray-700 hover:text-white transition-all border border-white/5">Clear</button>
+                                    </div>
+                                </div>
+                                <div class="p-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                                    <template x-for="(label, key) in channelOptions" :key="key">
+                                        <label
+                                            class="relative flex items-center p-3 rounded-xl border border-white/5 bg-gray-800/50 hover:bg-blue-500/5 hover:border-blue-500/30 cursor-pointer group transition-all duration-200"
+                                            :class="{'border-blue-500/50 bg-blue-500/10': formData.channelAgent[key]}">
+                                            <div class="relative flex items-center justify-center w-5 h-5 rounded border border-gray-600 bg-gray-900 transition-all group-hover:border-blue-400"
+                                                :class="{'bg-blue-500 border-blue-500': formData.channelAgent[key]}">
+                                                <input type="checkbox" x-model="formData.channelAgent[key]"
+                                                    :disabled="isPreview"
+                                                    class="absolute opacity-0 w-full h-full cursor-pointer" />
+                                                <i class="bx bx-check text-white text-sm opacity-0 transform scale-50 transition-all duration-200"
+                                                    :class="{'opacity-100 scale-100': formData.channelAgent[key]}"></i>
+                                            </div>
+                                            <span
+                                                class="ml-3 text-sm font-medium text-gray-400 group-hover:text-white transition-colors"
+                                                :class="{'text-white font-semibold': formData.channelAgent[key]}"
+                                                x-text="label"></span>
+                                        </label>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <!-- Description (Full width) -->
+                            <div class="space-y-2">
+                                <label
+                                    class="block text-xs font-bold text-gray-500 uppercase tracking-wider">Description</label>
+                                <div class="flex gap-1 p-2 bg-gray-800 border border-white/10 rounded-t-xl border-b-0">
+                                    <button type="button"
+                                        class="w-8 h-8 flex items-center justify-center rounded hover:bg-white/5 text-gray-400 hover:text-white transition-colors"><i
+                                            class='bx bx-bold'></i></button>
+                                    <button type="button"
+                                        class="w-8 h-8 flex items-center justify-center rounded hover:bg-white/5 text-gray-400 hover:text-white transition-colors"><i
+                                            class='bx bx-italic'></i></button>
+                                    <button type="button"
+                                        class="w-8 h-8 flex items-center justify-center rounded hover:bg-white/5 text-gray-400 hover:text-white transition-colors"><i
+                                            class='bx bx-list-ul'></i></button>
+                                    <button type="button"
+                                        class="w-8 h-8 flex items-center justify-center rounded hover:bg-white/5 text-gray-400 hover:text-white transition-colors"><i
+                                            class='bx bx-at'></i></button>
+                                    <button type="button"
+                                        class="w-8 h-8 flex items-center justify-center rounded hover:bg-white/5 text-gray-400 hover:text-white transition-colors"><i
+                                            class='bx bx-link'></i></button>
+                                </div>
+                                <textarea x-model="formData.description" :disabled="isPreview"
+                                    class="w-full bg-gray-900 border border-white/10 text-gray-200 text-sm rounded-b-xl rounded-tr-xl px-4 py-3 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none transition-all resize-none h-32 disabled:opacity-60 disabled:cursor-not-allowed"
+                                    placeholder="Enter description..."></textarea>
+                            </div>
+
+                        </div>
+
+                        <!-- Modal Footer -->
+                        <div class="px-6 py-4 bg-gray-900/50 border-t border-white/5 flex justify-end gap-3">
+                            <button @click="open = false"
+                                class="px-5 py-2.5 rounded-xl border border-white/10 text-gray-400 hover:text-white hover:bg-white/5 transition-all text-sm font-semibold">
+                                <span x-text="isPreview ? 'Close' : 'Cancel'"></span>
+                            </button>
+                            <button x-show="!isPreview" @click="saveUser()"
+                                class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/20 transition-all text-sm font-bold flex items-center gap-2">
+                                <i class='bx bx-save'></i> <span x-text="isEdit ? 'Save Changes' : 'Save'"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Modal -->
+        <div class="relative z-50" x-show="profileOpen" style="display: none;">
+            <div x-show="profileOpen" class="fixed inset-0 bg-gray-900/90 backdrop-blur-md transition-opacity"
+                x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"></div>
+
+            <div class="fixed inset-0 z-10 overflow-y-auto">
+                <div class="flex min-h-full items-center justify-center p-4 text-center">
+                    <div @click.away="profileOpen = false"
+                        class="relative transform overflow-hidden rounded-2xl bg-gray-800 border border-white/10 text-left shadow-2xl transition-all w-full max-w-sm"
+                        x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-95"
+                        x-transition:enter-end="opacity-100 scale-100" x-transition:leave="ease-in duration-200"
+                        x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95">
+                        <div class="absolute top-4 right-4 z-10">
+                            <button @click="profileOpen = false"
+                                class="w-8 h-8 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center text-white transition-all backdrop-blur-sm">
+                                <i class='bx bx-x text-xl'></i>
+                            </button>
+                        </div>
+
+                        <div class="p-8 flex flex-col items-center">
+                            <div class="w-32 h-32 rounded-full border-4 border-blue-500/30 p-1 mb-6 relative group">
+                                <div class="w-full h-full rounded-full overflow-hidden relative">
+                                    <img :src="formData.photoUrl || 'https://ui-avatars.com/api/?name=' + formData.name + '&background=random'"
+                                        alt="Profile Photo" class="w-full h-full object-cover">
+                                </div>
+                                <div
+                                    class="absolute inset-0 rounded-full border-2 border-blue-400 animate-pulse opacity-50">
+                                </div>
+                            </div>
+
+                            <h3 class="text-xl font-bold text-white mb-1" x-text="formData.name"></h3>
+                            <p class="text-sm text-blue-400 font-medium bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20 mb-4"
+                                x-text="formData.levelUser"></p>
+
+                            <div class="w-full space-y-3 bg-gray-900/50 rounded-xl p-4 border border-white/5">
+                                <div class="flex items-center gap-3 text-gray-300 text-sm">
+                                    <div
+                                        class="w-8 h-8 rounded-lg bg-gray-800 flex items-center justify-center text-gray-500">
+                                        <i class='bx bx-envelope'></i>
+                                    </div>
+                                    <span x-text="formData.email"></span>
+                                </div>
+                                <div class="flex items-center gap-3 text-gray-300 text-sm">
+                                    <div
+                                        class="w-8 h-8 rounded-lg bg-gray-800 flex items-center justify-center text-gray-500">
+                                        <i class='bx bx-map'></i>
+                                    </div>
+                                    <span x-text="formData.site || '-'"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Script Section -->
+    <script>
+        function userModalData() {
+            return {
+                open: false,
+                profileOpen: false, // For Profile Modal
+                isEdit: false,
+                isPreview: false, // For Preview Mode
+                formData: {
+                    id: null,
+                    userName: '',
+                    name: '',
+                    email: '',
+                    password: '',
+                    levelUser: '',
+                    department: '',
+                    groupAgent: '',
+                    site: '',
+                    status: '',
+                    // Channel Data Agent
+                    channelAgent: {
+                        email: false,
+                        wa: false,
+                        inbound: false,
+                        outbound: false,
+                        instagram: false,
+                        facebook: false,
+                        twitter: false,
+                        telegram: false
+                    },
+                    description: '',
+                    photoUrl: '' // Mock photo URL
+                },
+
+                channelOptions: {
+                    email: 'Email',
+                    wa: 'WA',
+                    inbound: 'Inbound',
+                    outbound: 'Outbound',
+                    instagram: 'Instagram',
+                    facebook: 'Facebook',
+                    twitter: 'Twitter',
+                    telegram: 'Telegram'
+                },
+
+                toggleAllChannels(value) {
+                    if (this.isPreview) return; // Disable toggle in preview
+                    for (let key in this.formData.channelAgent) {
+                        this.formData.channelAgent[key] = value;
+                    }
+                },
+
+                // Computed properties for field visibility
+                get isDepartmentActive() {
+                    // Department active for: Supervisor, Layer 3
+                    return ['Supervisor', 'layer3'].includes(this.formData.levelUser);
+                },
+
+                get isGroupAgentActive() {
+                    // Group Agent active for: Layer 1, Layer 2
+                    return ['layer1', 'layer2'].includes(this.formData.levelUser);
+                },
+
+                get modalTitle() {
+                    if (this.isPreview) return 'Preview User Application';
+                    if (this.isEdit) return 'Edit User Application';
+                    return 'Form Add User Application';
+                },
+
+                // Reset form
+                resetForm() {
+                    this.isEdit = false;
+                    this.isPreview = false;
+                    this.formData = {
+                        id: null,
+                        userName: '',
+                        name: '',
+                        email: '',
+                        password: '',
+                        levelUser: '',
+                        department: '',
+                        groupAgent: '',
+                        site: '',
+                        status: '',
+                        channelAgent: {
+                            email: false, wa: false, inbound: false, outbound: false,
+                            instagram: false, facebook: false, twitter: false, telegram: false
+                        },
+                        description: '',
+                        photoUrl: ''
+                    };
+                },
+
+                // Handle Level User change
+                handleLevelUserChange() {
+                    const level = this.formData.levelUser;
+
+                    // Reset dependent fields
+                    if (!this.isDepartmentActive) {
+                        this.formData.department = '';
+                    }
+
+                    if (!this.isGroupAgentActive) {
+                        this.formData.groupAgent = '';
+                    }
+
+                    // Reset channels if needed (though UI handles hiding)
+                },
+
+                openAddUserModal() {
+                    this.resetForm();
+                    this.open = true;
+                },
+
+                // Load user data (Reusable mock)
+                loadMockData(id) {
+                    this.formData = {
+                        id: id,
+                        userName: 'admin',
+                        name: 'Admin',
+                        email: 'wandairwansyah@gmail.com',
+                        password: '',
+                        levelUser: 'layer1', // Changed to layer1 to demo channels
+                        department: '',
+                        groupAgent: 'Kanmo',
+                        site: 'Jakarta',
+                        status: 'Aktif',
+                        channelAgent: {
+                            email: true, wa: true, inbound: false, outbound: false,
+                            instagram: true, facebook: false, twitter: false, telegram: false
+                        },
+                        description: 'System Administrator',
+                        photoUrl: 'https://ui-avatars.com/api/?name=Admin&background=0D8ABC&color=fff&size=256'
+                    };
+                },
+
+                editUser(id) {
+                    this.resetForm();
+                    this.isEdit = true;
+                    this.loadMockData(id);
+                    this.open = true;
+                },
+
+                previewUser(id) {
+                    this.resetForm();
+                    this.isPreview = true;
+                    this.loadMockData(id);
+                    this.open = true;
+                },
+
+                openProfile(id) {
+                    this.loadMockData(id);
+                    this.profileOpen = true;
+                },
+
+                // Save user
+                saveUser() {
+                    if (this.isPreview) {
+                        this.open = false;
+                        return;
+                    }
+
+                    // Validation logic simulation
+                    if (!this.formData.userName || !this.formData.name || !this.formData.email) {
+                        alert("Please fill in required fields");
+                        return;
+                    }
+
+                    const message = this.isEdit ? 'User updated successfully (Simulated)' : 'User created successfully (Simulated)';
+                    alert(message);
+                    this.open = false;
+
+                    // Here you would normally make a fetch request to the backend                     /*                     const url = this.isEdit                          ? `/data-user-application/${this.formData.id}`                          : '/data-user-application/store';                                          const method = this.isEdit ? 'PUT' : 'POST';                                          fetch(url, {                         method: method,                         headers: {                         'Content-Type': 'application/json',                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content                         },                         body: JSON.stringify(this.formData)                     })                     ...                     */
+                }
+            };
+        }
+
+        // Global function wrappers if needed for inline onclicks, 
+        // but Alpine data scope is better handled inside the x-data root.
+        // We'll expose a global event dispatcher if external triggers are needed, but for now specific buttons use @click inside x-data
+
+        function deleteUser(id) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                // Mock delete
+                alert('User deleted successfully (Simulated)');
+            }
+        }
+    </script>
+</x-dashonic-horizontal-layout>

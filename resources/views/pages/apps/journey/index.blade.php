@@ -1,161 +1,9 @@
-<x-dashonic-horizontal-layout>
-    <style>
-        /* Main page container */
-        .journey-page {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            max-height: 100vh;
-            padding: 20px 24px;
-            box-sizing: border-box;
-            overflow: hidden;
-            background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.05), transparent),
-                radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.05), transparent),
-                #0f172a;
-        }
-
-        /* Three-column workspace container */
-        .journey-workspaces {
-            display: grid;
-            grid-template-columns: 320px 1fr 380px;
-            gap: 16px;
-            flex: 1;
-            min-height: 0;
-            margin-top: 0 !important;
-        }
-
-        /* Glassmorphism card style */
-        .workspace-card {
-            display: flex;
-            flex-direction: column;
-            background: rgba(30, 41, 59, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 1.25rem;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            height: 100%;
-            overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+@extends('layouts.app')
 
 
-        /* Card header */
-        .workspace-card-header {
-            flex-shrink: 0;
-            padding: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(15, 23, 42, 0.3);
-        }
+    @vite('resources/css/pages/apps/journey.css')
 
-        /* Card body (scrollable content) */
-        .workspace-card-body {
-            flex: 1;
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding: 1.5rem;
-        }
-
-        /* Custom scrollbar */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: rgba(15, 23, 42, 0.3);
-            border-radius: 10px;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.02);
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        /* Profile spacing */
-        .profile-field-group {
-            background: rgba(15, 23, 42, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 0.75rem;
-            padding: 1rem;
-            transition: all 0.2s ease;
-        }
-
-        .profile-field-group:hover {
-            background: rgba(15, 23, 42, 0.6);
-            border-color: rgba(59, 130, 246, 0.2);
-        }
-
-        /* Timeline adjustments */
-        .journey-timeline-line {
-            width: 2px;
-            background: linear-gradient(to bottom, rgba(99, 102, 241, 0.5), rgba(99, 102, 241, 0.1));
-            position: absolute;
-            left: 23px;
-            top: 0;
-            bottom: 0;
-        }
-
-        /* Pulse animation for live indicators */
-        @keyframes pulse-soft {
-
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 0.7;
-                transform: scale(1.05);
-            }
-        }
-
-        .animate-pulse-soft {
-            animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-
-        /* Responsive */
-        @media (max-width: 1400px) {
-            .journey-workspaces {
-                grid-template-columns: 280px 1fr 340px;
-            }
-        }
-
-        @media (max-width: 1200px) {
-            .journey-workspaces {
-                grid-template-columns: 260px 1fr 300px;
-                gap: 12px;
-            }
-
-            .journey-page {
-                padding: 16px 20px;
-            }
-        }
-
-        @media (max-width: 1024px) {
-            .journey-page {
-                height: auto;
-                max-height: none;
-                overflow: visible;
-            }
-
-            .journey-workspaces {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .workspace-card {
-                height: auto;
-                max-height: 800px;
-            }
-        }
-    </style>
-
+@section('content')
     <div class="journey-page">
         <!-- Three Column Workspaces -->
         <div class="journey-workspaces">
@@ -242,9 +90,7 @@
                         <div>
                             <div class="flex items-center gap-2">
                                 {{ $ticketData['name'] ?? 'Guest Customer' }}
-                                </h4>
-                                <span
-                                    class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30 uppercase">Regular</span>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30 uppercase">Regular</span>
                             </div>
                             <div class="flex items-center gap-3 mt-1">
                                 <p class="text-blue-400/80 text-xs font-mono font-bold tracking-wider">
@@ -435,10 +281,7 @@
                                             class="bx bx-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"></i>
                                     </div>
                                 </div>
-                                <button
-                                    class="h-11 px-6 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center gap-2 shadow-lg hover:shadow-blue-500/30 transition-all hover:scale-[1.05] active:scale-95 group font-bold text-sm">
-                                    <span>Post Note</span>
-                                    <i class="bx bx-send text-lg transition-transform group-hover:translate-x-1"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -652,28 +495,10 @@
             </div>
 
         </div>
-    </div>
-    </div>
-    </div>
-
-    <style>
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-        }
-    </style>
 
     <!-- Email Compose Modal -->
     <div id="email-compose-modal"
-        class="hidden fixed inset-0 z-[101] flex items-center justify-center p-4 transition-opacity duration-300">
+        class="hidden fixed inset-0 z-[101] items-center justify-center p-4 transition-opacity duration-300">
         <!-- Backdrop -->
         <div class="fixed inset-0 bg-gray-950/80 backdrop-blur-md"></div>
 
@@ -815,7 +640,7 @@
 
     <!-- Call Confirmation Modal -->
     <div id="call-confirmation-modal"
-        class="hidden fixed inset-0 z-[102] flex items-center justify-center p-4 transition-opacity duration-300">
+        class="hidden fixed inset-0 z-[102] items-center justify-center p-4 transition-opacity duration-300">
         <div class="fixed inset-0 bg-gray-950/90 backdrop-blur-md"></div>
         <div
             class="relative bg-gray-900 w-full max-w-sm rounded-[2.5rem] shadow-2xl p-10 flex flex-col items-center text-center border border-white/10 transform scale-100 transition-transform duration-300 glass-card overflow-hidden">
@@ -884,141 +709,8 @@
             animation: bwop-out 0.3s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
         }
     </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const emailModal = document.getElementById('email-compose-modal');
-            const emailTrigger = document.getElementById('email-compose-trigger');
-            const closeEmailModal = document.getElementById('close-email-modal');
-            const cancelEmailModal = document.getElementById('cancel-email-modal');
-            const modalContent = emailModal?.querySelector('.relative.bg-gray-800'); // Select the content container
+@endpush
 
-            if (emailModal && emailTrigger && closeEmailModal) {
-                const openModal = () => {
-                    emailModal.classList.remove('hidden');
-                    // Reset animation classes
-                    modalContent.classList.remove('animate-bwop-out');
-                    modalContent.classList.add('animate-bwop-in');
-                    document.body.style.overflow = 'hidden';
-                };
 
-                const closeModal = () => {
-                    // Play exit animation
-                    modalContent.classList.remove('animate-bwop-in');
-                    modalContent.classList.add('animate-bwop-out');
-
-                    // Hide after animation finishes
-                    setTimeout(() => {
-                        emailModal.classList.add('hidden');
-                        document.body.style.overflow = 'auto';
-                        modalContent.classList.remove('animate-bwop-out'); // Clean up
-                    }, 300); // Match duration of bwop-out
-                };
-
-                emailTrigger.onclick = openModal;
-                closeEmailModal.onclick = closeModal;
-
-                if (cancelEmailModal) {
-                    cancelEmailModal.onclick = closeModal;
-                }
-
-                emailModal.onclick = (e) => {
-                    if (e.target === emailModal) {
-                        closeModal();
-                    }
-                };
-            }
-
-            // Call Modal Logic
-            const callModal = document.getElementById('call-confirmation-modal');
-            const callTrigger = document.getElementById('call-trigger');
-            const cancelCallModal = document.getElementById('cancel-call-modal');
-            const callModalContent = callModal?.querySelector('.relative.bg-gray-800');
-
-            if (callModal && callTrigger && cancelCallModal) {
-                const openCallModal = () => {
-                    callModal.classList.remove('hidden');
-                    callModalContent.classList.remove('animate-bwop-out');
-                    callModalContent.classList.add('animate-bwop-in');
-                    document.body.style.overflow = 'hidden';
-                }
-
-                const closeCallModal = () => {
-                    callModalContent.classList.remove('animate-bwop-in');
-                    callModalContent.classList.add('animate-bwop-out');
-                    setTimeout(() => {
-                        callModal.classList.add('hidden');
-                        document.body.style.overflow = 'auto';
-                        callModalContent.classList.remove('animate-bwop-out');
-                    }, 300);
-                }
-
-                callTrigger.onclick = openCallModal;
-                cancelCallModal.onclick = closeCallModal;
-
-                // Close on OK button for demo
-                const okButton = cancelCallModal.nextElementSibling;
-                if (okButton) okButton.onclick = closeCallModal;
-
-                callModal.onclick = (e) => {
-                    if (e.target === callModal) {
-                        closeCallModal();
-                    }
-                };
-            }
-
-            // Rich Text Editor Toolbar Functionality
-            const noteTextarea = document.getElementById('note-textarea');
-            const toolbarButtons = document.querySelectorAll('.toolbar-btn');
-
-            if (noteTextarea && toolbarButtons.length > 0) {
-                toolbarButtons.forEach(button => {
-                    button.addEventListener('click', function () {
-                        const format = this.getAttribute('data-format');
-                        const start = noteTextarea.selectionStart;
-                        const end = noteTextarea.selectionEnd;
-                        const selectedText = noteTextarea.value.substring(start, end);
-                        const beforeText = noteTextarea.value.substring(0, start);
-                        const afterText = noteTextarea.value.substring(end);
-
-                        let formattedText = '';
-                        let cursorOffset = 0;
-
-                        switch (format) {
-                            case 'bold':
-                                formattedText = `**${selectedText || 'bold text'}**`;
-                                cursorOffset = selectedText ? formattedText.length : 2;
-                                break;
-                            case 'italic':
-                                formattedText = `*${selectedText || 'italic text'}*`;
-                                cursorOffset = selectedText ? formattedText.length : 1;
-                                break;
-                            case 'strikethrough':
-                                formattedText = `~~${selectedText || 'strikethrough text'}~~`;
-                                cursorOffset = selectedText ? formattedText.length : 2;
-                                break;
-                            case 'ul':
-                                const ulLines = selectedText ? selectedText.split('\n').map(line => `- ${line}`).join('\n') : '- List item';
-                                formattedText = ulLines;
-                                cursorOffset = formattedText.length;
-                                break;
-                            case 'ol':
-                                const olLines = selectedText ? selectedText.split('\n').map((line, i) => `${i + 1}. ${line}`).join('\n') : '1. List item';
-                                formattedText = olLines;
-                                cursorOffset = formattedText.length;
-                                break;
-                            case 'quote':
-                                const quoteLines = selectedText ? selectedText.split('\n').map(line => `> ${line}`).join('\n') : '> Quote text';
-                                formattedText = quoteLines;
-                                cursorOffset = formattedText.length;
-                                break;
-                        }
-
-                        noteTextarea.value = beforeText + formattedText + afterText;
-                        noteTextarea.focus();
-                        noteTextarea.setSelectionRange(start + cursorOffset, start + cursorOffset);
-                    });
-                });
-            }
-        });
-    </script>
-</x-dashonic-horizontal-layout>
+    @vite('resources/js/pages/apps/journey.js')
+@endsection

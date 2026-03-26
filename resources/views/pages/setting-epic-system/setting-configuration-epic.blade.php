@@ -79,7 +79,7 @@
             </div>
         </div>
     </div>
-    @include('pages.setup-channel-email.partials._scrollbar')
+    
 
 <script>
     const AJAX_URL = "{{ route('setting-epic-system.configuration.getData') }}";

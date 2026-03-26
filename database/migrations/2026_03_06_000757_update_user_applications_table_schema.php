@@ -11,20 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('user_applications', function (Blueprint $table) {
-            $table->string('user_name')->unique()->after('id');
-            $table->string('name')->after('user_name');
-            $table->string('email')->unique()->after('name');
-            $table->string('password')->after('email');
-            $table->string('level_user')->after('password');
-            $table->string('department')->nullable()->after('level_user');
-            $table->string('group_agent')->nullable()->after('department');
-            $table->string('site')->nullable()->after('group_agent');
-            $table->string('status')->default('Aktif')->after('site');
-            $table->json('channels')->nullable()->after('status');
-            $table->text('description')->nullable()->after('channels');
-            $table->string('photo_url')->nullable()->after('description');
-        });
+        // Redundant: columns already created in 2026_02_19_042249_create_user_applications_table
     }
 
     /**
@@ -32,12 +19,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('user_applications', function (Blueprint $table) {
-            $table->dropColumn([
-                'user_name', 'name', 'email', 'password', 'level_user', 
-                'department', 'group_agent', 'site', 'status', 
-                'channels', 'description', 'photo_url'
-            ]);
-        });
+        //
     }
 };

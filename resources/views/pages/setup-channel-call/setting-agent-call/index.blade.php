@@ -4,6 +4,7 @@
     <div class="flex-1 flex flex-col h-screen overflow-hidden bg-gray-900 border-none setting-agent-call-page">
         <!-- Header -->
         <header class="flex-shrink-0 mb-3 px-6 pt-4 flex justify-between items-start">
+            <div id="setting-agent-call-config" class="hidden" data-ajax-url="{{ route('setting.agent.call.data') }}"></div>
             <div class="header-left">
                 <h1 class="text-[28px] font-bold text-white tracking-tight mb-2">Setting Agent Call</h1>
                 <div class="flex items-center gap-2 text-sm text-gray-400">
@@ -192,23 +193,10 @@
     </div>
 
 
-    <style>
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #374151; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-corner { background: transparent; }
-        
-        @keyframes slideInRight {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes slideOutRight {
-            from { transform: translateX(0); opacity: 1; }
-            to { transform: translateX(100%); opacity: 0; }
-        }
-        .toast-enter { animation: slideInRight 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
-        .toast-exit { animation: slideOutRight 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important; }
-    </style>
+    
+    @push('styles')
+        @vite('resources/css/pages/setup-channel-call/setting-agent-call.css')
+    @endpush
 
     <script>
         const AJAX_URL = '{{ route("setting.agent.call.getData") }}';
@@ -349,3 +337,5 @@
         document.addEventListener('DOMContentLoaded', () => loadGrid(1));
     </script>
 @endsection
+
+

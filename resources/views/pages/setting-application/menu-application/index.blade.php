@@ -82,9 +82,10 @@
         </div>
     </div>
 
-    @include('pages.setup-channel-email.partials._scrollbar')
+    
 
-    <script>
+    @push('scripts')
+<script>
         const AJAX_URL = '{{ route("menu.application.getData") }}';
         const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
         let currentPage = 1, searchTimer = null;
@@ -286,4 +287,5 @@
 
         document.addEventListener('DOMContentLoaded', () => loadTable(1));
     </script>
+@endpush
 @endsection

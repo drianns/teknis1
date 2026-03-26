@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('content')
     <div class="flex-1 flex flex-col h-screen overflow-hidden bg-gray-900">
@@ -65,7 +65,7 @@
     </div>
 </div>
 
-@include('pages.setup-channel-email.partials._scrollbar')
+
 
 <script>
     const AJAX_URL = "{{ route('setting-email-system.server-profile.getData') }}";

@@ -1,6 +1,5 @@
-<x-dashonic-horizontal-layout sidebar="1" with-sidebar="{{ request()->get('with-sidebar') ?? 1 }}"
-    with-header="{{ request()->get('with-header') ?? 1 }}" with-footer="{{ request()->get('with-footer') ?? 0 }}">
-
+@extends('layouts.app')
+@section('content')
     <div class="p-6 space-y-8 bg-gray-900 min-h-screen text-gray-200" x-data="dashboardEmail()">
         <!-- Header Section -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
@@ -257,165 +256,14 @@
             </div>
         </div>
 
-        <!-- Custom Styling -->
-        <style>
-            .card-glow {
-                @apply absolute -right-4 -bottom-4 w-24 h-24 rounded-full blur-3xl opacity-0 transition-opacity duration-300;
-            }
-
-            .group:hover .card-glow {
-                @apply opacity-100;
-            }
-
-            .submenu-active {
-                @apply text-blue-400 font-bold bg-blue-500/10;
-            }
-        </style>
-
         <!-- Scripts -->
-        <script>
-            function dashboardEmail() {
-                return {
-                    agentSummary: [],
-                    queueing: [],
-                    init() {
-                        this.updateDateTime();
-                        setInterval(() => this.updateDateTime(), 1000);
-                        this.applyFilters();
-                    },
-
-                    updateDateTime() {
-                        const now = new Date();
-                        const options = { day: 'numeric', month: 'long', year: 'numeric' };
-                        const dateStr = now.toLocaleDateString('id-ID', options);
-                        const dayStr = now.toLocaleDateString('id-ID', { weekday: 'long' });
-                        const timeStr = now.toLocaleTimeString('id-ID', {
-                            hour: '2-digit', minute: '2-digit', hour12: false
-                        }) + ' WIB';
-
-                        document.getElementById('current-date').textContent = dateStr;
-                        document.getElementById('current-day').textContent = dayStr;
-                        document.getElementById('current-time').textContent = timeStr;
-                    },
-
-                    applyFilters() {
-                        const startDate = document.getElementById('start-date').value;
-                        const endDate = document.getElementById('end-date').value;
-                        const emailAccount = document.getElementById('email-account').value;
-
-                        fetch('{{ route("dashboard.email.data") }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({ start_date: startDate, end_date: endDate, email_account: emailAccount })
-                        })
-                            .then(res => res.json())
-                            .then(data => {
-                                this.updateStats(data.statistics);
-                                this.agentSummary = data.agent_summary;
-                                this.queueing = data.queueing;
-                                this.updateAgentSummary(this.agentSummary);
-                                this.updateQueueing(this.queueing);
-                            })
-                            .catch(err => console.error('Error fetching dashboard data:', err));
-                    },
-
-                    updateStats(stats) {
-                        const animateValue = (id, target) => {
-                            const el = document.getElementById(id);
-                            let current = 0;
-                            const step = Math.ceil(target / 20);
-                            const timer = setInterval(() => {
-                                current += step;
-                                if (current >= target) {
-                                    el.textContent = target;
-                                    clearInterval(timer);
-                                } else {
-                                    el.textContent = current;
-                                }
-                            }, 30);
-                        };
-
-                        animateValue('email-received', stats.received);
-                        animateValue('email-response', stats.response);
-                        animateValue('email-not-response', stats.not_response);
-                        animateValue('email-queueing', stats.queueing);
-                    },
-
-                    updateAgentSummary(data) {
-                        const tbody = document.getElementById('agent-summary-tbody');
-                        if (!data || data.length === 0) {
-                            tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-gray-500 italic">No data available for selected period</td></tr>';
-                            return;
-                        }
-
-                        tbody.innerHTML = data.map(agent => `
-                            <tr class="hover:bg-gray-700/30 transition-colors border-b border-gray-700/50 last:border-none">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xs ring-2 ring-blue-500/20 shadow-lg">
-                                            ${agent.name.charAt(0)}
-                                        </div>
-                                        <span class="text-sm font-medium text-white">${agent.name}</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <span class="bg-gray-900 text-blue-400 px-3 py-1 rounded-full text-xs font-bold ring-1 ring-blue-400/20">${agent.received}</span>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <span class="bg-gray-900 text-emerald-400 px-3 py-1 rounded-full text-xs font-bold ring-1 ring-emerald-400/20">${agent.response}</span>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <span class="bg-gray-900 text-rose-400 px-3 py-1 rounded-full text-xs font-bold ring-1 ring-rose-400/20">${agent.not_response}</span>
-                                </td>
-                            </tr>
-                        `).join('');
-                    },
-
-                    updateQueueing(data) {
-                        const tbody = document.getElementById('queueing-tbody');
-                        if (!data || data.length === 0) {
-                            tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-8 text-center text-gray-500 italic">No emails in queue</td></tr>';
-                            return;
-                        }
-
-                        tbody.innerHTML = data.map(email => `
-                            <tr class="hover:bg-gray-700/30 transition-colors border-b border-gray-700/50 last:border-none">
-                                <td class="px-6 py-4">
-                                    <div class="flex flex-col">
-                                        <span class="text-xs text-blue-400 font-medium truncate max-w-[120px]" title="${email.service}">${email.service}</span>
-                                        <span class="text-[10px] text-gray-500">Auto-routed</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="text-xs text-gray-300 font-medium">${email.from}</span>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="text-xs text-gray-200 font-medium truncate max-w-[150px] inline-block" title="${email.subject}">${email.subject}</span>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex flex-col text-right sm:text-left">
-                                        <span class="text-xs text-gray-300 font-bold">${this.formatDate(email.date)}</span>
-                                        <span class="text-[10px] text-amber-500 font-medium">${this.formatTime(email.date)}</span>
-                                    </div>
-                                </td>
-                            </tr>
-                        `).join('');
-                    },
-
-                    formatDate(dateStr) {
-                        const d = new Date(dateStr);
-                        return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-                    },
-
-                    formatTime(dateStr) {
-                        const d = new Date(dateStr);
-                        return d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
-                    }
-                }
-            }
-        </script>
-    </div>
-</x-dashonic-horizontal-layout>
+@push('scripts')
+@push('scripts')
+    {{-- Config element for JS --}}
+    <div id="dashboard-email-config" class="hidden"
+        data-endpoint="{{ route('dashboard.email.data') }}"
+        data-csrf="{{ csrf_token() }}"
+    ></div>
+    @vite('resources/js/pages/setup-channel-email/dashboard-email.js')
+@endpush
+@endsection

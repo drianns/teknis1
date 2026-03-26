@@ -1,0 +1,87 @@
+
+                /* CKEditor Dark Theme Overrides */
+                .ck-editor__editable {
+                    background-color: #1f2937 !important;
+                    /* gray-800 */
+                    color: #d1d5db !important;
+                    /* text-gray-300 */
+                    min-height: 200px;
+                    /* Reduced min-height to accommodate attachments */
+                    border-radius: 0.5rem;
+                }
+
+                .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused) {
+                    border-color: #374151 !important;
+                    /* gray-700 */
+                }
+
+                .ck.ck-editor__main>.ck-editor__editable.ck-focused {
+                    border-color: #3b82f6 !important;
+                    /* blue-500 */
+                    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+                }
+
+                .ck.ck-toolbar {
+                    background-color: #374151 !important;
+                    /* gray-700 */
+                    border-color: #4b5563 !important;
+                    border-radius: 0.5rem 0.5rem 0 0;
+                }
+
+                .ck.ck-icon,
+                .ck.ck-icon * {
+                    color: #9ca3af !important;
+                    /* gray-400 */
+                }
+
+                .ck.ck-button:hover .ck.ck-icon * {
+                    color: #fff !important;
+                }
+
+                .ck.ck-button.ck-on {
+                    background-color: #4b5563 !important;
+                }
+
+                .ck.ck-button:hover:not(.ck-disabled) {
+                    background-color: #4b5563 !important;
+                }
+
+                /* Bwop Animation using Cubic Bezier */
+                .ease-bounce {
+                    transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                }
+
+                /* Fade In Animation */
+                @keyframes fadeIn {
+                    from {
+                        opacity: 0;
+                        transform: translateY(5px);
+                    }
+
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
+                .animate-fadeIn {
+                    animation: fadeIn 0.3s ease-out forwards;
+                }
+
+                /* Minimized State Styles */
+                .modal-minimized {
+                    position: fixed !important;
+                    bottom: 0 !important;
+                    right: 1.5rem !important;
+                    /* right-6 */
+                    top: auto !important;
+                    left: auto !important;
+                    width: 20rem !important;
+                    /* w-80 */
+                    margin: 0 !important;
+                    transform: none !important;
+                    pointer-events: auto !important;
+                    /* Ensure content is clickable */
+                }
+            
+

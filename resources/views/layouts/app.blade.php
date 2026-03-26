@@ -19,6 +19,8 @@
 
     <!-- Boxicons -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
+    @stack('styles')
 </head>
 
 <body class="font-sans antialiased text-gray-200 bg-gray-900 overflow-x-hidden">
@@ -27,7 +29,7 @@
         @include('layouts.sidebar')
 
         <!-- Main Content Area -->
-        <div class="flex-1 flex flex-col min-w-0 transition-all duration-300 ml-[110px]">
+        <div class="flex-1 flex flex-col min-w-0 transition-all duration-300 pl-24" style="padding-left: 96px;">
             <!-- Header (Optional) -->
             @if(isset($header))
                 <header class="bg-gray-800 shadow border-b border-gray-700">
@@ -43,6 +45,8 @@
             </main>
         </div>
     </div>
+    
+    @stack('scripts')
 </body>
 
 </html>
